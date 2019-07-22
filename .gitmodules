@@ -1,0 +1,4 @@
+[submodule "petsc"]
+	path = petsc
+	url = https://bitbucket.org/petsc/petsc.git
+	branch = maint
