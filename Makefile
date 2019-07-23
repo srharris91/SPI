@@ -20,6 +20,9 @@ CPP = mpicxx
 $(EXECUTABLE): $(OBJFILES)
 	$(CLINKER) $(OBJFILES) ${PETSC_LIB} -o $(EXECUTABLE) 
 
+docs:
+	doxygen
+
 clean:
 	rm src/*o $(EXECUTABLE)
 

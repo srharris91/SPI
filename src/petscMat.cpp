@@ -1,31 +1,20 @@
-#include <iostream>
-#include <petscksp.h>
-// #include <petscsys.h>
+#include "petscMat.hpp"
 
-static char help[] = "SPE class to wrap PETSc Mat variables \n\n";
-
-struct SPEMat{
-    PetscInt rows;
-    PetscInt cols;
+namespace SPE{
 
     // constructors
-    SPEMat(){
-    }
-    SPEMat(PetscInt rowscols){
+    SPEMat::SPEMat(){ }
+    SPEMat::SPEMat(PetscInt rowscols){
         rows=rowscols;
         cols=rowscols;
         Init(rows,cols);
     }
-    SPEMat(PetscInt rowsm, PetscInt colsn){
+    SPEMat::SPEMat(PetscInt rowsm, PetscInt colsn){
         Init(rowsm,colsn);
     }
 
-    Mat mat;
-
-    PetscErrorCode ierr;
-
     // Initialize matrix
-    PetscInt Init(PetscInt m,PetscInt n){
+    PetscInt SPEMat::Init(PetscInt m,PetscInt n){
         rows=m;
         cols=n;
         ierr = MatCreate(PETSC_COMM_WORLD,&mat);CHKERRQ(ierr);
@@ -36,25 +25,25 @@ struct SPEMat{
         return 0;
     }
 
-    PetscInt set(PetscInt m, PetscInt n,PetscScalar v){
+    PetscInt SPEMat::set(PetscInt m, PetscInt n,PetscScalar v){
         ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRQ(ierr);
         return 0;
     }
 
     // overloaded operators, get
-    PetscScalar operator()(PetscInt m, PetscInt n) {
+    PetscScalar SPEMat::operator()(PetscInt m, PetscInt n) {
         PetscScalar v;
         ierr = MatGetValues(mat,1,&m, 1,&n, &v);
         return v;
     }
     // overloaded operator, set
-    PetscInt operator()(PetscInt m, PetscInt n,PetscScalar v){
+    PetscInt SPEMat::operator()(PetscInt m, PetscInt n,PetscScalar v){
         ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRQ(ierr);
         return 0;
     }
     // overloaded operator, set
-    PetscInt operator()(PetscInt m, PetscInt n,SPEMat& Asub){
-        InsertMode addv = INSERT_VALUES;
+    PetscInt SPEMat::operator()(PetscInt m, PetscInt n,SPEMat& Asub, InsertMode addv){
+        //InsertMode addv = INSERT_VALUES;
         PetscInt rowoffset = m;
         PetscInt coloffset = n;
         PetscInt nsub = Asub.rows;
@@ -85,49 +74,49 @@ struct SPEMat{
         return 0;
     }
     // overloaded operator, assemble
-    PetscInt operator()(){
+    PetscInt SPEMat::operator()(){
         ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
         ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
         return 0;
     }
     // overloaded operator, MatAXPY
-    SPEMat& operator+=(const SPEMat &X){
+    SPEMat& SPEMat::operator+=(const SPEMat &X){
         ierr = MatAXPY(this->mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return *this;
     }
     // overloaded operator, MatAXPY
-    SPEMat operator+(const SPEMat &X){
+    SPEMat SPEMat::operator+(const SPEMat &X){
         SPEMat A;
         A=*this;
         ierr = MatAXPY(A.mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return A;
     }
     // overloaded operator, MatAXPY
-    SPEMat& operator-=(const SPEMat &X){
+    SPEMat& SPEMat::operator-=(const SPEMat &X){
         ierr = MatAXPY(this->mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return *this;
     }
     // overloaded operator, MatAXPY
-    SPEMat operator-(const SPEMat &X){
+    SPEMat SPEMat::operator-(const SPEMat &X){
         SPEMat A;
         A=*this;
         ierr = MatAXPY(A.mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return A;
     }
     // overload operator, scale with scalar
-    SPEMat operator*(const PetscScalar a){
+    SPEMat SPEMat::operator*(const PetscScalar a){
         SPEMat A;
         A=*this;
         ierr = MatScale(A.mat,a);CHKERRXX(ierr);
         return A;
     }
     // overload operator, scale with scalar
-    SPEMat& operator*=(const PetscScalar a){
+    SPEMat& SPEMat::operator*=(const PetscScalar a){
         ierr = MatScale(this->mat,a);CHKERRXX(ierr);
         return *this;
     }
     // overload operator, matrix multiply
-    SPEMat operator*(const SPEMat& A){
+    SPEMat SPEMat::operator*(const SPEMat& A){
         SPEMat C;
         C.rows=rows;
         C.cols=cols;
@@ -135,79 +124,41 @@ struct SPEMat{
         return C;
     }
     // overload operator, copy and initialize
-    SPEMat& operator=(const SPEMat A){
+    SPEMat& SPEMat::operator=(const SPEMat A){
         rows=A.rows;
         cols=A.cols;
         //this->mat = A.mat;
-         ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
+        ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
         return *this;
     }
     // overload % for element wise multiplication
     //SPEMat operator%(SPEMat A){
         //return *this;
         //}     
-    PetscInt T(SPEMat& A){
+    PetscInt SPEMat::T(SPEMat& A){
         ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
         return 0;
     }
-    PetscInt T(){
+    PetscInt SPEMat::T(){
         ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRQ(ierr);
+        //SPEMat T1;
+        //ierr = MatCreateTranspose(mat,&T1.mat);CHKERRXX(ierr);
         return 0;
     }
     // print matrix to screen
-    PetscInt print(){
+    PetscInt SPEMat::print(){
         ierr = MatView(mat,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
         return 0;
     }
 
-    ~SPEMat(){
+    SPEMat::~SPEMat(){
         MatDestroy(&mat);
     }
 
-};
-
-// overload operator, scale with scalar
-SPEMat operator*(const PetscScalar &a, SPEMat &A){
-    //PetscErrorCode ierr;
-    //SPEMat B;
-    //B=A;
-    //ierr = MatScale(B.mat,a);CHKERRXX(ierr);
-    //return B;
-    return A*a;
+    // overload operator, scale with scalar
+    SPEMat operator*(const PetscScalar a, SPEMat &A){
+        return A*a;
+    }
 }
 
-int main(int argc, char **args){
-    PetscInt m=4,n=4;
-    PetscErrorCode ierr;
-    ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
-
-
-    //SPEMat B(argc,args);
-    //ierr = B.Init(m,n);CHKERRQ(ierr);
-    SPEMat B(m,n),C(m,n),D,E(4*m,4*n);
-    C(0,1,1.);
-    B(1,1,1.0);
-    B();
-    C();
-    B=(3.4+PETSC_i*4.2)*B;
-    C+=B;
-    D = C*B;
-    B.print();
-    C.print();
-    D.print();
-    D.T();
-    D.print();
-    E(3,3,D);
-    E.print();
-    B.~SPEMat();
-    C.~SPEMat();
-    D.~SPEMat();
-    E.~SPEMat();
-
-
-
-    ierr = PetscFinalize();CHKERRQ(ierr);
-
-    return 0;
-}
