@@ -2,7 +2,8 @@
 #define MAIN_H
 #include <iostream>
 #include <petscksp.h>
-#include "petscMat.hpp"
+#include "SPEMat.hpp"
+#include "SPEVec.hpp"
 /** \mainpage SPE Solver
  *
  * \author Shaun Harris (<A HREF="https://srharris91.github.io/" TARGET="_top">https://srharris91.github.io/</A>)\n

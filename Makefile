@@ -24,7 +24,8 @@ docs:
 	doxygen
 
 clean:
-	rm src/*o $(EXECUTABLE)
+	rm -f src/*o $(EXECUTABLE)
+	rm -rf doc/html
 
 .cpp.o:
 	$(CPP) $(CPPFLAGS) $< -o $@
