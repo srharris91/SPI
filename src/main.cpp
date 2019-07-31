@@ -57,13 +57,22 @@ int main(int argc, char **args){
         B();
         B.print();
         C();
-        B=(3.4+PETSC_i*4.2)*B+4.*C;
+        C.print();
+        B=(3.4+PETSC_i*4.2)*C+4.*C;
+        B.print();
         C+=B;
-        SPE::SPEMat CT;
+        C.print();
+        SPE::SPEMat CT("CT");
         C.T(CT);
-        D = CT*B*C;
+        CT.print();
+        D = CT*B;
+        D.print();
         D *= 4.;
-        D = (C*B);
+        D.print();
+        D.~SPEMat();
+        C*B;
+        D = C*B;
+        D.print();
         B.T();
         B.print();
         C.print();
@@ -138,6 +147,17 @@ int main(int argc, char **args){
         A = SPE::diag(two);
 
         A.print();
+
+        SPE::SPEMat C("C");
+        C=SPE::kron(I,A);
+        C.print();
+
+        SPE::SPEMat D(2,2,"D");
+        D(0,0,1.); D(0,1,2.);
+        D(1,0,3.); D(1,1,4.);
+        D();
+
+        SPE::kron(D,I).print();
     }
 
 

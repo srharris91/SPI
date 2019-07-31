@@ -31,7 +31,7 @@ namespace SPE{
         PetscInt operator()(PetscInt m, PetscInt n,const PetscScalar v);  ///< set operator the same as set function
         PetscInt operator()(PetscInt m, PetscInt n,const double v);  ///< set operator the same as set function
         PetscInt operator()(PetscInt m, PetscInt n,const int v);  ///< set operator the same as set function
-        PetscInt operator()(PetscInt m, PetscInt n,SPEMat& Asub, InsertMode addv=ADD_VALUES);   ///< set submatrix into matrix at row m, col n
+        PetscInt operator()(PetscInt m, PetscInt n,const SPEMat &Asub, InsertMode addv=ADD_VALUES);   ///< set submatrix into matrix at row m, col n
         PetscInt operator()();                                      ///< assemble the matrix
         // +- operators
         SPEMat& operator+=(const SPEMat &X); ///< MatAXPY,  Y = 1.*X + Y operation
@@ -61,10 +61,12 @@ namespace SPE{
         ~SPEMat(); /// destructor to delete memory
 
     };
-    SPEMat operator*(const PetscScalar a, SPEMat A); ///< a*A operation to be equivalent to A*a
+    SPEMat operator*(const PetscScalar a, const SPEMat A); ///< a*A operation to be equivalent to A*a
+    SPEMat operator*(const SPEMat A, const PetscScalar a); ///< A*a operation to be equivalent to A*a
     SPEVec operator/(const SPEVec &b, const SPEMat &A); ///< Solve linear system, Ax=b using b/A notation
     SPEMat eye(const PetscInt n); ///< create, form, and return identity matrix of size n
     SPEMat diag(const SPEVec &diag); ///< set diagonal of matrix
+    SPEMat kron(const SPEMat &A, const SPEMat &B); ///< set kronecker inner product of two matrices
 }
 
 

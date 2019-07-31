@@ -59,7 +59,7 @@ namespace SPE{
     }
 
     // overloaded operator, set
-    PetscInt SPEMat::operator()(PetscInt m, PetscInt n,SPEMat& Asub, InsertMode addv){
+    PetscInt SPEMat::operator()(PetscInt m, PetscInt n,const SPEMat &Asub, InsertMode addv){
         //InsertMode addv = INSERT_VALUES;
         PetscInt rowoffset = m;
         PetscInt coloffset = n;
@@ -150,7 +150,7 @@ namespace SPE{
         return *this;
     }
     // overload operator, matrix multiply
-    SPEMat SPEMat::operator*(const SPEMat& A){
+    SPEMat SPEMat::operator*(const SPEMat &A){
         SPEMat C;
         C.rows=rows;
         C.cols=cols;
@@ -161,15 +161,16 @@ namespace SPE{
     // overload operator, copy and initialize
     SPEMat& SPEMat::operator=(const SPEMat &A){
         if(flag_init){
-            ierr = MatCopy(A.mat,mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
+            this->~SPEMat();
+            //ierr = MatCopy(A.mat,mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         }
-        else{
+        //else{
             rows=A.rows;
             cols=A.cols;
             ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
             ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
             flag_init=PETSC_TRUE;
-        }
+        //}
         return *this;
     }
     // overload % for element wise multiplication
@@ -211,13 +212,22 @@ namespace SPE{
     }
 
     SPEMat::~SPEMat(){
+        flag_init=PETSC_FALSE;
         ierr = MatDestroy(&mat);CHKERRXX(ierr);
     }
 
     // overload operator, scale with scalar
-    SPEMat operator*(const PetscScalar a, SPEMat A){
-        A.ierr = MatScale(A.mat,a);CHKERRXX(A.ierr);
-        return A;
+    SPEMat operator*(const PetscScalar a, const SPEMat A){
+        SPEMat B;
+        B=A;
+        B.ierr = MatScale(B.mat,a);CHKERRXX(B.ierr);
+        return B;
+    }
+    SPEMat operator*(const SPEMat A, const PetscScalar a){
+        SPEMat B;
+        B=A;
+        B.ierr = MatScale(B.mat,a);CHKERRXX(B.ierr);
+        return B;
     }
     // overload operator, Linear System solve Ax=b
     SPEVec operator/(const SPEVec &b, const SPEMat &A){
@@ -271,6 +281,74 @@ namespace SPE{
         SPEMat A(d.rows);
         A.ierr = MatDiagonalSet(A.mat,d.vec,INSERT_VALUES);CHKERRXX(A.ierr);
         return A;
+    }
+
+    // kron inner product
+    SPEMat kron(const SPEMat &A, const SPEMat &B){
+        PetscErrorCode ierr;
+
+        // get A,B information
+        PetscInt m,n,p,q;
+        MatGetSize(A.mat,&m,&n);
+        MatGetSize(B.mat,&p,&q);
+
+        // assume square matrices A and B, so we can use set_Mat for the square submatrices
+        PetscInt na=m, nb=p,nc;
+        nc=m*p;
+
+        // init C
+        SPEMat C(nc);
+
+        // kron function C=kron(A,B)
+        PetscInt ncols;
+        const PetscInt *cols;
+        const PetscScalar *vals;
+        PetscInt Isubstart,Isubend;
+        ierr = MatGetOwnershipRange(A.mat,&Isubstart,&Isubend);CHKERRXX(ierr);
+        for (PetscInt rowi=0; rowi<na; rowi++){
+            PetscPrintf(PETSC_COMM_WORLD,"kron rowi=%i of %i\n",rowi,m);
+            bool onprocessor=(Isubstart<=rowi) and (rowi<Isubend);
+            if(onprocessor){
+                // extract row of one A
+                ierr = MatGetRow(A.mat,rowi,&ncols,&cols,&vals);CHKERRXX(ierr); // extract the one row of A if owned by processor
+            }
+            else{
+                ncols=0;
+            }
+            PetscInt ncols2=0;
+            MPIU_Allreduce(&ncols,&ncols2,1,MPIU_INT,MPIU_SUM,PETSC_COMM_WORLD);
+
+            // set global vals2 array
+            PetscScalar vals2[ncols2];
+            PetscInt cols2[ncols2];
+            PetscScalar *vals_temp=new PetscScalar[ncols2] ();// new array and set to 0 with ()
+            PetscInt *cols_temp=new PetscInt[ncols2] ();
+            if(onprocessor){ 
+                for(PetscInt i=0; i<ncols2; i++){
+                    vals_temp[i]=vals[i];
+                    cols_temp[i]=cols[i];
+                }
+
+            }
+            MPIU_Allreduce(vals_temp,vals2,ncols2,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
+            MPIU_Allreduce(cols_temp,cols2,ncols2,MPIU_INT,MPIU_SUM,PETSC_COMM_WORLD);
+
+            // every processor calls set_Mat for each col in row
+            for(PetscInt i=0; i<ncols2; i++){
+                // ierr = set_Mat(vals2[i],B,nb,C,nc,rowi*nb,cols2[i]*nb,INSERT_VALUES);CHKERRXX(ierr);
+                C(rowi*nb,cols2[i]*nb,B*vals2[i],INSERT_VALUES);
+            }
+
+            if(onprocessor){
+                // restore row
+                ierr = MatRestoreRow(A.mat,rowi,&ncols,&cols,&vals); CHKERRXX(ierr);
+            }
+            delete[] vals_temp;
+            delete[] cols_temp;
+
+        }
+        C();
+        return C;
     }
 
 

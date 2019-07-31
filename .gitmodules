@@ -2,3 +2,6 @@
 	path = petsc
 	url = https://bitbucket.org/petsc/petsc.git
 	branch = maint
+[submodule "slepc"]
+	path = slepc
+	url = https://bitbucket.org/slepc/slepc.git
