@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include <tuple>
 
 static char help[] = "SPE class to wrap PETSc Mat variables \n\n";
 

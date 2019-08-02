@@ -1,4 +1,5 @@
 #include "SPEMat.hpp"
+#include <slepceps.h>
 
 namespace SPE{
 
@@ -349,6 +350,121 @@ namespace SPE{
         }
         C();
         return C;
+    }
+
+    std::tuple<PetscScalar, SPEVec> eig(const SPEMat &A, const SPEMat &B, PetscScalar target){
+        //TODO use PEP in slepc (polynomial eigenvalue problem) instead of the generalized eigenvalue problem.  Will make things easier, and faster hopefully
+        EPS             eps;        /* eigenproblem solver context slepc */
+        //ST              st;
+        EPSType         type;
+        //KSP             ksp;        /* linear solver context petsc */
+        PetscErrorCode  ierr;
+        PetscScalar ki,alpha;
+        SPEVec xi,eig_vec;
+
+        PetscScalar kr_temp, ki_temp;
+        
+        // Create the eigenvalue solver and set various options
+        // Create solver contexts
+        ierr = EPSCreate(PETSC_COMM_WORLD,&eps);CHKERRXX(ierr);
+        // Set operators. Here the matrix that defines the eigenvalue system
+        // swap operators such that LHS matrix is singular, and RHS matrix can be inverted (for slepc)
+        // this will make the Ax=lambda Bx into the problem Bx = (1./lambda) Ax, thus our eigenvalues are inverted
+        ierr = EPSSetOperators(eps,A.mat,B.mat);CHKERRXX(ierr);
+        //ierr = EPSSetOperators(eps,B,A);CHKERRXX(ierr);
+        // Set runtime options, e.g.,
+        // -
+        ierr = EPSSetFromOptions(eps);CHKERRXX(ierr);
+        //std::cout<<"After KSPSetFromOptions"<<std::endl;
+        //
+        // set convergence type
+        EPSWhich which=EPS_TARGET_MAGNITUDE;
+        PetscInt nev=1;
+        EPSSetWhichEigenpairs(eps,which);
+        EPSSetDimensions(eps,nev,PETSC_DEFAULT,PETSC_DEFAULT);
+        if (
+                which==EPS_TARGET_REAL ||
+                which==EPS_TARGET_IMAGINARY ||
+                which==EPS_TARGET_MAGNITUDE){
+            // PetscScalar target=0.-88.5*PETSC_i;
+            EPSSetTarget(eps,target);
+            //EPSSetTolerances(eps,1.E-8,100000);
+        }
+
+
+        // Solve the system
+        ierr = EPSSolve(eps);CHKERRXX(ierr);
+        //std::cout<<"After KSPSolve"<<std::endl;
+
+        // output iterations
+        PetscInt its, maxit, i, nconv;
+        PetscReal error, tol, re, im;
+        /*
+            Optional: Get some information from the solver and display it
+        */
+        ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD," Number of iterations of the method: %D\n",its);CHKERRXX(ierr);
+        ierr = EPSGetType(eps,&type);CHKERRXX(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);CHKERRXX(ierr);
+        ierr = EPSGetDimensions(eps,&nev,NULL,NULL);CHKERRXX(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev);CHKERRXX(ierr);
+        ierr = EPSGetTolerances(eps,&tol,&maxit);CHKERRXX(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD," Stopping condition: tol=%.4g, maxit=%D\n",(double)tol,maxit);CHKERRXX(ierr);
+
+        /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+           Display solution and clean up
+           - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+        /*
+           Get number of converged approximate eigenpairs
+           */
+        ierr = EPSGetConverged(eps,&nconv);CHKERRXX(ierr);
+        ierr = PetscPrintf(PETSC_COMM_WORLD," Number of converged eigenpairs: %D\n\n",nconv);CHKERRXX(ierr);
+
+        if (nconv>0) {
+            /*
+               Display eigenvalues and relative errors
+               */
+            ierr = PetscPrintf(PETSC_COMM_WORLD,
+                    "      k                ||Ax-kx||/||kx||\n"
+                    "   ----------------- ------------------\n");CHKERRXX(ierr);
+
+            for (i=0;i<nconv;i++) {
+                /*
+                   Get converged eigenpairs: i-th eigenvalue is stored in kr (real part) and
+                   ki (imaginary part)
+                   */
+                ierr = EPSGetEigenpair(eps,i,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
+                /*
+                   Compute the relative error associated to each eigenpair
+                   */
+                ierr = EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);CHKERRXX(ierr);
+
+                re = PetscRealPart(alpha);
+                im = PetscImaginaryPart(alpha);
+                if (im!=0.0) {
+                    ierr = PetscPrintf(PETSC_COMM_WORLD," (%9e+%9ei)  %12g\n",(double)re,(double)im,(double)error);CHKERRXX(ierr);
+                } else {
+                    ierr = PetscPrintf(PETSC_COMM_WORLD,"   %12e       %12g\n",(double)re,(double)error);CHKERRXX(ierr);
+                }
+            }
+            ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
+
+            ierr = EPSGetEigenpair(eps,0,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
+        }
+
+        ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD,"ksp iterations %D\n",its);CHKERRXX(ierr);
+        PetscPrintf(PETSC_COMM_WORLD,"EPS Solved in %D iterations \n",its);
+        // Free work space.  All PETSc objects should be destroyed when they
+        // are no longer needed.
+        //set_Vec(x);
+        ierr = EPSDestroy(&eps);CHKERRXX(ierr);
+        //ierr = VecDestroy(&x);CHKERRXX(ierr);
+        //ierr = VecDestroy(&b);CHKERRXX(ierr); 
+        //ierr = MatDestroy(&A);CHKERRXX(ierr);
+        //ierr = PetscFinalize();
+
+        return std::make_tuple(alpha,eig_vec);
     }
 
 
