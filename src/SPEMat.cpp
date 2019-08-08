@@ -1,5 +1,4 @@
 #include "SPEMat.hpp"
-#include <slepceps.h>
 
 namespace SPE{
 
@@ -185,23 +184,23 @@ namespace SPE{
         ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
         return 0;
     }
-    PetscInt SPEMat::T(){
-        ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRQ(ierr);
+    SPEMat& SPEMat::T(){
+        ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
         //SPEMat T1;
         //ierr = MatCreateTranspose(mat,&T1.mat);CHKERRXX(ierr);
-        return 0;
+        return (*this);
     }
     PetscInt SPEMat::H(SPEMat &A){ // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
         ierr = MatHermitianTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);
         return 0;
     }
-    PetscInt SPEMat::H(){ // Hermitian Transpose the current mat
-        ierr = MatHermitianTranspose(mat,MAT_INPLACE_MATRIX,&mat);
-        return 0;
+    SPEMat& SPEMat::H(){ // Hermitian Transpose the current mat
+        ierr = MatHermitianTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
+        return (*this);
     }
-    PetscInt SPEMat::conj(){
-        ierr = MatConjugate(mat);CHKERRQ(ierr);
-        return 0;
+    SPEMat& SPEMat::conj(){
+        ierr = MatConjugate(mat);CHKERRXX(ierr);
+        return (*this);
     }
     // print matrix to screen
     PetscInt SPEMat::print(){
@@ -352,15 +351,16 @@ namespace SPE{
         return C;
     }
 
-    std::tuple<PetscScalar, SPEVec> eig(const SPEMat &A, const SPEMat &B, PetscScalar target){
+    std::tuple<PetscScalar, SPEVec> eig(const SPEMat &A, const SPEMat &B, const PetscScalar target){
         //TODO use PEP in slepc (polynomial eigenvalue problem) instead of the generalized eigenvalue problem.  Will make things easier, and faster hopefully
+        PetscInt rows=A.rows;
         EPS             eps;        /* eigenproblem solver context slepc */
         //ST              st;
         EPSType         type;
         //KSP             ksp;        /* linear solver context petsc */
         PetscErrorCode  ierr;
         PetscScalar ki,alpha;
-        SPEVec xi,eig_vec;
+        SPEVec xi(rows),eig_vec(rows);
 
         PetscScalar kr_temp, ki_temp;
         
@@ -465,6 +465,7 @@ namespace SPE{
         //ierr = PetscFinalize();
 
         return std::make_tuple(alpha,eig_vec);
+        //return std::make_tuple(alpha,alpha);
     }
 
 

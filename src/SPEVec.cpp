@@ -4,7 +4,7 @@ namespace SPE{
 
     // constructors
     SPEVec::SPEVec(std::string _name){name=_name; }
-    SPEVec::SPEVec(SPEVec &A, std::string _name){
+    SPEVec::SPEVec(const SPEVec &A, std::string _name){
         name=_name; 
         (*this) = A;
     }
@@ -118,6 +118,27 @@ namespace SPE{
         // ierr = VecSetType(C.vec,VECMPI);CHKERRXX(ierr);
         return C;
     }
+    // overload operator, pointwise divide
+    SPEVec SPEVec::operator/(const PetscScalar a){
+        SPEVec A;
+        (*this).print();
+        A=(*this);
+        A.print();
+        ierr = VecScale(A.vec,1./a);CHKERRXX(ierr);
+        return A;
+    }
+    SPEVec SPEVec::operator/(const double a){
+        PetscScalar as=a;
+        SPEVec A;
+        A=*this;
+        ierr = VecScale(A.vec,1./as);CHKERRXX(ierr);
+        return A;
+    }
+    // overload operator, scale with scalar
+    SPEVec& SPEVec::operator/=(const PetscScalar a){
+        ierr = VecScale(this->vec,1./a);CHKERRXX(ierr);
+        return *this;
+    }
     // overload operator, copy and initialize
     SPEVec& SPEVec::operator=(const SPEVec &A){
         if(flag_init){
@@ -136,9 +157,17 @@ namespace SPE{
     //SPEVec operator%(SPEVec A){
     //return *this;
     //}     
-    PetscInt SPEVec::conj(){
-        ierr = VecConjugate(vec);CHKERRQ(ierr);
-        return 0;
+    SPEVec& SPEVec::conj(){
+        ierr = VecConjugate(vec);CHKERRXX(ierr);
+        return (*this);
+    }
+    PetscScalar SPEVec::max(){
+        PetscInt argmax;
+        PetscReal max;
+        PetscScalar maxscalar;
+        ierr = VecMax(this->vec,&argmax,&max);CHKERRXX(ierr);
+        maxscalar = (*this)(argmax);
+        return maxscalar;
     }
     // print vector to screen
     PetscInt SPEVec::print(){

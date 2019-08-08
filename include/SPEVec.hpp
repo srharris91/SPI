@@ -10,7 +10,7 @@ namespace SPE{
 
         // Constructors
         SPEVec(std::string _name="SPEVec");                   ///< constructor with no arguments (no initialization)
-        SPEVec(SPEVec& x, std::string _name="SPEVec");      ///< constructor using another SPEVec
+        SPEVec(const SPEVec& x, std::string _name="SPEVec");      ///< constructor using another SPEVec
         SPEVec(PetscInt rows, std::string _name="SPEVec");  ///< constructor with one arguement to make vector of length rows
 
         Vec vec;                ///< petsc Mat data
@@ -40,13 +40,18 @@ namespace SPE{
         SPEVec operator*(const double a); ///< Y*a operation
         SPEVec& operator*=(const PetscScalar a); ///< Y = Y*a operation
         SPEVec operator*(const SPEVec &A); ///< Y*A operation
+        // / operators
+        SPEVec operator/(const PetscScalar a); ///< Y*a operation
+        SPEVec operator/(const double a); ///< Y*a operation
+        SPEVec& operator/=(const PetscScalar a); ///< Y = Y*a operation
         // = operator
         SPEVec& operator=(const SPEVec &A); ///< Y=X with initialization of Y using MatConvert
         // overload % for element wise multiplication
         //SPEVec operator%(SPEVec A); 
         // Transpose functions
         // conjugate
-        PetscInt conj(); ///< elemenwise conjugate current matrix
+        SPEVec& conj(); ///< elemenwise conjugate current vector
+        PetscScalar max(); ///< return maximum value of vector
         PetscInt print(); ///< print mat to screen using PETSC_VIEWER_STDOUT_WORLD
 
         ~SPEVec(); /// destructor to delete memory

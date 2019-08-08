@@ -2,6 +2,7 @@
 #define SPEMAT_H
 #include <iostream>
 #include <petscksp.h>
+#include <slepceps.h>
 #include <string>
 #include <tuple>
 #include "SPEVec.hpp"
@@ -52,11 +53,11 @@ namespace SPE{
         //SPEMat operator%(SPEMat A); 
         // Transpose functions
         PetscInt T(SPEMat &A); ///< A = Transpose(*this.mat) operation with initialization of A
-        PetscInt T(); ///< Transpose the current mat
+        SPEMat& T(); ///< Transpose the current mat
         // conjugate
         PetscInt H(SPEMat &A); ///< A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
-        PetscInt H(); ///< Hermitian Transpose the current mat
-        PetscInt conj(); ///< elemenwise conjugate current matrix
+        SPEMat& H(); ///< Hermitian Transpose the current mat
+        SPEMat& conj(); ///< elemenwise conjugate current matrix
         PetscInt print(); ///< print mat to screen using PETSC_VIEWER_STDOUT_WORLD
 
         ~SPEMat(); /// destructor to delete memory
@@ -68,7 +69,8 @@ namespace SPE{
     SPEMat eye(const PetscInt n); ///< create, form, and return identity matrix of size n
     SPEMat diag(const SPEVec &diag); ///< set diagonal of matrix
     SPEMat kron(const SPEMat &A, const SPEMat &B); ///< set kronecker inner product of two matrices
-    std::tuple<PetscScalar,SPEVec> eig(const SPEMat &A, const SPEMat &B, PetscScalar target); ///< solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)
+    std::tuple<PetscScalar,SPEVec> eig(const SPEMat &A, const SPEMat &B, const PetscScalar target); ///< solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)
+    //std::tuple<PetscScalar,PetscScalar> eig(const SPEMat &A, const SPEMat &B, PetscScalar target); ///< solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)
 }
 
 

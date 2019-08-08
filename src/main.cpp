@@ -7,6 +7,7 @@ int main(int argc, char **args){
     PetscInt m=4,n=4;
     PetscErrorCode ierr;
     ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
+    ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
     // Vec tests
     if(0){
@@ -135,7 +136,7 @@ int main(int argc, char **args){
         x.print();
     }
     // check Mat functions (eye, kron, diag)
-    if(1){
+    if(0){
         SPE::SPEMat I(SPE::eye(4),"I-identity");
         //I=SPE::eye(4);
         I.print();
@@ -160,10 +161,28 @@ int main(int argc, char **args){
 
         SPE::kron(D,I).print();
     }
+    if(1){
+        SPE::SPEMat A(2,"A");
+        A(0,0,1.);
+        A(0,1,1.);
+        A(1,1,1.);
+        A.print();
+        SPE::SPEMat B(SPE::eye(2),"I-identity");
+        B.print();
+        PetscScalar alpha;
+        SPE::SPEVec eig(2);
+        std::tie(alpha,eig) = SPE::eig(A,B,1.0+PETSC_i*0.5);
+        eig.print();
+        eig /= eig.max();
+        eig.print();
+        eig.conj().print();
+        A.conj().print();
+    }
 
 
 
     ierr = PetscFinalize();CHKERRQ(ierr);
+    ierr = SlepcFinalize();//CHKERRQ(ierr);
 
     return 0;
 }
