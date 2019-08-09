@@ -29,13 +29,13 @@ namespace SPE{
         return 0;
     }
 
-    PetscInt SPEMat::set(PetscInt m, PetscInt n,const PetscScalar v){
-        ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRQ(ierr);
-        return 0;
+    SPEMat& SPEMat::set(PetscInt m, PetscInt n,const PetscScalar v){
+        ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRXX(ierr);
+        return (*this);
     }
-    PetscInt SPEMat::add(PetscInt m, PetscInt n, const PetscScalar v){
-        ierr = MatSetValue(mat,m,n,v,ADD_VALUES);CHKERRQ(ierr);
-        return 0;
+    SPEMat& SPEMat::add(PetscInt m, PetscInt n, const PetscScalar v){
+        ierr = MatSetValue(mat,m,n,v,ADD_VALUES);CHKERRXX(ierr);
+        return (*this);
     }
 
     // overloaded operators, get
@@ -91,19 +91,19 @@ namespace SPE{
         return 0;
     }
     // overloaded operator, assemble
-    PetscInt SPEMat::operator()(){
-        ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-        ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRQ(ierr);
-        return 0;
+    SPEMat& SPEMat::operator()(){
+        ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRXX(ierr);
+        ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRXX(ierr);
+        return (*this);
     }
     // overloaded operator, MatAXPY
     SPEMat& SPEMat::operator+=(const SPEMat &X){
         ierr = MatAXPY(this->mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return *this;
     }
-    PetscInt SPEMat::axpy(const PetscScalar a, const SPEMat &X){
-        ierr = MatAXPY(this->mat,a,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRQ(ierr);
-        return 0;
+    SPEMat& SPEMat::axpy(const PetscScalar a, const SPEMat &X){
+        ierr = MatAXPY(this->mat,a,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
+        return (*this);
     }
     // overloaded operator, MatAXPY
     SPEMat SPEMat::operator+(const SPEMat &X){
@@ -201,6 +201,11 @@ namespace SPE{
     SPEMat& SPEMat::conj(){
         ierr = MatConjugate(mat);CHKERRXX(ierr);
         return (*this);
+    }
+    SPEVec SPEMat::diag(){ // get diagonal of matrix
+        SPEVec d(rows);
+        ierr = MatGetDiagonal(mat,d.vec); CHKERRXX(ierr);
+        return d;
     }
     // print matrix to screen
     PetscInt SPEMat::print(){

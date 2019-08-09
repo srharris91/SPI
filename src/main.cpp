@@ -10,7 +10,8 @@ int main(int argc, char **args){
     ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
     // Vec tests
-    if(0){
+    if(1){
+        std::cout<<"------------ Vec tests start-------------"<<std::endl;
         SPE::SPEVec X1(m,"X1"),X2(m,"X2"),X3("X3");
 
         X1(0,0.+4.*PETSC_i);
@@ -42,9 +43,11 @@ int main(int argc, char **args){
         //X2.~SPEVec();
         //X3.~SPEVec();
         //X4.~SPEVec();
+        std::cout<<"------------ Vec tests end  -------------"<<std::endl;
     }
 
-    if(0){ // Mat tests
+    if(1){ // Mat tests
+        std::cout<<"------------ Mat tests start ---------------"<<std::endl;
         //SPEMat B(argc,args);
         //ierr = B.Init(m,n);CHKERRQ(ierr);
         SPE::SPEMat I(m,n,"I"),A2(m,n,"A"),B(m,n,"B"),C(m,n,"C"),D("D"),E(4*m,4*n,"E");
@@ -73,7 +76,7 @@ int main(int argc, char **args){
         D.print();
         D.~SPEMat();
         C*B;
-        D = C*B;
+        D = C*I;
         D.print();
         B.T();
         B.print();
@@ -95,6 +98,7 @@ int main(int argc, char **args){
         E.print();
         SPE::SPEMat F(E);
         F.print();
+        D.diag().print();
         //F.~SPEMat();
         //A2.~SPEMat();
         //B.~SPEMat();
@@ -103,10 +107,12 @@ int main(int argc, char **args){
         //E.~SPEMat();
         //CT.~SPEMat();
         //I.~SPEMat();
+        std::cout<<"------------ Mat tests end   ---------------"<<std::endl;
     }
 
     // test A*x
-    if(0){
+    if(1){
+        std::cout<<"------------ A*x tests start ---------------"<<std::endl;
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec x(4,"x"),b;
 
@@ -119,10 +125,12 @@ int main(int argc, char **args){
         b=A*x;
         b.print();
 
+        std::cout<<"------------ A*x tests end   ---------------"<<std::endl;
     }
 
     // linear system solver test Ax=b solved with x=b/A
-    if(0){
+    if(1){
+        std::cout<<"------------ A*x=b tests start ---------------"<<std::endl;
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec b(4,"x"),x;
 
@@ -134,9 +142,11 @@ int main(int argc, char **args){
         b.print();
         x=b/A;
         x.print();
+        std::cout<<"------------ A*x=b tests end   ---------------"<<std::endl;
     }
     // check Mat functions (eye, kron, diag)
-    if(0){
+    if(1){
+        std::cout<<"------------ Mat func tests start-------------"<<std::endl;
         SPE::SPEMat I(SPE::eye(4),"I-identity");
         //I=SPE::eye(4);
         I.print();
@@ -160,8 +170,10 @@ int main(int argc, char **args){
         D();
 
         SPE::kron(D,I).print();
+        std::cout<<"------------ Mat func tests end  -------------"<<std::endl;
     }
-    if(1){
+    if(1){// eig test
+        std::cout<<"------------ Mat eig tests start-------------"<<std::endl;
         SPE::SPEMat A(2,"A");
         A(0,0,1.);
         A(0,1,1.);
@@ -177,6 +189,7 @@ int main(int argc, char **args){
         eig.print();
         eig.conj().print();
         A.conj().print();
+        std::cout<<"------------ Mat eig tests end  -------------"<<std::endl;
     }
 
 

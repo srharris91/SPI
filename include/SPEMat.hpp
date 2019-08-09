@@ -13,8 +13,8 @@ namespace SPE{
         PetscInt cols;              ///< number of columns in mat
 
         // Constructors
-        SPEMat(std::string _name="SPEMat");                   ///< constructor with no arguments (no initialization)
-        SPEMat(const SPEMat  &A, std::string _name="SPEMat");      ///< constructor using another SPEMat
+        SPEMat(std::string _name="SPEMat");                     ///< constructor with no arguments (no initialization)
+        SPEMat(const SPEMat  &A, std::string _name="SPEMat");   ///< constructor using another SPEMat
         SPEMat(PetscInt rowscols, std::string _name="SPEMat");  ///< constructor with one arguement to make square matrix
         SPEMat(PetscInt rowsm, PetscInt colsn, std::string _name="SPEMat"); ///< constructor of rectangular matrix
 
@@ -26,19 +26,19 @@ namespace SPE{
         std::string name;            ///< Matrix name
         
         PetscInt Init(PetscInt m,PetscInt n, std::string name="SPEMat"); ///< initialize the matrix of size m by n
-        PetscInt set(PetscInt m, PetscInt n,const PetscScalar v); ///< set a scalar value at position row m and column n
-        PetscInt add(PetscInt m, PetscInt n,const PetscScalar v); ///< add a scalar value at position row m and column n
+        SPEMat& set(PetscInt m, PetscInt n,const PetscScalar v); ///< set a scalar value at position row m and column n
+        SPEMat& add(PetscInt m, PetscInt n,const PetscScalar v); ///< add a scalar value at position row m and column n
         // () operators
         PetscScalar operator()(PetscInt m, PetscInt n);     ///< get local value at row m, column n
         PetscInt operator()(PetscInt m, PetscInt n,const PetscScalar v);  ///< set operator the same as set function
         PetscInt operator()(PetscInt m, PetscInt n,const double v);  ///< set operator the same as set function
         PetscInt operator()(PetscInt m, PetscInt n,const int v);  ///< set operator the same as set function
         PetscInt operator()(PetscInt m, PetscInt n,const SPEMat &Asub, InsertMode addv=ADD_VALUES);   ///< set submatrix into matrix at row m, col n
-        PetscInt operator()();                                      ///< assemble the matrix
+        SPEMat& operator()();                                      ///< assemble the matrix
         // +- operators
         SPEMat& operator+=(const SPEMat &X); ///< MatAXPY,  Y = 1.*X + Y operation
         SPEMat operator+(const SPEMat &X); ///< Y + X operation
-        PetscInt axpy(const PetscScalar a, const SPEMat &X); ///< MatAXPY function call to add a*X to the current mat
+        SPEMat& axpy(const PetscScalar a, const SPEMat &X); ///< MatAXPY function call to add a*X to the current mat
         SPEMat& operator-=(const SPEMat &X); ///< Y = -1.*X + Y operation
         SPEMat operator-(const SPEMat &X); ///< Y - X operation
         // * operators
@@ -58,6 +58,7 @@ namespace SPE{
         PetscInt H(SPEMat &A); ///< A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
         SPEMat& H(); ///< Hermitian Transpose the current mat
         SPEMat& conj(); ///< elemenwise conjugate current matrix
+        SPEVec diag(); ///< get diagonal of matrix
         PetscInt print(); ///< print mat to screen using PETSC_VIEWER_STDOUT_WORLD
 
         ~SPEMat(); /// destructor to delete memory
