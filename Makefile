@@ -30,7 +30,7 @@ docs:
 	doxygen
 
 clean:
-	rm -f src/*o $(EXECUTABLE)
+	rm -f src/*o $(EXECUTABLE) *dat *hdf5
 	rm -rf doc/html
 
 .cpp.o:

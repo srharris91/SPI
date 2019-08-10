@@ -3,6 +3,7 @@
 #include <iostream>
 #include <petscksp.h>
 #include <string>
+#include <fstream>
 
 namespace SPE{
     struct SPEVec{
@@ -58,6 +59,8 @@ namespace SPE{
 
     };
     SPEVec operator*(const PetscScalar a, SPEVec &A); ///< a*A operation to be equivalent to A*a
+    PetscInt save(const SPEVec &A, std::string filename); ///< save A to hdf5 to filename as variable A.name
+    PetscInt load( SPEVec &A, const std::string filename); ///< load A from hdf5 filename using variable A.name, be sure it has the right size first before loading
 }
 
 

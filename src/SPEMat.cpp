@@ -1,4 +1,5 @@
 #include "SPEMat.hpp"
+#include <petscviewerhdf5.h>
 
 namespace SPE{
 

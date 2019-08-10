@@ -1,4 +1,5 @@
 #include "SPEVec.hpp"
+#include <petscviewerhdf5.h>
 
 namespace SPE{
 
@@ -186,6 +187,31 @@ namespace SPE{
     SPEVec operator*(const PetscScalar a, SPEVec &A){
         A.ierr = VecScale(A.vec,a);CHKERRXX(A.ierr);
         return A;
+    }
+    PetscInt save(const SPEVec &A, const std::string filename){ // save A to hdf5 to filename as variable A.name
+        PetscErrorCode ierr;
+        ierr = PetscObjectSetName((PetscObject)A.vec, A.name.c_str());CHKERRQ(ierr);
+        PetscViewer viewer;
+        std::ifstream f(filename.c_str());
+        if(f.good()){
+            ierr = PetscViewerHDF5Open(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_APPEND, &viewer); CHKERRQ(ierr);
+        }
+        else{
+            ierr = PetscViewerHDF5Open(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_WRITE, &viewer); CHKERRQ(ierr);
+        }
+        ierr = VecView(A.vec,viewer); CHKERRQ(ierr);
+        ierr = PetscViewerDestroy(&viewer); CHKERRQ(ierr);
+        return 0;
+    }
+    PetscInt load( SPEVec &A, const std::string filename){
+        A.ierr = PetscObjectSetName((PetscObject)A.vec, A.name.c_str());CHKERRQ(A.ierr);
+        PetscViewer viewer;
+        std::ifstream f(filename.c_str());
+        A.ierr = PetscViewerHDF5Open(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRQ(A.ierr);
+        A.ierr = VecLoad(A.vec,viewer); CHKERRQ(A.ierr);
+        A.ierr = PetscViewerDestroy(&viewer); CHKERRQ(A.ierr);
+        return 0;
+
     }
 }
 
