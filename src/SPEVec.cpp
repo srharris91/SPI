@@ -54,10 +54,10 @@ namespace SPE{
     }
 
     // overloaded operator, assemble
-    PetscInt SPEVec::operator()(){
-        ierr = VecAssemblyBegin(vec);CHKERRQ(ierr);
-        ierr = VecAssemblyEnd(vec);CHKERRQ(ierr);
-        return 0;
+    SPEVec& SPEVec::operator()(){
+        ierr = VecAssemblyBegin(vec);CHKERRXX(ierr);
+        ierr = VecAssemblyEnd(vec);CHKERRXX(ierr);
+        return (*this);
     }
     // overloaded operator, VecAXPY
     SPEVec& SPEVec::operator+=(const SPEVec &X){
@@ -76,6 +76,18 @@ namespace SPE{
         ierr = VecSetType(A.vec,VECMPI);CHKERRXX(ierr);
         return A;
     }
+    SPEVec SPEVec::operator+(const PetscScalar a){ // Y + a operation
+        SPEVec A;
+        A=(*this);
+        A += a*ones(rows);
+        return A;
+    }
+    SPEVec SPEVec::operator-(const PetscScalar a){ // Y - a operation
+        SPEVec A;
+        A=(*this);
+        A -= a*ones(rows);
+        return A;
+    }
     // overloaded operator, VecAXPY
     SPEVec& SPEVec::operator-=(const SPEVec &X){
         ierr = VecAXPY(this->vec,-1.,X.vec);CHKERRXX(ierr);
@@ -92,9 +104,9 @@ namespace SPE{
     // overload operator, scale with scalar
     SPEVec SPEVec::operator*(const PetscScalar a){
         SPEVec A;
-        (*this).print();
+        //(*this).print();
         A=(*this);
-        A.print();
+        //A.print();
         ierr = VecScale(A.vec,a);CHKERRXX(ierr);
         return A;
     }
@@ -162,13 +174,17 @@ namespace SPE{
         ierr = VecConjugate(vec);CHKERRXX(ierr);
         return (*this);
     }
+
     PetscScalar SPEVec::max(){
         PetscInt argmax;
-        PetscReal max;
+        PetscReal max=0.;
         PetscScalar maxscalar;
         ierr = VecMax(this->vec,&argmax,&max);CHKERRXX(ierr);
         maxscalar = (*this)(argmax);
-        return maxscalar;
+        PetscScalar maxscalar_global = 0.;
+        MPIU_Allreduce(&maxscalar,&maxscalar_global,1,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
+
+        return maxscalar_global;
     }
     // print vector to screen
     PetscInt SPEVec::print(){
@@ -184,10 +200,27 @@ namespace SPE{
     }
 
     // overload operator, scale with scalar
-    SPEVec operator*(const PetscScalar a, SPEVec &A){
-        A.ierr = VecScale(A.vec,a);CHKERRXX(A.ierr);
-        return A;
+    SPEVec operator*(const PetscScalar a, const SPEVec &A){
+        SPEVec B;
+        B=A;
+        B.ierr = VecScale(B.vec,a);CHKERRXX(B.ierr);
+        return B;
     }
+
+    SPEVec operator+(const PetscScalar a, const SPEVec &A){
+        SPEVec B;
+        B = A;
+        B += a*ones(B.rows);
+        return B;
+    }
+
+    SPEVec operator-(const PetscScalar a, const SPEVec &A){
+        SPEVec B;
+        B = A;
+        B -= a*ones(B.rows);
+        return B;
+    }
+
     PetscInt save(const SPEVec &A, const std::string filename){ // save A to hdf5 to filename as variable A.name
         PetscErrorCode ierr;
         ierr = PetscObjectSetName((PetscObject)A.vec, A.name.c_str());CHKERRQ(ierr);
@@ -203,6 +236,7 @@ namespace SPE{
         ierr = PetscViewerDestroy(&viewer); CHKERRQ(ierr);
         return 0;
     }
+
     PetscInt load( SPEVec &A, const std::string filename){
         A.ierr = PetscObjectSetName((PetscObject)A.vec, A.name.c_str());CHKERRQ(A.ierr);
         PetscViewer viewer;
@@ -211,7 +245,24 @@ namespace SPE{
         A.ierr = VecLoad(A.vec,viewer); CHKERRQ(A.ierr);
         A.ierr = PetscViewerDestroy(&viewer); CHKERRQ(A.ierr);
         return 0;
+    }
 
+    SPEVec ones(const PetscInt rows){
+        SPEVec A(rows);
+        A.ierr = VecSet(A.vec,1.);CHKERRXX(A.ierr);
+        return A;
+    }
+
+    SPEVec zeros(const PetscInt rows){
+        SPEVec A(rows);
+        A.ierr = VecSet(A.vec,0.);CHKERRXX(A.ierr);
+        return A;
+    }
+    SPEVec conj(const SPEVec &A){
+        SPEVec B;
+        B=A;
+        B.ierr = VecConjugate(B.vec);CHKERRXX(B.ierr);
+        return B;
     }
 }
 

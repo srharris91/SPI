@@ -10,28 +10,98 @@ int main(int argc, char **args){
     ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
     // Vec tests
-    if(0){
+    if(1){
         std::cout<<"------------ Vec tests start-------------"<<std::endl;
-        SPE::SPEVec X1(m,"X1"),X2(m,"X2"),X3("X3");
+        // initialize SPEVec and Init function
+        SPE::SPEVec X1(4,"X1"),X2(4,"X2"),X3("X3");
 
-        X1(0,0.+4.*PETSC_i);
-        X1(1,1.+3.*PETSC_i);
-        X1(2,2.+2.*PETSC_i);
-        X1.set(3,3.+1.*PETSC_i);
+        // () operators
+        X1(0,1.+1.*PETSC_i);// PetscScalar
+        X1(1,1.);           // const double
+        X1(2,1);            // const int
+        X1.set(3,1.+1.*PETSC_i); // set function
 
+        // assemble and print
         X1.print();
 
-        X2=2.*X1;
-        X3=X1;
+        SPE::SPEVec X5(X1,"X5_copy_X1"); // initialize with SPEVec
+        X5.print(); // assemble and print
+
+        // equals operator
+        X2=X1;
         X2.print();
-        SPE::SPEVec X4("X4");
+
+        // +- operators
+        X2+=X1;
+        X2.print();
+        X3 = X2+X1;
         X3.print();
-        X4=2.*X2*X3+X1;
+        X3.axpy(1.,X1);
+        X3.print();
+        X3-=X1;
+        X3.print();
+        SPE::SPEVec X4("X4=0");
+        X4 = X2-X1;
+        X4 -= X1;
         X4.print();
-        X1.print();
-        X3=X2+X1;
-        X3.print();
-        std::cout<<X4(2)<<std::endl;
+
+        // * operators
+        SPE::SPEVec X6("X6=i*X1"), X7("X7"), X8("X8");
+        X6 = (X1*(0.+1.*PETSC_i));// PetscScalar
+        X6.print();
+        X7 = X1*7.;             // double
+        X8 = X1*8;              // int
+        X7.print();
+        X8.print();
+        X8*=0.+1.*PETSC_i;
+        X8.print();
+        SPE::SPEVec X9("X9=X1*X2");
+        X9 = X1*X2;
+        X9.print();
+
+        // / operators
+        SPE::SPEVec X10("X10=X2/2.");
+        SPE::SPEVec X11("X11=X3/3.");
+        X10 = X2/(2.+0.*PETSC_i);
+        X11 = X3/3.;
+        X10.print();
+        X11.print();
+        X11/=2.;
+        X11.name="X11=X3/6.";
+        X11.print();
+
+        std::cout<<"X5(2) = "<<X5(2)<<std::endl;
+
+        // conj and max operations
+        X11.conj().print();
+        SPE::SPEVec X12(4,"X12");
+        for (int i=0; i<4; i++) X12(i,i);
+        X12.print();
+        std::cout<<"max(X12) = "<<X12.max()<<std::endl;
+
+        // other functions
+        SPE::SPEVec X13("X13 = 13.*X1");
+        X13 = 13.*X1;
+        X13.print();
+        SPE::SPEVec X15("X15 = 14.+X1");
+        X15 = 14.+X1;
+        X15.print();
+        X15 = 1. - X1;
+        X15.name = "X15 = 1. - X1";
+        X15.print();
+        SPE::SPEVec X16("X16 = X1 * conj(X1)");
+        X16 = X1 * SPE::conj(X1);
+        X16.print();
+
+        (4.*SPE::ones(4)).print();
+        SPE::zeros(4).print();
+        // combine all functions in one line to see
+        SPE::SPEVec X14("X14 = 1");
+        //X14 = (1.+1.*PETSC_i) + 4.*((X2 + 2.*X1) - 4.*X5)*3. + 13.*(X2*X7)/14. - X13 - (1.+1.*PETSC_i);
+        X14 = (1.+1.*PETSC_i) + 4.*((X2 + 2.*X1) - 4.*X5)*3. + 1.*(X1+X1)/2. - X1 - (1.+1.*PETSC_i) - X1 + X1 + (1.+0.*PETSC_i);
+        X14.print();
+
+
         //X2.print();
 
         //X3 = X2+X1;
