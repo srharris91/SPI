@@ -4,6 +4,7 @@
 #include <petscksp.h>
 #include "SPEMat.hpp"
 #include "SPEVec.hpp"
+#include "SPEprint.hpp"
 /** \mainpage SPE Solver
  *
  * \author Shaun Harris (<A HREF="https://srharris91.github.io/" TARGET="_top">https://srharris91.github.io/</A>)\n

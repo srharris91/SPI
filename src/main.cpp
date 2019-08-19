@@ -11,7 +11,7 @@ int main(int argc, char **args){
 
     // Vec tests
     if(1){
-        std::cout<<"------------ Vec tests start-------------"<<std::endl;
+        SPE::printf("------------ Vec tests start-------------");
         // initialize SPEVec and Init function
         SPE::SPEVec X1(4,"X1"),X2(4,"X2"),X3("X3");
 
@@ -70,14 +70,14 @@ int main(int argc, char **args){
         X11.name="X11=X3/6.";
         X11.print();
 
-        std::cout<<"X5(2) = "<<X5(2)<<std::endl;
+        SPE::printf("X5(0) = %g+%gi \nX5(1) = %g+%gi \nX5(2) = %g+%gi\nX5(3) = %g+%gi ",X5(0,PETSC_TRUE),X5(1,PETSC_TRUE),X5(2,PETSC_TRUE),X5(3,PETSC_TRUE));
 
         // conj and max operations
         X11.conj().print();
         SPE::SPEVec X12(4,"X12");
         for (int i=0; i<4; i++) X12(i,i);
         X12.print();
-        std::cout<<"max(X12) = "<<X12.max()<<std::endl;
+        SPE::printf("max(X12) = %g+%gi",X12.max());
 
         // other functions
         SPE::SPEVec X13("X13 = 13.*X1");
@@ -94,12 +94,24 @@ int main(int argc, char **args){
         X16.print();
 
         (4.*SPE::ones(4)).print();
+        (4.*SPE::ones(4)/4.).print();
         SPE::zeros(4).print();
         // combine all functions in one line to see
         SPE::SPEVec X14("X14 = 1");
         //X14 = (1.+1.*PETSC_i) + 4.*((X2 + 2.*X1) - 4.*X5)*3. + 13.*(X2*X7)/14. - X13 - (1.+1.*PETSC_i);
         X14 = (1.+1.*PETSC_i) + 4.*((X2 + 2.*X1) - 4.*X5)*3. + 1.*(X1+X1)/2. - X1 - (1.+1.*PETSC_i) - X1 + X1 + (1.+0.*PETSC_i);
         X14.print();
+
+        if(
+                    (X14(0) == 1. )
+                &&  (X14(1) == 1.)
+                &&  (X14(2) == 1.)
+                &&  (X14(3) == 1.)
+          ){
+            //SPE::printf("Passed");
+            SPE::printf("----------- SPEVec tests passed---------------");
+        }
+
 
 
         //X2.print();
@@ -113,7 +125,7 @@ int main(int argc, char **args){
         //X2.~SPEVec();
         //X3.~SPEVec();
         //X4.~SPEVec();
-        std::cout<<"------------ Vec tests end  -------------"<<std::endl;
+        SPE::printf("------------ Vec tests end  -------------");
     }
 
     if(0){ // Mat tests
