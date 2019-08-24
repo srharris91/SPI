@@ -4,20 +4,41 @@
 namespace SPE{
 
     // constructors
-    SPEMat::SPEMat(std::string _name){name=_name; }
-    SPEMat::SPEMat(const SPEMat &A, std::string _name){
+    /** \brief constructor with no arguments (no initialization) */
+    SPEMat::SPEMat(
+            std::string _name   ///< [in] name of SPEMat
+            ){name=_name; }
+    /** constructor using another SPEMat */
+    SPEMat::SPEMat(
+            const SPEMat &A,    ///< [in] another SPEMat to copy into this new SPEMat
+            std::string _name   ///< [in] name of SPEMat
+            ){
         name=_name; 
         (*this) = A;
     }
-    SPEMat::SPEMat(PetscInt rowscols, std::string _name){
+    /** constructor with one arguement to make square matrix */
+    SPEMat::SPEMat(
+            PetscInt rowscols,  ///< [in] number of rows and columns to make the square matrix
+            std::string _name   ///< [in] name of SPEMat
+            ){
         Init(rowscols,rowscols,_name);
     }
-    SPEMat::SPEMat(PetscInt rowsm, PetscInt colsn, std::string _name){
+    /**`constructor with one arguement to make square matrix */
+    SPEMat::SPEMat(
+            PetscInt rowsm,     ///< [in] number of rows in matrix
+            PetscInt colsn,     ///< [in] number of columns in matrix
+            std::string _name   ///< [in] name of SPEMat
+            ){
         Init(rowsm,colsn,_name);
     }
 
     // Initialize matrix
-    PetscInt SPEMat::Init(PetscInt m,PetscInt n, std::string _name){
+    /** constructor of rectangular matrix */
+    PetscInt SPEMat::Init(
+            PetscInt m,         ///< [in] number of rows
+            PetscInt n,         ///< [in] number of columns
+            std::string _name   ///< [in] name of SPEMat
+            ){
         name=_name;
         rows=m;
         cols=n;

@@ -13,10 +13,10 @@ namespace SPE{
         PetscInt cols;              ///< number of columns in mat
 
         // Constructors
-        SPEMat(std::string _name="SPEMat");                     ///< constructor with no arguments (no initialization)
-        SPEMat(const SPEMat  &A, std::string _name="SPEMat");   ///< constructor using another SPEMat
-        SPEMat(PetscInt rowscols, std::string _name="SPEMat");  ///< constructor with one arguement to make square matrix
-        SPEMat(PetscInt rowsm, PetscInt colsn, std::string _name="SPEMat"); ///< constructor of rectangular matrix
+        SPEMat(std::string _name="SPEMat");                     // constructor with no arguments (no initialization)
+        SPEMat(const SPEMat  &A, std::string _name="SPEMat");   // constructor using another SPEMat
+        SPEMat(PetscInt rowscols, std::string _name="SPEMat");  // constructor with one arguement to make square matrix
+        SPEMat(PetscInt rowsm, PetscInt colsn, std::string _name="SPEMat"); // constructor of rectangular matrix
 
         Mat mat;                ///< petsc Mat data
         PetscErrorCode ierr;    ///< ierr for various routines and operators
