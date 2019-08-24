@@ -10,7 +10,7 @@ int main(int argc, char **args){
     ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
     // Vec tests
-    if(1){
+    if(0){
         SPE::printf("------------ Vec tests start-------------");
         // initialize SPEVec and Init function
         SPE::SPEVec X1(4,"X1"),X2(4,"X2"),X3("X3");
@@ -273,7 +273,7 @@ int main(int argc, char **args){
         A.conj().print();
         std::cout<<"------------ Mat eig tests end  -------------"<<std::endl;
     }
-    if(1){// I/O using hdf5
+    if(0){// I/O using hdf5
         std::cout<<"------------ I/O tests start  -------------"<<std::endl;
         SPE::SPEVec A(2,"A_Vec");
         A(0,1.);
@@ -287,7 +287,7 @@ int main(int argc, char **args){
         SPE::save(B,"saved_data.hdf5");
         std::cout<<"------------ I/O tests end    -------------"<<std::endl;
     }
-    if(1){
+    if(0){
         std::cout<<"------------ I/O tests2 start  -------------"<<std::endl;
         SPE::SPEVec A(2,"A_Vec");
         SPE::load(A,"saved_data.hdf5");
@@ -296,6 +296,27 @@ int main(int argc, char **args){
         SPE::load(B,"saved_data.hdf5");
         B.print();
         std::cout<<"------------ I/O tests2 end    -------------"<<std::endl;
+    }
+    if(1){
+        SPE::SPEMat A(2,"A");
+        A(0,0,2.);
+        A(0,1,3.);
+        A(1,1,4.);
+        A.print();
+        SPE::SPEMat B(SPE::eye(2),"I-identity");
+        B.print();
+
+        SPE::SPEMat Carray[4] = { A, B, A, B};
+
+        //SPE::SPEMat C("C");
+        //A.ierr = MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, Carray, &C.mat); CHKERRQ(ierr);
+        //C.print();
+        //SPE::SPEMat Ccopy(C,"Ccopy");
+        //Ccopy.print();
+        //Ccopy.T().print();
+        //(C*(Ccopy.T())).print();
+        SPE::SPEMat C(SPE::block(Carray,2,2),"C");
+        C.print();
     }
 
 

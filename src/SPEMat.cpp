@@ -169,7 +169,7 @@ namespace SPE{
             rows=A.rows;
             cols=A.cols;
             ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
-            ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
+            //ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
             flag_init=PETSC_TRUE;
         //}
         return *this;
@@ -186,10 +186,13 @@ namespace SPE{
         return 0;
     }
     SPEMat& SPEMat::T(){
-        ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
+        //ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
+        //return (*this);
         //SPEMat T1;
         //ierr = MatCreateTranspose(mat,&T1.mat);CHKERRXX(ierr);
-        return (*this);
+        SPEMat T1;
+        ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&T1.mat);CHKERRXX(ierr);
+        return T1;
     }
     PetscInt SPEMat::H(SPEMat &A){ // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
         ierr = MatHermitianTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);
@@ -472,6 +475,33 @@ namespace SPE{
 
         return std::make_tuple(alpha,eig_vec);
         //return std::make_tuple(alpha,alpha);
+    }
+    SPEMat block(const SPEMat Blocks[], const PetscInt rows,const PetscInt cols){
+        PetscInt m[rows];
+        PetscInt msum=Blocks[0].rows;
+        PetscInt n[cols];
+        PetscInt nsum=Blocks[0].cols;
+        m[0]=n[0]=0;
+        for (PetscInt i=1; i<rows; ++i){
+            m[i] = m[i-1]+Blocks[i-1].rows;
+            msum += m[i];
+        }
+        for (PetscInt i=1; i<cols; ++i){
+            n[i] = n[i-1]+Blocks[i*rows].cols;
+            nsum += n[i];
+        }
+
+        // TODO check if all rows and columns match for block matrix....
+
+        SPEMat A(msum,nsum);
+
+        for (PetscInt j=0; j<cols; ++j){
+            for(PetscInt i=0; i<rows; ++i){
+                A(m[i],n[j],Blocks[i+j*rows]);
+            }
+        }
+
+        return A;
     }
 
 

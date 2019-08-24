@@ -71,6 +71,7 @@ namespace SPE{
     SPEMat diag(const SPEVec &diag); ///< set diagonal of matrix
     SPEMat kron(const SPEMat &A, const SPEMat &B); ///< set kronecker inner product of two matrices
     std::tuple<PetscScalar,SPEVec> eig(const SPEMat &A, const SPEMat &B, const PetscScalar target); ///< solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)
+    SPEMat block(const SPEMat Blocks[], const PetscInt rows,const PetscInt cols); ///< set block matrices using an input array of size rows*cols.  Fills rows first
 }
 
 
