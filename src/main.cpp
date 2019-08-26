@@ -10,7 +10,7 @@ int main(int argc, char **args){
     ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
     // Vec tests
-    if(0){
+    if(1){
         SPE::printf("------------ Vec tests start-------------");
         // initialize SPEVec and Init function
         SPE::SPEVec X1(4,"X1"),X2(4,"X2"),X3("X3");
@@ -128,7 +128,7 @@ int main(int argc, char **args){
         SPE::printf("------------ Vec tests end  -------------");
     }
 
-    if(0){ // Mat tests
+    if(1){ // Mat tests
         std::cout<<"------------ Mat tests start ---------------"<<std::endl;
         //SPEMat B(argc,args);
         //ierr = B.Init(m,n);CHKERRQ(ierr);
@@ -193,7 +193,7 @@ int main(int argc, char **args){
     }
 
     // test A*x
-    if(0){
+    if(1){
         std::cout<<"------------ A*x tests start ---------------"<<std::endl;
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec x(4,"x"),b;
@@ -211,7 +211,7 @@ int main(int argc, char **args){
     }
 
     // linear system solver test Ax=b solved with x=b/A
-    if(0){
+    if(1){
         std::cout<<"------------ A*x=b tests start ---------------"<<std::endl;
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec b(4,"x"),x;
@@ -227,7 +227,7 @@ int main(int argc, char **args){
         std::cout<<"------------ A*x=b tests end   ---------------"<<std::endl;
     }
     // check Mat functions (eye, kron, diag)
-    if(0){
+    if(1){
         std::cout<<"------------ Mat func tests start-------------"<<std::endl;
         SPE::SPEMat I(SPE::eye(4),"I-identity");
         //I=SPE::eye(4);
@@ -254,7 +254,7 @@ int main(int argc, char **args){
         SPE::kron(D,I).print();
         std::cout<<"------------ Mat func tests end  -------------"<<std::endl;
     }
-    if(0){// eig test
+    if(1){// eig test
         std::cout<<"------------ Mat eig tests start-------------"<<std::endl;
         SPE::SPEMat A(2,"A");
         A(0,0,1.);
@@ -273,7 +273,7 @@ int main(int argc, char **args){
         A.conj().print();
         std::cout<<"------------ Mat eig tests end  -------------"<<std::endl;
     }
-    if(0){// I/O using hdf5
+    if(1){// I/O using hdf5
         std::cout<<"------------ I/O tests start  -------------"<<std::endl;
         SPE::SPEVec A(2,"A_Vec");
         A(0,1.);
@@ -287,7 +287,7 @@ int main(int argc, char **args){
         SPE::save(B,"saved_data.hdf5");
         std::cout<<"------------ I/O tests end    -------------"<<std::endl;
     }
-    if(0){
+    if(1){
         std::cout<<"------------ I/O tests2 start  -------------"<<std::endl;
         SPE::SPEVec A(2,"A_Vec");
         SPE::load(A,"saved_data.hdf5");

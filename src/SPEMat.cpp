@@ -23,7 +23,7 @@ namespace SPE{
             ){
         Init(rowscols,rowscols,_name);
     }
-    /**`constructor with one arguement to make square matrix */
+    /** \brief constructor of rectangular matrix */
     SPEMat::SPEMat(
             PetscInt rowsm,     ///< [in] number of rows in matrix
             PetscInt colsn,     ///< [in] number of columns in matrix
@@ -33,7 +33,7 @@ namespace SPE{
     }
 
     // Initialize matrix
-    /** constructor of rectangular matrix */
+    /** initialize the matrix of size m by n \return 0 if successful */
     PetscInt SPEMat::Init(
             PetscInt m,         ///< [in] number of rows
             PetscInt n,         ///< [in] number of columns
@@ -51,37 +51,72 @@ namespace SPE{
         return 0;
     }
 
-    SPEMat& SPEMat::set(PetscInt m, PetscInt n,const PetscScalar v){
+    /** set a scalar value at position row m and column n \return current SPEMat after setting value */
+    SPEMat& SPEMat::set(
+            PetscInt m,         ///< [in] row to insert scalar
+            PetscInt n,         ///< [in] column to insert scalar
+            const PetscScalar v ///< [in] scalar to insert in matrix
+            ){
         ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRXX(ierr);
         return (*this);
     }
-    SPEMat& SPEMat::add(PetscInt m, PetscInt n, const PetscScalar v){
+    /** \brief add a scalar value at position row m and column n \return current matrix after adding the value*/
+    SPEMat& SPEMat::add(
+            PetscInt m,         ///< [in] row to add scalar
+            PetscInt n,         ///< [in] column to add scalar
+            const PetscScalar v ///< [in] scalar to add in matrix
+            ){
         ierr = MatSetValue(mat,m,n,v,ADD_VALUES);CHKERRXX(ierr);
         return (*this);
     }
 
     // overloaded operators, get
-    PetscScalar SPEMat::operator()(PetscInt m, PetscInt n) {
+    /** \brief get local value at row m, column n \return scalar at specified location */ // TODO: make global on all processors
+    PetscScalar SPEMat::operator()(
+            PetscInt m,         ///< [in] row to get scalar
+            PetscInt n          ///< [in] column to get scalar
+            ){
         PetscScalar v;
         ierr = MatGetValues(mat,1,&m, 1,&n, &v);
         return v;
     }
     // overloaded operator, set
-    PetscInt SPEMat::operator()(PetscInt m, PetscInt n, const PetscScalar v){
-        ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRQ(ierr);
-        return 0;
+    /** \brief set operator the same as set function \return current matrix after setting value */
+    SPEMat& SPEMat::operator()(
+            PetscInt m,         ///< [in] row to set scalar
+            PetscInt n,         ///< [in] column to set scalar
+            const PetscScalar v ///< [in] scalar to set in matrix
+            ){
+        ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRXX(ierr);
+        return (*this);
     }
-    PetscInt SPEMat::operator()(PetscInt m, PetscInt n, const double v){
-        ierr = (*this)(m,n,(PetscScalar)v);CHKERRQ(ierr);
-        return 0;
+    /** \brief set operator the same as set function \return current matrix after setting value */
+    SPEMat& SPEMat::operator()(
+            PetscInt m,         ///< [in] row to set scalar
+            PetscInt n,         ///< [in] column to set scalar
+            const double v      ///< [in] scalar to set in matrix
+            ){
+        //ierr = (*this)(m,n,(PetscScalar)v);CHKERRXX(ierr);
+        return (*this)(m,n,(PetscScalar)v);
     }
-    PetscInt SPEMat::operator()(PetscInt m, PetscInt n, const int v){
-        ierr = (*this)(m,n,(PetscScalar)v);CHKERRQ(ierr);
-        return 0;
+    /** \brief set operator the same as set function \return current matrix after setting value */
+    SPEMat& SPEMat::operator()(
+            PetscInt m,         ///< [in] row to set scalar
+            PetscInt n,         ///< [in] column to set scalar
+            const int v         ///< [in] scalar to set in matrix
+            ){
+        //ierr = (*this)(m,n,(PetscScalar)v);CHKERRXX(ierr);
+        return (*this)(m,n,(PetscScalar)v);
     }
 
     // overloaded operator, set
-    PetscInt SPEMat::operator()(PetscInt m, PetscInt n,const SPEMat &Asub, InsertMode addv){
+    /** \brief set submatrix into matrix at row m, col n \return current matrix after setting value */
+    SPEMat& SPEMat::operator()(
+            PetscInt m,         ///< [in] row to set submatrix
+            PetscInt n,         ///< [in] column to set submatrix
+            const SPEMat &Asub, ///< [in] submatrix to set in matrix
+            InsertMode addv     ///< [in] default to ADD_VALUES in submatrix, can do INSERT_VALUES instead
+            ){
         //InsertMode addv = INSERT_VALUES;
         PetscInt rowoffset = m;
         PetscInt coloffset = n;
@@ -96,7 +131,7 @@ namespace SPE{
 
         PetscErrorCode ierr;
         for (PetscInt i=Isubstart; i<Isubend && i<nsub; i++){
-            ierr = MatGetRow(Asub.mat,i,&ncols,&cols,&vals);CHKERRQ(ierr);
+            ierr = MatGetRow(Asub.mat,i,&ncols,&cols,&vals);CHKERRXX(ierr);
             PetscInt offcols[ncols];
             PetscScalar avals[ncols];
             for (PetscInt j=0; j<ncols; j++) {
@@ -105,30 +140,41 @@ namespace SPE{
             }
             //printScalar(vals,ncols);
             PetscInt rowoffseti = i+rowoffset;
-            ierr = MatSetValues(mat,1,&rowoffseti,ncols,offcols,avals,addv);CHKERRQ(ierr);
+            ierr = MatSetValues(mat,1,&rowoffseti,ncols,offcols,avals,addv);CHKERRXX(ierr);
             
             MatRestoreRow(Asub.mat,i,&ncols,&cols,&vals);
         }
         (*this)();//assemble
-        return 0;
+        return (*this);
     }
     // overloaded operator, assemble
+    /** \brief assmelbe the matrix \return the current matrix */
     SPEMat& SPEMat::operator()(){
         ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRXX(ierr);
         ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRXX(ierr);
         return (*this);
     }
     // overloaded operator, MatAXPY
-    SPEMat& SPEMat::operator+=(const SPEMat &X){
+    /** \brief MatAXPY,  Y = 1.*X + Y operation \return current matrix after operation */
+    SPEMat& SPEMat::operator+=(
+            const SPEMat &X ///< [in] X in Y+=X operation
+            ){
         ierr = MatAXPY(this->mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return *this;
     }
-    SPEMat& SPEMat::axpy(const PetscScalar a, const SPEMat &X){
+    /** \brief MatAXPY function call to add a*X to the current mat \return current matrix after operation */
+    SPEMat& SPEMat::axpy(
+            const PetscScalar a,    ///< [in] scalar a in Y = a*X + Y operation
+            const SPEMat &X         ///< [in] matrix X in Y = a*X + Y operation
+            ){
         ierr = MatAXPY(this->mat,a,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return (*this);
     }
     // overloaded operator, MatAXPY
-    SPEMat SPEMat::operator+(const SPEMat &X){
+    /** \brief Y + X operation \return new matrix after operation */
+    SPEMat SPEMat::operator+(
+            const SPEMat &X ///< [in] X in Y+X operation
+            ){
         SPEMat A;
         A=*this;
         ierr = MatAXPY(A.mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
@@ -136,12 +182,18 @@ namespace SPE{
         return A;
     }
     // overloaded operator, MatAXPY
-    SPEMat& SPEMat::operator-=(const SPEMat &X){
+    /** \brief Y = -1.*X + Y operation \return Y after operation */
+    SPEMat& SPEMat::operator-=(
+            const SPEMat &X ///< [in] X in Y = -1.*X + Y operation
+            ){
         ierr = MatAXPY(this->mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return *this;
     }
     // overloaded operator, MatAXPY
-    SPEMat SPEMat::operator-(const SPEMat &X){
+    /** \brief Y - X operation \return new matrix after operation */
+    SPEMat SPEMat::operator-(
+            const SPEMat &X     ///< [in] X in Y-X operation
+            ){
         SPEMat A;
         A=*this;
         ierr = MatAXPY(A.mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
@@ -149,30 +201,45 @@ namespace SPE{
         return A;
     }
     // overload operator, scale with scalar
-    SPEMat SPEMat::operator*(const PetscScalar a){
+    /** \brief Y*a operation \return new matrix after operation */
+    SPEMat SPEMat::operator*(
+            const PetscScalar a     ///< [in] scalar
+            ){
         SPEMat A;
         A=*this;
         ierr = MatScale(A.mat,a);CHKERRXX(ierr);
         return A;
     }
-    SPEMat SPEMat::operator*(const double a){
+    /** \brief Y*a operation \return new matrix after operation */
+    SPEMat SPEMat::operator*(
+            const double a          ///< [in] scalar
+            ){
         SPEMat A;
         A=*this;
         ierr = MatScale(A.mat,a);CHKERRXX(ierr);
         return A;
     }
-    SPEVec SPEMat::operator*(const SPEVec &x){
+    /** \brief A*x operation to return a vector \return new vector after operation */
+    SPEVec SPEMat::operator*(
+            const SPEVec &x         ///< [in] x in A*x matrix vector multiplication
+            ){
         SPEVec b(x.rows);
         ierr = MatMult(mat,x.vec,b.vec);CHKERRXX(ierr);
         return b;
     }
     // overload operator, scale with scalar
-    SPEMat& SPEMat::operator*=(const PetscScalar a){
+    /** \brief Y = Y*a operation \return Y after operation */
+    SPEMat& SPEMat::operator*=(
+            const PetscScalar a     ///< [in] scalar in Y*a operation
+            ){
         ierr = MatScale(this->mat,a);CHKERRXX(ierr);
         return *this;
     }
     // overload operator, matrix multiply
-    SPEMat SPEMat::operator*(const SPEMat &A){
+    /** \brief Y*A operation \return new matrix after matrix matrix multiply */
+    SPEMat SPEMat::operator*(
+            const SPEMat &A         ///< [in] A matrix in Y*A operation
+            ){
         SPEMat C;
         C.rows=rows;
         C.cols=cols;
@@ -181,7 +248,10 @@ namespace SPE{
         return C;
     }
     // overload operator, copy and initialize
-    SPEMat& SPEMat::operator=(const SPEMat &A){
+    /** \brief Y=X with initialization of Y using MatConvert \return Y after operation */
+    SPEMat& SPEMat::operator=(
+            const SPEMat &A         ///< [in] A in Y=A operation
+            ){
         if(flag_init){
             this->~SPEMat();
             //ierr = MatCopy(A.mat,mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
@@ -199,40 +269,51 @@ namespace SPE{
     //SPEMat operator%(SPEMat A){
     //return *this;
     //}     
-    PetscInt SPEMat::T(SPEMat &A){
+    /** \brief A = Transpose(*this.mat) operation with initialization of A \return transpose of current matrix */
+    PetscInt SPEMat::T(
+            SPEMat &A       ///< [out] transpose of current matrix
+            ){
         //ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
         //A();
         //A.Init(cols,rows);
         ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
         return 0;
     }
+    /** \brief Transpose the current mat \return current matrix after transpose */
     SPEMat& SPEMat::T(){
-        //ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
-        //return (*this);
+        ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
+        return (*this);
         //SPEMat T1;
         //ierr = MatCreateTranspose(mat,&T1.mat);CHKERRXX(ierr);
-        SPEMat T1;
-        ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&T1.mat);CHKERRXX(ierr);
-        return T1;
+        //SPEMat T1;
+        //ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&T1.mat);CHKERRXX(ierr);
+        //return T1;
     }
-    PetscInt SPEMat::H(SPEMat &A){ // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
-        ierr = MatHermitianTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);
+    /** \brief A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate) \return current matrix without hermitian transpose */
+    PetscInt SPEMat::H(
+            SPEMat &A       ///< [out] hermitian transpose of current matrix saved in new initialized matrix
+            ){ // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
+        ierr = MatHermitianTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
         return 0;
     }
+    /** \brief Hermitian Transpose the current mat \return current matrix after transpose */
     SPEMat& SPEMat::H(){ // Hermitian Transpose the current mat
         ierr = MatHermitianTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
         return (*this);
     }
+    /** \brief elemenwise conjugate current matrix \return current matrix after conjugate of each element */
     SPEMat& SPEMat::conj(){
         ierr = MatConjugate(mat);CHKERRXX(ierr);
         return (*this);
     }
+    /** \brief get diagonal of matrix \return vector of current diagonal */
     SPEVec SPEMat::diag(){ // get diagonal of matrix
         SPEVec d(rows);
         ierr = MatGetDiagonal(mat,d.vec); CHKERRXX(ierr);
         return d;
     }
     // print matrix to screen
+    /** \brief print mat to screen using PETSC_VIEWER_STDOUT_WORLD \return 0 if successful */
     PetscInt SPEMat::print(){
         (*this)();
         PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
@@ -241,18 +322,24 @@ namespace SPE{
         return 0;
     }
 
+    /** \brief destructor to delete memory */
     SPEMat::~SPEMat(){
         flag_init=PETSC_FALSE;
         ierr = MatDestroy(&mat);CHKERRXX(ierr);
     }
 
     // overload operator, scale with scalar
-    SPEMat operator*(const PetscScalar a, const SPEMat A){
+    /** \brief a*A operation to be equivalent to A*a \return new matrix of a*A */
+    SPEMat operator*(
+            const PetscScalar a,    ///< [in] scalar a in a*A
+            const SPEMat A          ///< [in] matrix A in a*A
+            ){
         SPEMat B;
         B=A;
         B.ierr = MatScale(B.mat,a);CHKERRXX(B.ierr);
         return B;
     }
+    /** \brief A*a operation to be equivalent to A*a \return new matrix of A*a operation */
     SPEMat operator*(const SPEMat A, const PetscScalar a){
         SPEMat B;
         B=A;
@@ -260,7 +347,11 @@ namespace SPE{
         return B;
     }
     // overload operator, Linear System solve Ax=b
-    SPEVec operator/(const SPEVec &b, const SPEMat &A){
+    /** \brief Solve linear system, Ax=b using b/A notation \return x vector in Ax=b solved linear system */
+    SPEVec operator/(
+            const SPEVec &b,    ///< [in] b in Ax=b
+            const SPEMat &A     ///< [in] A in Ax=b
+            ){
         SPEVec x;
         KSP    ksp;  // Linear solver context
         PetscErrorCode ierr;
@@ -298,7 +389,10 @@ namespace SPE{
         return x;
     }
     // identity matrix formation
-    SPEMat eye(const PetscInt n){
+    /** \brief create, form, and return identity matrix of size n \return identity matrix of size nxn */
+    SPEMat eye(
+            const PetscInt n        ///< [in] n size of square identity matrix
+            ){
         SPEMat I(n,"I");
         SPEVec one(n);
         I.ierr = VecSet(one.vec,1.);CHKERRXX(I.ierr);
@@ -307,14 +401,21 @@ namespace SPE{
         return I;
     }
     // diagonal matrix
-    SPEMat diag(const SPEVec &d){ // set diagonal of matrix
+    /** \brief set diagonal of matrix \return new matrix with  a diagonal vector set as the main diagonal */
+    SPEMat diag(
+            const SPEVec &d     ///< [in] diagonal vector to set along main diagonal
+            ){ // set diagonal of matrix
         SPEMat A(d.rows);
         A.ierr = MatDiagonalSet(A.mat,d.vec,INSERT_VALUES);CHKERRXX(A.ierr);
         return A;
     }
 
     // kron inner product
-    SPEMat kron(const SPEMat &A, const SPEMat &B){
+    /** \brief set kronecker inner product of two matrices \return kronecker inner product of the two matrices */
+    SPEMat kron(
+            const SPEMat &A,    ///< [in] A in A kron B operation
+            const SPEMat &B     ///< [in] B in A kron B operation
+            ){
         PetscErrorCode ierr;
 
         // get A,B information
@@ -381,7 +482,12 @@ namespace SPE{
         return C;
     }
 
-    std::tuple<PetscScalar, SPEVec> eig(const SPEMat &A, const SPEMat &B, const PetscScalar target){
+    /** \brief solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value \example \snippet std::tie(alpha, eig_vector) = eig(A,B,0.1+0.4*PETSC_i) */
+    std::tuple<PetscScalar, SPEVec> eig(
+            const SPEMat &A,        ///< [in] A in Ax=kBx generalized eigenvalue problem
+            const SPEMat &B,        ///< [in] B in Ax=kBx generalized eigenvalue problem
+            const PetscScalar target    ///< [in] target eigenvalue to solve for
+            ){
         //TODO use PEP in slepc (polynomial eigenvalue problem) instead of the generalized eigenvalue problem.  Will make things easier, and faster hopefully
         PetscInt rows=A.rows;
         EPS             eps;        /* eigenproblem solver context slepc */
@@ -497,7 +603,12 @@ namespace SPE{
         return std::make_tuple(alpha,eig_vec);
         //return std::make_tuple(alpha,alpha);
     }
-    SPEMat block(const SPEMat Blocks[], const PetscInt rows,const PetscInt cols){
+    /** \brief set block matrices using an input array of size rows*cols.  Fills rows first \return new matrix with inserted blocks */
+    SPEMat block(
+            const SPEMat Blocks[],  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
+            const PetscInt rows,    ///< [in] number of rows of submatrices e.g. 2
+            const PetscInt cols     ///< [in] number of columns of submatrices e.g. 2
+            ){
         PetscInt m[rows];
         PetscInt msum=Blocks[0].rows;
         PetscInt n[cols];
@@ -524,8 +635,6 @@ namespace SPE{
 
         return A;
     }
-
-
 }
 
 
