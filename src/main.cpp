@@ -306,17 +306,7 @@ int main(int argc, char **args){
         SPE::SPEMat B(SPE::eye(2),"I-identity");
         B.print();
 
-        SPE::SPEMat Carray[4] = { A, B, A, B};
-
-        //SPE::SPEMat C("C");
-        //A.ierr = MatCreateNest(PETSC_COMM_WORLD, 2, NULL, 2, NULL, Carray, &C.mat); CHKERRQ(ierr);
-        //C.print();
-        //SPE::SPEMat Ccopy(C,"Ccopy");
-        //Ccopy.print();
-        //Ccopy.T().print();
-        //(C*(Ccopy.T())).print();
-        SPE::SPEMat C(SPE::block(Carray,2,2),"C");
-        C.print();
+        SPE::block({{A,B},{A,B}}).print();
     }
 
 

@@ -1,4 +1,5 @@
 #include "SPEMat.hpp"
+#include "SPEprint.hpp"
 #include <petscviewerhdf5.h>
 
 namespace SPE{
@@ -447,7 +448,7 @@ namespace SPE{
                 ncols=0;
             }
             PetscInt ncols2=0;
-            MPIU_Allreduce(&ncols,&ncols2,1,MPIU_INT,MPIU_SUM,PETSC_COMM_WORLD);
+            MPI_Allreduce(&ncols,&ncols2,1,MPIU_INT,MPI_SUM,PETSC_COMM_WORLD);
 
             // set global vals2 array
             PetscScalar vals2[ncols2];
@@ -462,7 +463,7 @@ namespace SPE{
 
             }
             MPIU_Allreduce(vals_temp,vals2,ncols2,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
-            MPIU_Allreduce(cols_temp,cols2,ncols2,MPIU_INT,MPIU_SUM,PETSC_COMM_WORLD);
+            MPI_Allreduce(cols_temp,cols2,ncols2,MPIU_INT,MPI_SUM,PETSC_COMM_WORLD);
 
             // every processor calls set_Mat for each col in row
             for(PetscInt i=0; i<ncols2; i++){
@@ -482,7 +483,7 @@ namespace SPE{
         return C;
     }
 
-    /** \brief solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value \example \snippet std::tie(alpha, eig_vector) = eig(A,B,0.1+0.4*PETSC_i) */
+    /** \brief solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value e.g.  std::tie(alpha, eig_vector) = eig(A,B,0.1+0.4*PETSC_i) */
     std::tuple<PetscScalar, SPEVec> eig(
             const SPEMat &A,        ///< [in] A in Ax=kBx generalized eigenvalue problem
             const SPEMat &B,        ///< [in] B in Ax=kBx generalized eigenvalue problem
@@ -492,7 +493,7 @@ namespace SPE{
         PetscInt rows=A.rows;
         EPS             eps;        /* eigenproblem solver context slepc */
         //ST              st;
-        EPSType         type;
+        //EPSType         type;
         //KSP             ksp;        /* linear solver context petsc */
         PetscErrorCode  ierr;
         PetscScalar ki,alpha;
@@ -533,19 +534,20 @@ namespace SPE{
         //std::cout<<"After KSPSolve"<<std::endl;
 
         // output iterations
-        PetscInt its, maxit, i, nconv;
-        PetscReal error, tol, re, im;
+        //PetscInt its, maxit, i, nconv;
+        PetscInt nconv;
+        //PetscReal error, tol, re, im;
         /*
             Optional: Get some information from the solver and display it
         */
-        ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
-        ierr = PetscPrintf(PETSC_COMM_WORLD," Number of iterations of the method: %D\n",its);CHKERRXX(ierr);
-        ierr = EPSGetType(eps,&type);CHKERRXX(ierr);
-        ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);CHKERRXX(ierr);
-        ierr = EPSGetDimensions(eps,&nev,NULL,NULL);CHKERRXX(ierr);
-        ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev);CHKERRXX(ierr);
-        ierr = EPSGetTolerances(eps,&tol,&maxit);CHKERRXX(ierr);
-        ierr = PetscPrintf(PETSC_COMM_WORLD," Stopping condition: tol=%.4g, maxit=%D\n",(double)tol,maxit);CHKERRXX(ierr);
+        //ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD," Number of iterations of the method: %D\n",its);CHKERRXX(ierr);
+        //ierr = EPSGetType(eps,&type);CHKERRXX(ierr);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD," Solution method: %s\n\n",type);CHKERRXX(ierr);
+        //ierr = EPSGetDimensions(eps,&nev,NULL,NULL);CHKERRXX(ierr);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD," Number of requested eigenvalues: %D\n",nev);CHKERRXX(ierr);
+        //ierr = EPSGetTolerances(eps,&tol,&maxit);CHKERRXX(ierr);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD," Stopping condition: tol=%.4g, maxit=%D\n",(double)tol,maxit);CHKERRXX(ierr);
 
         /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
            Display solution and clean up
@@ -554,43 +556,43 @@ namespace SPE{
            Get number of converged approximate eigenpairs
            */
         ierr = EPSGetConverged(eps,&nconv);CHKERRXX(ierr);
-        ierr = PetscPrintf(PETSC_COMM_WORLD," Number of converged eigenpairs: %D\n\n",nconv);CHKERRXX(ierr);
+        //ierr = PetscPrintf(PETSC_COMM_WORLD," Number of converged eigenpairs: %D\n\n",nconv);CHKERRXX(ierr);
 
         if (nconv>0) {
             /*
                Display eigenvalues and relative errors
                */
-            ierr = PetscPrintf(PETSC_COMM_WORLD,
-                    "      k                ||Ax-kx||/||kx||\n"
-                    "   ----------------- ------------------\n");CHKERRXX(ierr);
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,
+                    //"      k                ||Ax-kx||/||kx||\n"
+                    //"   ----------------- ------------------\n");CHKERRXX(ierr);
 
-            for (i=0;i<nconv;i++) {
-                /*
-                   Get converged eigenpairs: i-th eigenvalue is stored in kr (real part) and
-                   ki (imaginary part)
-                   */
-                ierr = EPSGetEigenpair(eps,i,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
-                /*
-                   Compute the relative error associated to each eigenpair
-                   */
-                ierr = EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);CHKERRXX(ierr);
+            //for (i=0;i<nconv;i++) {
+            //    /*
+            //       Get converged eigenpairs: i-th eigenvalue is stored in kr (real part) and
+            //       ki (imaginary part)
+            //       */
+            //    ierr = EPSGetEigenpair(eps,i,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
+            //    /*
+            //       Compute the relative error associated to each eigenpair
+            //       */
+            //    ierr = EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);CHKERRXX(ierr);
 
-                re = PetscRealPart(alpha);
-                im = PetscImaginaryPart(alpha);
-                if (im!=0.0) {
-                    ierr = PetscPrintf(PETSC_COMM_WORLD," (%9e+%9ei)  %12g\n",(double)re,(double)im,(double)error);CHKERRXX(ierr);
-                } else {
-                    ierr = PetscPrintf(PETSC_COMM_WORLD,"   %12e       %12g\n",(double)re,(double)error);CHKERRXX(ierr);
-                }
-            }
-            ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
+            //    re = PetscRealPart(alpha);
+            //    im = PetscImaginaryPart(alpha);
+            //    if (im!=0.0) {
+            //        ierr = PetscPrintf(PETSC_COMM_WORLD," (%9e+%9ei)  %12g\n",(double)re,(double)im,(double)error);CHKERRXX(ierr);
+            //    } else {
+            //        ierr = PetscPrintf(PETSC_COMM_WORLD,"   %12e       %12g\n",(double)re,(double)error);CHKERRXX(ierr);
+            //    }
+            //}
+            //ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
 
             ierr = EPSGetEigenpair(eps,0,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
         }
 
-        ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
+        //ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
         //ierr = PetscPrintf(PETSC_COMM_WORLD,"ksp iterations %D\n",its);CHKERRXX(ierr);
-        PetscPrintf(PETSC_COMM_WORLD,"EPS Solved in %D iterations \n",its);
+        //PetscPrintf(PETSC_COMM_WORLD,"EPS Solved in %D iterations \n",its);
         // Free work space.  All PETSc objects should be destroyed when they
         // are no longer needed.
         //set_Vec(x);
@@ -603,24 +605,57 @@ namespace SPE{
         return std::make_tuple(alpha,eig_vec);
         //return std::make_tuple(alpha,alpha);
     }
+    // /** \brief set block matrices using an input array of size rows*cols.  Fills rows first \return new matrix with inserted blocks */
+    //SPEMat block(
+    //        const SPEMat Blocks[],  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
+    //        const PetscInt rows,    ///< [in] number of rows of submatrices e.g. 2
+    //        const PetscInt cols     ///< [in] number of columns of submatrices e.g. 2
+    //        ){
+    //    PetscInt m[rows];
+    //    PetscInt msum=Blocks[0].rows;
+    //    PetscInt n[cols];
+    //    PetscInt nsum=Blocks[0].cols;
+    //    m[0]=n[0]=0;
+    //    for (PetscInt i=1; i<rows; ++i){
+    //        m[i] = m[i-1]+Blocks[i-1].rows;
+    //        msum += m[i];
+    //    }
+    //    for (PetscInt j=1; j<cols; ++j){
+    //        n[j] = n[j-1]+Blocks[j*rows].cols;
+    //        nsum += n[j];
+    //    }
+
+    //    // TODO check if all rows and columns match for block matrix....
+
+    //    SPEMat A(msum,nsum);
+
+    //    for (PetscInt j=0; j<cols; ++j){
+    //        for(PetscInt i=0; i<rows; ++i){
+    //            A(m[i],n[j],Blocks[i+j*rows]);
+    //        }
+    //    }
+
+    //    return A;
+    //}
     /** \brief set block matrices using an input array of size rows*cols.  Fills rows first \return new matrix with inserted blocks */
     SPEMat block(
-            const SPEMat Blocks[],  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
-            const PetscInt rows,    ///< [in] number of rows of submatrices e.g. 2
-            const PetscInt cols     ///< [in] number of columns of submatrices e.g. 2
+            //std::vector<std::vector<SPEMat>> Blocks  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
+            const Block2D<SPEMat> Blocks                        ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
             ){
+        const PetscInt rows=Blocks.size();    // number of rows of submatrices e.g. 2
+        const PetscInt cols=Blocks[0].size(); // number of columns of submatrices e.g. 2
         PetscInt m[rows];
-        PetscInt msum=Blocks[0].rows;
+        PetscInt msum=Blocks[0][0].rows;
         PetscInt n[cols];
-        PetscInt nsum=Blocks[0].cols;
+        PetscInt nsum=Blocks[0][0].cols;
         m[0]=n[0]=0;
         for (PetscInt i=1; i<rows; ++i){
-            m[i] = m[i-1]+Blocks[i-1].rows;
+            m[i] = m[i-1]+Blocks[i-1][0].rows;
             msum += m[i];
         }
-        for (PetscInt i=1; i<cols; ++i){
-            n[i] = n[i-1]+Blocks[i*rows].cols;
-            nsum += n[i];
+        for (PetscInt j=1; j<cols; ++j){
+            n[j] = n[j-1]+Blocks[0][j].cols;
+            nsum += n[j];
         }
 
         // TODO check if all rows and columns match for block matrix....
@@ -629,7 +664,7 @@ namespace SPE{
 
         for (PetscInt j=0; j<cols; ++j){
             for(PetscInt i=0; i<rows; ++i){
-                A(m[i],n[j],Blocks[i+j*rows]);
+                A(m[i],n[j],Blocks[i][j]);
             }
         }
 
