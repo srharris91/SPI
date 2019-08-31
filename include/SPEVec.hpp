@@ -68,6 +68,9 @@ namespace SPE{
     SPEVec ones(const PetscInt rows); // return a vector of size rows full of ones
     SPEVec zeros(const PetscInt rows); // return a vector of size rows full of zeros
     SPEVec conj(const SPEVec &A); // return the conjugate vector
+    SPEVec linspace(const PetscScalar begin, const PetscScalar end, const PetscInt rows); // return linspace of number of rows equally spaced points between begin and end
+    SPEVec sin(const SPEVec &A); // take the sin of element
+    SPEVec cos(const SPEVec &A); // take the cos of element
 }
 
 

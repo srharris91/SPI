@@ -40,20 +40,28 @@ namespace SPE{
         return 0;
     }
 
-    /** set a scalar value at a position row  \return 0 if successful */
+    /** set a scalar value at a position row if owned by processor  \return 0 if successful */
     PetscInt SPEVec::set(
             const PetscInt _row,  ///< [in] position to set value
             const PetscScalar v   ///< [in] value to set in vec
             ){
-        ierr = VecSetValue(vec,_row,v,INSERT_VALUES);CHKERRQ(ierr);
+        PetscInt low,high;
+        VecGetOwnershipRange(vec,&low,&high);
+        if ((low <= _row) && (_row < high)){
+            ierr = VecSetValue(vec,_row,v,INSERT_VALUES);CHKERRQ(ierr);
+        }
         return 0;
     }
-    /** add a scalar value at position row \return 0 if successful */
+    /** add a scalar value at position row if owned by processor \return 0 if successful */
     PetscInt SPEVec::add(
             PetscInt _row,      ///< [in] position to add value
             const PetscScalar v ///< [in] value to add at position _row
             ){
-        ierr = VecSetValue(vec,_row,v,ADD_VALUES);CHKERRQ(ierr);
+        PetscInt low,high;
+        VecGetOwnershipRange(vec,&low,&high);
+        if ((low <= _row) && (_row < high)){
+            ierr = VecSetValue(vec,_row,v,ADD_VALUES);CHKERRQ(ierr);
+        }
         return 0;
     }
 
@@ -79,7 +87,11 @@ namespace SPE{
             PetscInt _row,      ///< [in] row to set the value
             const PetscScalar v ///< [in] value to set in the row
             ){
-        ierr = VecSetValue(vec,_row,v,INSERT_VALUES);CHKERRQ(ierr);
+        PetscInt low,high;
+        VecGetOwnershipRange(vec,&low,&high);
+        if ((low <= _row) && (_row < high)){
+            ierr = VecSetValue(vec,_row,v,INSERT_VALUES);CHKERRQ(ierr);
+        }
         return 0;
     }
     /** same as above */
@@ -375,6 +387,42 @@ namespace SPE{
         B=A;
         B.ierr = VecConjugate(B.vec);CHKERRXX(B.ierr);
         return B;
+    }
+    /** \brief return linspace of number of rows equally spaced points between begin and end */
+    SPEVec linspace(
+            const PetscScalar begin,    ///< [in] beginning scalar of equally spaced points
+            const PetscScalar end,      ///< [in] end scalar of equally spaced points
+            const PetscInt rows         ///< [in] how many points in array
+            ){ // return linspace of number of rows equally spaced points between begin and end
+        SPEVec y(rows);
+        PetscScalar step = (end-begin)/((PetscScalar)(rows-1));
+        PetscScalar value=begin;
+        PetscInt i=0;
+        while (PetscRealPart(value)<=PetscRealPart(end)){
+            y(i,value);
+            value += step;
+            i++;
+        }
+        y();
+        return y;
+    }
+    /** \brief take the sin of each element in a vector */
+    SPEVec sin(const SPEVec &A){
+        SPEVec out(A);
+        for (PetscInt i=0; i<A.rows; ++i){
+            out(i,PetscSinScalar(out(i)));
+        }
+        out();
+        return out;
+    }
+    /** \brief take the cos of each element in a vector */
+    SPEVec cos(const SPEVec &A){
+        SPEVec out(A);
+        for (PetscInt i=0; i<A.rows; ++i){
+            out(i,PetscCosScalar(out(i)));
+        }
+        out();
+        return out;
     }
 }
 
