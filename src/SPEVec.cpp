@@ -406,24 +406,67 @@ namespace SPE{
         y();
         return y;
     }
+    
+    /** \brief take the function of each element in a vector, e.g. (*f)(A(i)) for each i */
+    template <class T>
+    SPEVec _Function_on_each_element(
+            T (*f)(T const&),   ///< [in] function handle to pass in e.g. std::sin<PetscReal>
+            const SPEVec &A     ///< [in] vector to perform function on each element
+            ){
+        SPEVec out(A);
+        for (PetscInt i=0; i<out.rows; ++i){
+            out(i,(*f)(out(i)));                // TODO speed up by getting all values at once on local processor and looping through those
+        }
+        out();
+        return out;
+    }
+
     /** \brief take the sin of each element in a vector */
-    SPEVec sin(const SPEVec &A){
-        SPEVec out(A);
-        for (PetscInt i=0; i<A.rows; ++i){
-            out(i,PetscSinScalar(out(i)));
-        }
-        out();
-        return out;
-    }
+    SPEVec sin(const SPEVec &A){ return _Function_on_each_element(&std::sin<PetscReal>, A); }
     /** \brief take the cos of each element in a vector */
-    SPEVec cos(const SPEVec &A){
+    SPEVec cos(const SPEVec &A){ return _Function_on_each_element(&std::cos<PetscReal>, A); }
+    /** \brief take the tan of each element in a vector */
+    SPEVec tan(const SPEVec &A){ return _Function_on_each_element(&std::tan<PetscReal>, A); }
+    /** \brief take the exp of each element in a vector */
+    SPEVec exp(const SPEVec &A){ return _Function_on_each_element(&std::exp<PetscReal>, A); }
+    /** \brief take the log (natural log) of each element in a vector */
+    SPEVec log(const SPEVec &A){ return _Function_on_each_element(&std::log<PetscReal>, A); }
+    /** \brief take the log10 of each element in a vector */
+    SPEVec log10(const SPEVec &A){ return _Function_on_each_element(&std::log10<PetscReal>, A); }
+    /** \brief take the sinh of each element in a vector */
+    SPEVec sinh(const SPEVec &A){ return _Function_on_each_element(&std::sinh<PetscReal>, A); }
+    /** \brief take the cosh of each element in a vector */
+    SPEVec cosh(const SPEVec &A){ return _Function_on_each_element(&std::cosh<PetscReal>, A); }
+    /** \brief take the tanh of each element in a vector */
+    SPEVec tanh(const SPEVec &A){ return _Function_on_each_element(&std::tanh<PetscReal>, A); }
+    /** \brief take the asin of each element in a vector */
+    SPEVec asin(const SPEVec &A){ return _Function_on_each_element(&std::asin<PetscReal>, A); }
+    /** \brief take the acos of each element in a vector */
+    SPEVec acos(const SPEVec &A){ return _Function_on_each_element(&std::acos<PetscReal>, A); }
+    /** \brief take the atan of each element in a vector */
+    SPEVec atan(const SPEVec &A){ return _Function_on_each_element(&std::atan<PetscReal>, A); }
+    /** \brief take the asinh of each element in a vector */
+    SPEVec asinh(const SPEVec &A){ return _Function_on_each_element(&std::asinh<PetscReal>, A); }
+    /** \brief take the acosh of each element in a vector */
+    SPEVec acosh(const SPEVec &A){ return _Function_on_each_element(&std::acosh<PetscReal>, A); }
+    /** \brief take the atanh of each element in a vector */
+    SPEVec atanh(const SPEVec &A){ return _Function_on_each_element(&std::atanh<PetscReal>, A); }
+    /** \brief function to take element by element of two vectors e.g. (*f)(A(i),B(i)) for all i */
+    template <class T>
+    SPEVec _Function_on_each_element(
+            T (*f)(T const&, T const&),     ///< [in] function handle to pass in e.g. std::pow<PetscReal>
+            const SPEVec &A,                ///< [in] first vector to perform function on each element
+            SPEVec &B                 ///< [in] second vector 
+            ){
         SPEVec out(A);
-        for (PetscInt i=0; i<A.rows; ++i){
-            out(i,PetscCosScalar(out(i)));
+        for (PetscInt i=0; i<out.rows; ++i){
+            out(i,(*f)(out(i),B(i)));                // TODO speed up by getting all values at once on local processor and looping through those
         }
         out();
         return out;
     }
+    /** \brief take the atanh of each element in a vector */
+    SPEVec pow(const SPEVec &A,SPEVec &B){ return _Function_on_each_element(&std::pow<PetscReal>, A,B); }
 }
 
 

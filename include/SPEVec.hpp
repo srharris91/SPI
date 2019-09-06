@@ -69,8 +69,27 @@ namespace SPE{
     SPEVec zeros(const PetscInt rows); // return a vector of size rows full of zeros
     SPEVec conj(const SPEVec &A); // return the conjugate vector
     SPEVec linspace(const PetscScalar begin, const PetscScalar end, const PetscInt rows); // return linspace of number of rows equally spaced points between begin and end
+    template <class T>
+    SPEVec _Function_on_each_element(T (*f)(T const&), const SPEVec &A); // take the function of element in vector
     SPEVec sin(const SPEVec &A); // take the sin of element
     SPEVec cos(const SPEVec &A); // take the cos of element
+    SPEVec tan(const SPEVec &A); // take the tan of element
+    SPEVec exp(const SPEVec &A); // take the exp of element
+    SPEVec log(const SPEVec &A); // take the log (natural log) of element
+    SPEVec log10(const SPEVec &A); // take the log10 of element
+    SPEVec sinh(const SPEVec &A); // take the sinh of element
+    SPEVec cosh(const SPEVec &A); // take the cosh of element
+    SPEVec tanh(const SPEVec &A); // take the tanh of element
+    SPEVec asin(const SPEVec &A); // take the asin of element
+    SPEVec acos(const SPEVec &A); // take the acos of element
+    SPEVec atan(const SPEVec &A); // take the atan of element
+    SPEVec asinh(const SPEVec &A); // take the asinh of element
+    SPEVec acosh(const SPEVec &A); // take the acosh of element
+    SPEVec atanh(const SPEVec &A); // take the atanh of element
+    // template for scalar function on each element
+    template <class T>
+    SPEVec _Function_on_each_element(T (*f)(T const&,T const&), const SPEVec &A, SPEVec &B); // take the function of elements in vectors e.g. (*f)(A(i),B(i))
+    SPEVec pow(const SPEVec &A, SPEVec &B); // take the pow(A(i),B(i)) of element
 }
 
 

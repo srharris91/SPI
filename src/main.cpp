@@ -118,7 +118,33 @@ int main(int argc, char **args){
 
         SPE::linspace(0,4,13).print();
 
-        SPE::sin(SPE::linspace(0.,2.*PETSC_PI,14)).print();
+        if (PetscRealPart(SPE::sin(SPE::linspace(0.,2.*PETSC_PI,101))()(25,PETSC_TRUE))>=0.99) { SPE::printf("sin(SPEVec) test passed"); }
+        else{ std::cout<<"sin(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::cos(SPE::linspace(0.,2.*PETSC_PI,101))()(0,PETSC_TRUE))>=(0.99)) { SPE::printf("cos(SPEVec) test passed"); }
+        else{ std::cout<<"cos(SPEVec) test failed"<<std::endl;
+        std::cout<<(PetscRealPart(SPE::cos(SPE::linspace(0.,2.*PETSC_PI,101))()(50,PETSC_TRUE)))<<std::endl;}
+        if (PetscRealPart(SPE::tan(SPE::linspace(-1.,1.,101))()(50,PETSC_TRUE))>= -1.E-15) { SPE::printf("tan(SPEVec) test passed"); }
+        else{ std::cout<<"tan(SPEVec) test failed"<<std::endl; std::cout<<SPE::tan(SPE::linspace(-1.,1.,101))()(50,PETSC_TRUE);} 
+        if (PetscRealPart(SPE::exp(SPE::linspace(0.,2.*PETSC_PI,101))()(0,PETSC_TRUE))>=0.99) { SPE::printf("exp(SPEVec) test passed"); }
+        else{ std::cout<<"exp(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::sinh(SPE::linspace(0.,2.*PETSC_PI,101))()(0,PETSC_TRUE))>=-0.01) { SPE::printf("sinh(SPEVec) test passed"); }
+        else{ std::cout<<"sinh(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::cosh(SPE::linspace(0.,2.*PETSC_PI,101))()(0,PETSC_TRUE))>=0.99) { SPE::printf("cosh(SPEVec) test passed"); }
+        else{ std::cout<<"cosh(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::tanh(SPE::linspace(0.,2.*PETSC_PI,101))()(66,PETSC_TRUE))>=0.9) { SPE::printf("tanh(SPEVec) test passed"); }
+        else{ std::cout<<"tanh(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::asin(SPE::linspace(-1.,1.,101))()(99,PETSC_TRUE))>=(PETSC_PI/2.-0.3)) { SPE::printf("asin(SPEVec) test passed"); }
+        else{ std::cout<<"asin(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::acos(SPE::linspace(-1.,1.,101))()(50,PETSC_TRUE))>=(PETSC_PI/2.-0.01)) { SPE::printf("acos(SPEVec) test passed"); }
+        else{ std::cout<<"acos(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::atan(SPE::linspace(-1.,1.,101))()(50,PETSC_TRUE))>=(-0.01)) { SPE::printf("atan(SPEVec) test passed"); }
+        else{ std::cout<<"atan(SPEVec) test failed"<<std::endl;}
+        if (PetscRealPart(SPE::asinh(SPE::linspace(-1.,1.,101))()(50,PETSC_TRUE))>=(-0.01)) { SPE::printf("asinh(SPEVec) test passed"); }
+        else{ std::cout<<"asinh(SPEVec) test failed"<<std::endl;}
+        SPE::acosh(SPE::linspace(0.,2.*PETSC_PI,14)).print();
+        SPE::atanh(SPE::linspace(0.,2.*PETSC_PI,14)).print();
+        SPE::SPEVec twos(2.*SPE::ones(14));
+        SPE::pow(SPE::linspace(0.,2.*PETSC_PI,14),twos).print();
 
         SPE::printf("------------ Vec tests end  -------------");
     }
