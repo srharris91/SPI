@@ -26,7 +26,7 @@ namespace SPE{
     }
 
     // Initialize vector
-    /** \brief initialize the matrix of size _rows \return 0 if successful */
+    /** \brief initialize the vector of size _rows \return 0 if successful */
     PetscInt SPEVec::Init(
             PetscInt _rows,     ///< [in] number of rows to initialize vector
             std::string _name   ///< [in] name of SPEVec (important with hdf5 i/o)
@@ -245,7 +245,7 @@ namespace SPE{
         return *this;
     }
     // overload operator, copy and initialize
-    /** Y=X with initialization of Y using MatConvert \return Y initialized and copied of X */
+    /** Y=X with initialization of Y using VecCopy and VecDuplicate \return Y initialized and copied of X */
     SPEVec& SPEVec::operator=(const SPEVec &X){
         if(flag_init){
             ierr = VecCopy(X.vec,vec);CHKERRXX(ierr);

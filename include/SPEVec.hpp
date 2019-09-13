@@ -7,7 +7,7 @@
 
 namespace SPE{
     struct SPEVec{
-        PetscInt rows;              ///< number of rows in mat
+        PetscInt rows;              ///< number of rows in vec
 
         // Constructors
         SPEVec( std::string _name="SPEVec" );// constructor with no arguments (no initialization)
@@ -21,7 +21,7 @@ namespace SPE{
         PetscBool flag_init=PETSC_FALSE;    ///< flag if it has been initialized
         std::string name;            ///< Vec name (important for hdf5 i/o)
         
-        PetscInt Init( PetscInt _rows, std::string name="SPEVec"); // initialize the matrix of size _rows
+        PetscInt Init( PetscInt _rows, std::string name="SPEVec"); // initialize the vector of size _rows
         PetscInt set(const PetscInt _row, const PetscScalar v); // set a scalar value at position row 
         PetscInt add(PetscInt _row, const PetscScalar v); // add a scalar value at position row 
         // () operators
@@ -48,7 +48,7 @@ namespace SPE{
         SPEVec operator/(const double a); // Y*a operation
         SPEVec& operator/=(const PetscScalar a); // Y = Y/a operation
         // = operator
-        SPEVec& operator=(const SPEVec &X); // Y=X with initialization of Y using MatConvert
+        SPEVec& operator=(const SPEVec &X); // Y=X with initialization of Y
         // == vecequal operator
         PetscBool operator==(const SPEVec &x2); // check if this==x2
         // overload % for element wise multiplication
