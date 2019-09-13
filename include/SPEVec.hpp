@@ -49,6 +49,8 @@ namespace SPE{
         SPEVec& operator/=(const PetscScalar a); // Y = Y/a operation
         // = operator
         SPEVec& operator=(const SPEVec &X); // Y=X with initialization of Y using MatConvert
+        // == vecequal operator
+        PetscBool operator==(const SPEVec &x2); // check if this==x2
         // overload % for element wise multiplication
         //SPEVec operator%(SPEVec A); 
         // Transpose functions
@@ -90,6 +92,13 @@ namespace SPE{
     template <class T>
     SPEVec _Function_on_each_element(T (*f)(T const&,T const&), const SPEVec &A, SPEVec &B); // take the function of elements in vectors e.g. (*f)(A(i),B(i))
     SPEVec pow(const SPEVec &A, SPEVec &B); // take the pow(A(i),B(i)) of element
+    SPEVec abs(const SPEVec &A);
+    PetscScalar sum(SPEVec x); // sum of vector
+    PetscReal L2(SPEVec x1, const SPEVec x2, NormType type=NORM_2);
+    PetscReal L2(const SPEVec x1, NormType type=NORM_2);
+    SPEVec diff(SPEVec x1); // diff of vector (will be size x1.rows-1)
+    PetscScalar trapz(const SPEVec y); // trapezoidal integration of y with x coordinates  \int y dx
+    PetscScalar trapz(const SPEVec y, const SPEVec x); // trapezoidal integration of y with x coordinates  \int y dx
 }
 
 

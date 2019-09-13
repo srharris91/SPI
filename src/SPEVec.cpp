@@ -72,7 +72,11 @@ namespace SPE{
             PetscBool global ///< [in] whether to broadcast value to all processors or not (default is false)
             ) {
         PetscScalar v,v_global=0.;
-        ierr = VecGetValues(vec,1,&_row,&v);
+        PetscInt low,high;
+        ierr = VecGetOwnershipRange(vec,&low, &high);CHKERRXX(ierr);
+        if ((low<=_row) && (_row<high)){
+            ierr = VecGetValues(vec,1,&_row,&v);CHKERRXX(ierr);
+        }
         if (global){
             MPIU_Allreduce(&v,&v_global,1,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
         }
@@ -255,6 +259,17 @@ namespace SPE{
         }
         return (*this);
     }
+    /** \brief == VecEqual test if this==x2 \returns PETSC_TRUE if this==x2 */
+    PetscBool SPEVec::operator==(
+            const SPEVec &x2    ///< [in] x2 in test
+            ){
+        PetscBool iftrue;
+        ierr = VecEqual(vec,x2.vec,&iftrue); CHKERRXX(ierr);
+        return iftrue;
+
+    }
+
+
     // overload % for inner product
     //SPEVec operator%(SPEVec A){
     //return *this;
@@ -397,29 +412,28 @@ namespace SPE{
         SPEVec y(rows);
         PetscScalar step = (end-begin)/((PetscScalar)(rows-1));
         PetscScalar value=begin;
-        PetscInt i=0;
-        while (PetscRealPart(value)<=PetscRealPart(end)){
+        //PetscInt i=0;
+        for (PetscInt i=0; i<rows; ++i){
             y(i,value);
             value += step;
-            i++;
         }
         y();
         return y;
     }
-    
+
     /** \brief take the function of each element in a vector, e.g. (*f)(A(i)) for each i */
     template <class T>
-    SPEVec _Function_on_each_element(
-            T (*f)(T const&),   ///< [in] function handle to pass in e.g. std::sin<PetscReal>
-            const SPEVec &A     ///< [in] vector to perform function on each element
-            ){
-        SPEVec out(A);
-        for (PetscInt i=0; i<out.rows; ++i){
-            out(i,(*f)(out(i)));                // TODO speed up by getting all values at once on local processor and looping through those
+        SPEVec _Function_on_each_element(
+                T (*f)(T const&),   ///< [in] function handle to pass in e.g. std::sin<PetscReal>
+                const SPEVec &A     ///< [in] vector to perform function on each element
+                ){
+            SPEVec out(A);
+            for (PetscInt i=0; i<out.rows; ++i){
+                out(i,(*f)(out(i)));                // TODO speed up by getting all values at once on local processor and looping through those
+            }
+            out();
+            return out;
         }
-        out();
-        return out;
-    }
 
     /** \brief take the sin of each element in a vector */
     SPEVec sin(const SPEVec &A){ return _Function_on_each_element(&std::sin<PetscReal>, A); }
@@ -453,20 +467,112 @@ namespace SPE{
     SPEVec atanh(const SPEVec &A){ return _Function_on_each_element(&std::atanh<PetscReal>, A); }
     /** \brief function to take element by element of two vectors e.g. (*f)(A(i),B(i)) for all i */
     template <class T>
-    SPEVec _Function_on_each_element(
-            T (*f)(T const&, T const&),     ///< [in] function handle to pass in e.g. std::pow<PetscReal>
-            const SPEVec &A,                ///< [in] first vector to perform function on each element
-            SPEVec &B                 ///< [in] second vector 
-            ){
-        SPEVec out(A);
-        for (PetscInt i=0; i<out.rows; ++i){
-            out(i,(*f)(out(i),B(i)));                // TODO speed up by getting all values at once on local processor and looping through those
+        SPEVec _Function_on_each_element(
+                T (*f)(T const&, T const&),     ///< [in] function handle to pass in e.g. std::pow<PetscReal>
+                const SPEVec &A,                ///< [in] first vector to perform function on each element
+                SPEVec &B                 ///< [in] second vector 
+                ){
+            SPEVec out(A);
+            for (PetscInt i=0; i<out.rows; ++i){
+                out(i,(*f)(out(i),B(i)));                // TODO speed up by getting all values at once on local processor and looping through those
+            }
+            out();
+            return out;
         }
-        out();
-        return out;
-    }
-    /** \brief take the atanh of each element in a vector */
+    /** \brief take the pow of each element in the vectors */
     SPEVec pow(const SPEVec &A,SPEVec &B){ return _Function_on_each_element(&std::pow<PetscReal>, A,B); }
+
+    /** \brief take the absolute value of a vector */
+    SPEVec abs(const SPEVec &A){ 
+        SPEVec B(A);
+        VecAbs(B.vec);
+        return B;
+    }
+
+    /** \brief take the sum of a vector */
+    PetscScalar sum(
+            SPEVec x1   ///< [in] vector to sum
+            ){
+        PetscScalar sum;
+        x1.ierr = VecSum(x1.vec,&sum); CHKERRXX(x1.ierr);
+        return sum;
+    }
+
+
+
+    /** \brief calculate the \f$ L_2 \f$ norm of the difference between \f$x_1\f$ and \f$x_2\f$ vectors.  \returns \f$L_2\f$ norm of the difference */
+    PetscReal L2(
+            SPEVec x1,      ///< [in] \f$x_1\f$
+            const SPEVec x2,      ///< [in] \f$x_2\f$
+            NormType type   ///< [in] type of norm (default NORM_2 \f$\sqrt{\sum |x_1 - x_2|^2}\f$) (NORM_1 denotes sum_i |x_i|), (NORM_2 denotes sqrt(sum_i |x_i|^2)), (NORM_INFINITY denotes max_i |x_i|)
+            ){
+        PetscReal error;
+        VecNorm((x1-x2).vec,type,&error);
+        return error;
+    }
+
+
+    /** \brief calculate the \f$ L_2 \f$ norm of the vector \returns \f$L_2\f$ norm of the vector */
+    PetscReal L2(
+            const SPEVec x1,        ///< [in] \f$x_1\f$ l
+            NormType type           ///< [in] type of norm (default NORM_2 \f$\sqrt{\sum x_1^2}\f$)
+            ){
+        PetscReal error;
+        VecNorm(x1.vec,type,&error);
+        return error;
+    }
+
+    /** \brief diff of the vector (see numpy.diff) \returns y[i] = x[i+1]-x[i] for i=0,1,...,x.rows-2 */
+    SPEVec diff( 
+            SPEVec x       ///< [in] vector to diff (x[i+1]-x[i])
+            ){ 
+        SPEVec x0(x.rows-1), x1(x.rows-1);
+        // set x0=x[i] and x1=x[i+1]
+        for (PetscInt i=0; i<x.rows-1; ++i){
+            x0(i,x(i,PETSC_TRUE));
+            x1(i,x(i+1,PETSC_TRUE));
+        }
+        // assemble
+        x0();
+        x1();
+        // return difference x[i+1]-x[i]
+        return x1-x0;
+    }
+
+    /** \brief trapezoidal integration of y with unity coordinate spacing, \f$\int y dx \f$ \returns integrated value */
+    PetscScalar trapz(
+            SPEVec y      ///< [in] vector to integrate, assuming default spacing of one
+            ){
+        SPEVec y0(y.rows-1), y1(y.rows-1);
+        // set y0=y[i] and y1=y[i+1]
+        for (PetscInt i=0; i<y.rows-1; ++i){
+            y0(i,y(i,PETSC_TRUE));
+            y1(i,y(i+1,PETSC_TRUE));
+        }
+        // assemble
+        y0();
+        y1();
+        // return trapezoidal rule sum((y[i+1]+y[i])/2.
+        return sum((y1+y0)/2.);
+    }
+
+    /** \brief trapezoidal integration of y with x coordinates, \f$\int y dx \f$ \returns integrated value */
+    PetscScalar trapz(
+            SPEVec y,     ///< [in] vector to integrate
+            SPEVec x      ///< [in] optional, coordinates to integrate over, must be same size as y, and defaults to spacing of one if not given
+            ){
+        SPEVec y0(y.rows-1), y1(y.rows-1);
+        // set y0=y[i] and y1=y[i+1]
+        for (PetscInt i=0; i<y.rows-1; ++i){
+            y0(i,y(i,PETSC_TRUE));
+            y1(i,y(i+1,PETSC_TRUE));
+        }
+        // assemble
+        y0();
+        y1();
+        // return trapezoidal rule sum((y[i+1]+y[i])/2. * diff(x))
+        return sum((y1+y0)/2. * diff(x));
+    }
 }
 
 
