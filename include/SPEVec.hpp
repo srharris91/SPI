@@ -23,6 +23,7 @@ namespace SPE{
         
         PetscInt Init( PetscInt _rows, std::string name="SPEVec"); // initialize the vector of size _rows
         PetscInt set(const PetscInt _row, const PetscScalar v); // set a scalar value at position row 
+        PetscInt set(const PetscScalar v); // set a scalar value at all positions
         PetscInt add(PetscInt _row, const PetscScalar v); // add a scalar value at position row 
         // () operators
         PetscScalar operator()(PetscInt _row, PetscBool global=PETSC_FALSE);     // get value at row
@@ -47,6 +48,10 @@ namespace SPE{
         SPEVec operator/(const PetscScalar a); // Y/a operation
         SPEVec operator/(const double a); // Y*a operation
         SPEVec& operator/=(const PetscScalar a); // Y = Y/a operation
+        // ^ operators
+        SPEVec operator^(const PetscScalar p); // Y^p operation
+        SPEVec operator^(const double p); // Y^p operation
+        SPEVec operator^(SPEVec p); // elementwise Y^p operation
         // = operator
         SPEVec& operator=(const SPEVec &X); // Y=X with initialization of Y
         // == vecequal operator
@@ -57,6 +62,9 @@ namespace SPE{
         // conjugate
         SPEVec& conj(); // elemenwise conjugate current vector
         PetscScalar max(); // return maximum value of vector
+        SPEVec& real(); // real part of current vector
+        SPEVec& imag(); // real part of current vector
+        PetscScalar dot(SPEVec y); // take inner dot product (this,y) or y^H this, where H is the complex conjugate transpose
         PetscInt print(); // print vec to screen using PETSC_VIEWER_STDOUT_WORLD
 
         ~SPEVec(); // destructor to delete memory
@@ -70,6 +78,8 @@ namespace SPE{
     SPEVec ones(const PetscInt rows); // return a vector of size rows full of ones
     SPEVec zeros(const PetscInt rows); // return a vector of size rows full of zeros
     SPEVec conj(const SPEVec &A); // return the conjugate vector
+    SPEVec real(const SPEVec &A); // return real part of vector
+    SPEVec imag(const SPEVec &A); // return imaginary part of vector
     SPEVec linspace(const PetscScalar begin, const PetscScalar end, const PetscInt rows); // return linspace of number of rows equally spaced points between begin and end
     template <class T>
     SPEVec _Function_on_each_element(T (*f)(T const&), const SPEVec &A); // take the function of element in vector
@@ -92,8 +102,10 @@ namespace SPE{
     template <class T>
     SPEVec _Function_on_each_element(T (*f)(T const&,T const&), const SPEVec &A, SPEVec &B); // take the function of elements in vectors e.g. (*f)(A(i),B(i))
     SPEVec pow(const SPEVec &A, SPEVec &B); // take the pow(A(i),B(i)) of element
-    SPEVec abs(const SPEVec &A);
+    SPEVec pow(const SPEVec &A, PetscScalar b); // take the pow(A(i),b) of element
+    SPEVec abs(const SPEVec &A); // take absolute value of vector
     PetscScalar sum(SPEVec x); // sum of vector
+    PetscScalar dot(SPEVec x, SPEVec y); // inner dot product of the two vectors (i.e. y^H x)
     PetscReal L2(SPEVec x1, const SPEVec x2, NormType type=NORM_2);
     PetscReal L2(const SPEVec x1, NormType type=NORM_2);
     SPEVec diff(SPEVec x1); // diff of vector (will be size x1.rows-1)

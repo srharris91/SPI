@@ -158,6 +158,18 @@ int main(int argc, char **args){
         else{ std::cout<<"pow(SPEVec,SPEVec) test failed"<<std::endl;
             SPE::linspace(0.,2.,101).print();
             SPE::pow(SPE::linspace(0,2,101),twos).print();}
+        if ( PetscRealPart(SPE::pow(SPE::linspace(0,2,101),2.)()(100,PETSC_TRUE))>=3.9){ SPE::printf("pow(SPEVec,PetscScalar) test passed");}
+        else{ std::cout<<"pow(SPEVec,PetscScalar) test failed"<<std::endl;}
+        if ( PetscRealPart((SPE::linspace(0,2,101)^2.)(100,PETSC_TRUE))>=3.9){ SPE::printf("SPEVec^PetscScalar test passed");}
+        else{ std::cout<<"SPEVec^PetscScalar test failed"<<std::endl;}
+        if ( PetscRealPart((SPE::linspace(0,2,101)^(2.*SPE::ones(101)))(100,PETSC_TRUE))>=3.9){ SPE::printf("SPEVec^SPEVec test passed");}
+        else{ std::cout<<"SPEVec^SPEVec test failed"<<std::endl;}
+
+        SPE::SPEVec x1(SPE::linspace(0,2,101));
+        x1.set(4.);
+        if (PetscRealPart(x1(10,PETSC_TRUE))>=3.99){ SPE::printf("SPEVec.set(PetscScalar) test passed"); }
+        else{ std::cout<<"SPEVec.set(PetscScalar) test failed"<<std::endl;}
+
 
         if (PetscRealPart(SPE::abs(SPE::linspace(-1.,1.,101)())(0,PETSC_TRUE))>=0.9){ SPE::printf("abs(SPEVec) test passed");}
         else{ std::cout<<"abs(SPEVec) test failed"<<std::endl;}
@@ -183,7 +195,20 @@ int main(int argc, char **args){
         if (PetscRealPart(SPE::trapz(SPE::linspace(0.,2.,101)))>=99.9){ SPE::printf("trapz(SPEVec) test passed");}
         else{ std::cout<<"trapz(SPEVec) test failed"<<std::endl; }
 
+        if (PetscRealPart((SPE::linspace(0.,2.,11)+PETSC_i*SPE::linspace(4,5,11)).real()()(10,PETSC_TRUE))>=1.99){ SPE::printf("SPEVec.real() test passed"); }
+        else{ std::cout<<"SPEVec.real() test failed"<<std::endl; }
+        if (PetscRealPart((SPE::linspace(0.,2.,11)+PETSC_i*SPE::linspace(4,5,11)).imag()()(10,PETSC_TRUE))>=4.99){ SPE::printf("SPEVec.imag() test passed"); }
+        else{ std::cout<<"SPEVec.imag() test failed"<<std::endl; }
+        if (PetscRealPart(SPE::real(SPE::linspace(0.,2.,11)+PETSC_i*SPE::linspace(4,5,11))()(10,PETSC_TRUE))>=1.99){ SPE::printf("real(SPEVec) test passed"); }
+        else{ std::cout<<"real(SPEVec) test failed"<<std::endl; }
+        if (PetscRealPart(SPE::imag(SPE::linspace(0.,2.,11)+PETSC_i*SPE::linspace(4,5,11))()(10,PETSC_TRUE))>=4.99){ SPE::printf("imag(SPEVec) test passed"); }
+        else{ std::cout<<"imag(SPEVec) test failed"<<std::endl; }
 
+
+        if (PetscRealPart(SPE::dot(SPE::linspace(0,2,11),SPE::linspace(0,2,11)))>=15.39){ SPE::printf("dot(SPEVec,SPEVec) test passed"); }
+        else{ std::cout<<"dot(SPEVec,SPEVec) test failed"<<std::endl; }
+        if (PetscRealPart(SPE::linspace(0,2,11).dot(SPE::linspace(0,2,11)))>=15.39){ SPE::printf("SPEVec.dot(SPEVec) test passed"); }
+        else{ std::cout<<"SPEVec.dot(SPEVec) test failed"<<std::endl; }
 
         SPE::printf("------------ Vec tests end  -------------");
     }

@@ -52,6 +52,13 @@ namespace SPE{
         }
         return 0;
     }
+    /** set a scalar value at all positions \return 0 if successful */
+    PetscInt SPEVec::set(
+            const PetscScalar v   ///< [in] value to set in vec
+            ){
+        ierr = VecSet(vec,v); CHKERRQ(ierr);
+        return 0;
+    }
     /** add a scalar value at position row if owned by processor \return 0 if successful */
     PetscInt SPEVec::add(
             PetscInt _row,      ///< [in] position to add value
@@ -244,6 +251,25 @@ namespace SPE{
         ierr = VecScale(this->vec,1./a);CHKERRXX(ierr);
         return *this;
     }
+    // ^ operator
+    /** \brief pow operation pow(this,p) */
+    SPEVec SPEVec::operator^(
+            const PetscScalar p ///< [in] exponent of this^p operation
+            ){
+        return pow(*this,p);
+    }
+    /** \brief pow operation pow(this,p) */
+    SPEVec SPEVec::operator^(
+            const double p ///< [in] exponent of this^p operation
+            ){
+        return pow(*this,(PetscScalar)p);
+    }
+    /** \brief pow operation pow(this,p) */
+    SPEVec SPEVec::operator^(
+            SPEVec p ///< [in] exponent of this^p operation
+            ){
+        return pow(*this,p);
+    }
     // overload operator, copy and initialize
     /** Y=X with initialization of Y using VecCopy and VecDuplicate \return Y initialized and copied of X */
     SPEVec& SPEVec::operator=(const SPEVec &X){
@@ -292,6 +318,26 @@ namespace SPE{
 
         return maxscalar;
     }
+    /** \brief take the real part of the vector \returns the vector after taking the real part of it */
+    SPEVec& SPEVec::real(){
+        ierr = VecRealPart(vec); CHKERRXX(ierr);
+        return (*this);
+    }
+    /** \brief take the imaginary part of the vector \returns the vector after taking the imaginary part of it */
+    SPEVec& SPEVec::imag(){
+        ierr = VecImaginaryPart(vec); CHKERRXX(ierr);
+        return (*this);
+    }
+    /** \brief take the inner product of two vectors \returns y^H this  where H is the complex conjugate transpose*/
+    PetscScalar SPEVec::dot(
+            SPEVec y    ///< [in] second vector in inner product (x,y) or y^H x
+            ){
+        PetscScalar val;
+        ierr = VecDot(vec,y.vec,&val); CHKERRXX(ierr);
+        return val;
+    }
+
+
     // print vector to screen
     /** print vec to screen using PETSC_VIEWER_STDOUT_WORLD \return 0 if successful */
     PetscInt SPEVec::print(){
@@ -403,6 +449,20 @@ namespace SPE{
         B.ierr = VecConjugate(B.vec);CHKERRXX(B.ierr);
         return B;
     }
+    /** \brief return the real part of the vector */
+    SPEVec real(
+            const SPEVec &A     ///< [in] vector to take real part of
+            ){
+        SPEVec B(A);
+        return B.real();
+    }
+    /** \brief return the imaginary part of the vector */
+    SPEVec imag(
+            const SPEVec &A     ///< [in] vector to take imaginary part of
+            ){
+        SPEVec B(A);
+        return B.imag();
+    }
     /** \brief return linspace of number of rows equally spaced points between begin and end */
     SPEVec linspace(
             const PetscScalar begin,    ///< [in] beginning scalar of equally spaced points
@@ -442,7 +502,12 @@ namespace SPE{
     /** \brief take the tan of each element in a vector */
     SPEVec tan(const SPEVec &A){ return _Function_on_each_element(&std::tan<PetscReal>, A); }
     /** \brief take the exp of each element in a vector */
-    SPEVec exp(const SPEVec &A){ return _Function_on_each_element(&std::exp<PetscReal>, A); }
+    SPEVec exp(const SPEVec &A){ 
+        //return _Function_on_each_element(&std::exp<PetscReal>, A); 
+        SPEVec B(A);
+        B.ierr = VecExp(B.vec); CHKERRXX(B.ierr);
+        return B;
+    }
     /** \brief take the log (natural log) of each element in a vector */
     SPEVec log(const SPEVec &A){ return _Function_on_each_element(&std::log<PetscReal>, A); }
     /** \brief take the log10 of each element in a vector */
@@ -481,6 +546,26 @@ namespace SPE{
         }
     /** \brief take the pow of each element in the vectors */
     SPEVec pow(const SPEVec &A,SPEVec &B){ return _Function_on_each_element(&std::pow<PetscReal>, A,B); }
+    /** \brief take the pow of each element in the vector (A^b) \returns A^b */
+    SPEVec pow(
+            const SPEVec &A, ///< [in] vector to raise to the power
+            PetscScalar b       ///< [in] the exponenet
+            ){
+        SPEVec B(A);
+        B.ierr = VecPow(B.vec,b);CHKERRXX(B.ierr);
+        return B;
+
+    }
+
+    /** \brief take the inner product of the two vectors (i.e. y^H x) where ^H is the complex conjugate transpose*/
+    PetscScalar dot(
+            SPEVec x,   ///< [in] first vector in inner product
+            SPEVec y    ///< [in] second vector in inner product (this one gets the complex conjugate transpose)
+            ){
+        PetscScalar innerproduct;
+        x.ierr = VecDot(x.vec,y.vec,&innerproduct); CHKERRXX(x.ierr);
+        return innerproduct;
+    }
 
     /** \brief take the absolute value of a vector */
     SPEVec abs(const SPEVec &A){ 
