@@ -102,8 +102,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 Functions</h2></td></tr>
 <tr class="memitem:a7d2c43d6cff712420ddcbe7a10289e1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a7d2c43d6cff712420ddcbe7a10289e1a">test_if_true</a> (PetscBool test, std::string name)</td></tr>
 <tr class="separator:a7d2c43d6cff712420ddcbe7a10289e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a868fc4c9d01d08b4333456c2907f1d82"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a868fc4c9d01d08b4333456c2907f1d82">test_if_close</a> (PetscScalar value, PetscScalar golden, std::string name)</td></tr>
-<tr class="separator:a868fc4c9d01d08b4333456c2907f1d82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4634a393ba816bf78c6b16b607e71e4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a4634a393ba816bf78c6b16b607e71e4f">test_if_close</a> (PetscScalar value, PetscScalar golden, std::string name, PetscReal tol=1.E-13)</td></tr>
+<tr class="separator:a4634a393ba816bf78c6b16b607e71e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a29781a20c5dd4153c3c1cecf0ff328"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a7a29781a20c5dd4153c3c1cecf0ff328">main</a> (int argc, char **args)</td></tr>
 <tr class="separator:a7a29781a20c5dd4153c3c1cecf0ff328"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -132,11 +132,11 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="main_8cpp_source.html#l00017">17</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
+<p>Definition at line <a class="el" href="main_8cpp_source.html#l00018">18</a> of file <a class="el" href="main_8cpp_source.html">main.cpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a868fc4c9d01d08b4333456c2907f1d82"></a>
+<a class="anchor" id="a4634a393ba816bf78c6b16b607e71e4f"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -156,7 +156,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>name</em>&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PetscReal&#160;</td>
+          <td class="paramname"><em>tol</em> = <code>1.E-13</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

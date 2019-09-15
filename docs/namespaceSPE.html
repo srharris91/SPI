@@ -126,9 +126,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6e969c5e8b0d46b927e0c579a7d8a1f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#a6e969c5e8b0d46b927e0c579a7d8a1f5">kron</a> (const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;A,const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;B)</td></tr>
 <tr class="memdesc:a6e969c5e8b0d46b927e0c579a7d8a1f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">set kronecker inner product of two matrices  <a href="#a6e969c5e8b0d46b927e0c579a7d8a1f5">More...</a><br /></td></tr>
 <tr class="separator:a6e969c5e8b0d46b927e0c579a7d8a1f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54f9da945d05cb20d58695b6cc8a85f7"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#a54f9da945d05cb20d58695b6cc8a85f7">eig</a> (const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;A,const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;B,const PetscScalar target)</td></tr>
-<tr class="memdesc:a54f9da945d05cb20d58695b6cc8a85f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)  <a href="#a54f9da945d05cb20d58695b6cc8a85f7">More...</a><br /></td></tr>
-<tr class="separator:a54f9da945d05cb20d58695b6cc8a85f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd712e3d955e3cef2d918d1794a2a359"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#afd712e3d955e3cef2d918d1794a2a359">eig</a> (const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;A,const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;B,const PetscScalar target,const PetscReal tol,const PetscInt max_iter)</td></tr>
+<tr class="memdesc:afd712e3d955e3cef2d918d1794a2a359"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)  <a href="#afd712e3d955e3cef2d918d1794a2a359">More...</a><br /></td></tr>
+<tr class="separator:afd712e3d955e3cef2d918d1794a2a359"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f90ecfc207b8d8763761f415378bde0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#a0f90ecfc207b8d8763761f415378bde0">block</a> (const <a class="el" href="namespaceSPE.html#a595ce37f5989caedb2fce6495bd900eb">Block2D</a>&lt; <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &gt; Blocks)</td></tr>
 <tr class="memdesc:a0f90ecfc207b8d8763761f415378bde0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set block matrices using an input array of size rows*cols. Fills rows first  <a href="#a0f90ecfc207b8d8763761f415378bde0">More...</a><br /></td></tr>
 <tr class="separator:a0f90ecfc207b8d8763761f415378bde0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -558,7 +558,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00652">652</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00666">666</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -719,7 +719,7 @@ new matrix with inserted blocks </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a54f9da945d05cb20d58695b6cc8a85f7"></a>
+<a class="anchor" id="afd712e3d955e3cef2d918d1794a2a359"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -739,7 +739,19 @@ new matrix with inserted blocks </dd></dl>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const PetscScalar&#160;</td>
-          <td class="paramname"><em>target</em>&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const PetscReal&#160;</td>
+          <td class="paramname"><em>tol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const PetscInt&#160;</td>
+          <td class="paramname"><em>max_iter</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -756,6 +768,8 @@ new matrix with inserted blocks </dd></dl>
     <tr><td class="paramdir">[in]</td><td class="paramname">A</td><td>A in Ax=kBx generalized eigenvalue problem </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">B</td><td>B in Ax=kBx generalized eigenvalue problem </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">target</td><td>target eigenvalue to solve for </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tol</td><td>tolerance of eigenvalue solver </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">max_iter</td><td>maximum number of iterations </td></tr>
   </table>
   </dd>
 </dl>

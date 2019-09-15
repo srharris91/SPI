@@ -6,12 +6,13 @@ void test_if_true(PetscBool test,std::string name){
     if (test) { SPE::printf("\x1b[32m"+name+" test passed"+"\x1b[0m"); }
     else{ std::cout<<"\x1b[31m"+name+" test failed"+"\x1b[0m"<<std::endl;}
 }
-void test_if_close(PetscScalar value,PetscScalar golden, std::string name){
-    PetscReal tol=1.E-13;
+void test_if_close(PetscScalar value,PetscScalar golden, std::string name, PetscReal tol=1.E-13){
     PetscReal valuer=PetscRealPart(value);
     PetscReal goldenr=PetscRealPart(golden);
     if ((goldenr-tol<=valuer) && (valuer<=goldenr+tol)) { SPE::printf("\x1b[32m"+name+" test passed"+"\x1b[0m"); }
-    else{ std::cout<<"\x1b[31m"+name+" test failed"+"\x1b[0m"<<std::endl;}
+    else{ std::cout<<"\x1b[31m"+name+" test failed"+"\x1b[0m"<<std::endl;
+            std::cout<<"      valuer="<<valuer<<std::endl;
+            std::cout<<"      goldenr="<<goldenr<<std::endl;}
 }
 
 int main(int argc, char **args){
@@ -21,7 +22,7 @@ int main(int argc, char **args){
     ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
     // Vec tests
-    if(0){
+    if(1){
         SPE::printf("------------ Vec tests start-------------");
         // initialize SPEVec and Init function
         SPE::SPEVec X1(4,"X1"),X2(4,"X2"),X3("X3");
@@ -182,7 +183,7 @@ int main(int argc, char **args){
         SPE::printf("------------ Vec tests end  -------------");
     }
 
-    if(0){ // Mat tests
+    if(1){ // Mat tests
         SPE::printf("------------ Mat tests start ---------------");
 
         // test constructors
@@ -242,7 +243,7 @@ int main(int argc, char **args){
     }
 
     // test A*x 
-    if(0){
+    if(1){
         SPE::printf("------------ A*x tests start ---------------");
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec x(4,"x"),b;
@@ -260,7 +261,7 @@ int main(int argc, char **args){
     }
 
     // linear system solver test Ax=b solved with x=b/A
-    if(0){
+    if(1){
         SPE::printf("------------ A*x=b tests start ---------------");
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec b(4,"x"),x;
@@ -273,11 +274,11 @@ int main(int argc, char **args){
         b();
         x=b/A;
         test_if_close(x(3,PETSC_TRUE),0.5,"SPEVec/SPEMat");
-        std::cout<<"------------ A*x=b tests end   ---------------"<<std::endl;
+        SPE::printf("------------ A*x=b tests end   ---------------");
     }
     // check Mat functions (eye, kron, diag)
-    if(0){
-        std::cout<<"------------ Mat func tests start-------------"<<std::endl;
+    if(1){
+        SPE::printf("------------ Mat func tests start-------------");
         SPE::SPEMat I(SPE::eye(4),"I-identity");
         test_if_close(I(1,1,PETSC_TRUE),1.,"eye(PetscInt)");
 
@@ -302,61 +303,67 @@ int main(int argc, char **args){
         SPE::printf("------------ Mat func tests end  -------------");
     }
     if(1){// eig test
-        std::cout<<"------------ Mat eig tests start-------------"<<std::endl;
+        SPE::printf("------------ Mat eig tests start-------------");
         SPE::SPEMat A(2,"A");
         A(0,0,1.);
         A(0,1,1.);
         A(1,1,1.);
-        A.print();
+        A();
         SPE::SPEMat B(SPE::eye(2),"I-identity");
-        B.print();
         PetscScalar alpha;
-        SPE::SPEVec eig(2);
+        SPE::SPEVec eig(2,"eig1");
         std::tie(alpha,eig) = SPE::eig(A,B,1.0+PETSC_i*0.5);
-        eig.print();
-        eig /= eig.max();
-        eig.print();
-        eig.conj().print();
-        A.conj().print();
-        std::cout<<"------------ Mat eig tests end  -------------"<<std::endl;
+        eig /= eig.max(); // normalize by max amplitude
+        test_if_close(alpha,1.,"eig(SPEMat,SPEMat,PetscScalar) 1",1.E-8);
+        PetscScalar alpha2;
+        SPE::SPEVec eig2(2,"eig2");
+        std::tie(alpha2,eig2) = SPE::eig(A,B,-1.0+PETSC_i*0.00005,1.E-19,10);
+        eig2 /= eig2.max(); // normalize by max amplitude
+        test_if_close(alpha2,1.,"eig(SPEMat,SPEMat,PetscScalar) 2",1.E-8);
+        SPE::printf("------------ Mat eig tests end  -------------");
     }
-    if(0){// I/O using hdf5
-        std::cout<<"------------ I/O tests start  -------------"<<std::endl;
+    if(1){// I/O using hdf5
+        SPE::printf("------------ I/O tests start  -------------");
         SPE::SPEVec A(2,"A_Vec");
         A(0,1.);
         A(1,2.);
-        A.print();
+        A();
         SPE::save(A,"saved_data.hdf5");
         SPE::SPEVec B(2,"B_Vec");
         B(0,1.+PETSC_i*0.5);
         B(1,2.*PETSC_i);
-        B.print();
+        B();
         SPE::save(B,"saved_data.hdf5");
-        std::cout<<"------------ I/O tests end    -------------"<<std::endl;
+        SPE::printf("------------ I/O tests end    -------------");
     }
-    if(0){
-        std::cout<<"------------ I/O tests2 start  -------------"<<std::endl;
-        SPE::SPEVec A(2,"A_Vec");
-        SPE::load(A,"saved_data.hdf5");
-        A.print();
-        SPE::SPEVec B(2,"B_Vec");
-        SPE::load(B,"saved_data.hdf5");
-        B.print();
-        std::cout<<"------------ I/O tests2 end    -------------"<<std::endl;
+    if(1){
+        SPE::printf("------------ I/O tests2 start  -------------");
+        SPE::SPEVec A_read(2,"A_Vec");
+        SPE::load(A_read,"saved_data.hdf5");
+        test_if_close(A_read(0,PETSC_TRUE),1.,"load(SPEVec,std::string) 1");
+        test_if_close(A_read(1,PETSC_TRUE),2.,"load(SPEVec,std::string) 2");
+        SPE::SPEVec B_read(2,"B_Vec");
+        SPE::load(B_read,"saved_data.hdf5");
+        test_if_close(PetscImaginaryPart(B_read(0,PETSC_TRUE)),0.5,"load(SPEVec,std::string) 3");
+        test_if_close(B_read(1,PETSC_TRUE),0.,"load(SPEVec,std::string) 4");
+        SPE::printf("------------ I/O tests2 end    -------------");
     }
-    if(0){
+    if(1){
+        SPE::printf("------------ block test start  -------------");
         SPE::SPEMat A(2,"A");
         A(0,0,2.);
         A(0,1,3.);
         A(1,1,4.);
-        A.print();
+        A();
         SPE::SPEMat B(SPE::eye(2),"I-identity");
-        B.print();
 
-        SPE::block({{A,B},{A,B}}).print();
+        SPE::SPEMat block(SPE::block({{A,B},{A,B}}));
+        test_if_close(block(0,0,PETSC_TRUE),2.,"block(std::vector<std::vector<SPEMat>>) 1");
+        test_if_close(block(0,2,PETSC_TRUE),1.,"block(std::vector<std::vector<SPEMat>>) 2");
+        test_if_close(block(3,1,PETSC_TRUE),4.,"block(std::vector<std::vector<SPEMat>>) 3");
+        test_if_close(block(3,3,PETSC_TRUE),1.,"block(std::vector<std::vector<SPEMat>>) 4");
+        SPE::printf("------------ block test end    -------------");
     }
-
-
 
     ierr = PetscFinalize();CHKERRQ(ierr);
     ierr = SlepcFinalize();CHKERRQ(ierr);

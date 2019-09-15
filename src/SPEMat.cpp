@@ -498,7 +498,9 @@ namespace SPE{
     std::tuple<PetscScalar, SPEVec> eig(
             const SPEMat &A,        ///< [in] A in Ax=kBx generalized eigenvalue problem
             const SPEMat &B,        ///< [in] B in Ax=kBx generalized eigenvalue problem
-            const PetscScalar target    ///< [in] target eigenvalue to solve for
+            const PetscScalar target,   ///< [in] target eigenvalue to solve for
+            const PetscReal tol,    ///< [in] tolerance of eigenvalue solver
+            const PetscInt max_iter ///< [in] maximum number of iterations
             ){
         //TODO use PEP in slepc (polynomial eigenvalue problem) instead of the generalized eigenvalue problem.  Will make things easier, and faster hopefully
         PetscInt rows=A.rows;
@@ -530,6 +532,18 @@ namespace SPE{
         PetscInt nev=1;
         EPSSetWhichEigenpairs(eps,which);
         EPSSetDimensions(eps,nev,PETSC_DEFAULT,PETSC_DEFAULT);
+        if ((max_iter==-1) && (tol==-1.)){
+            EPSSetTolerances(eps,PETSC_DEFAULT,PETSC_DEFAULT);
+        }
+        else if(tol==-1.){
+            EPSSetTolerances(eps,PETSC_DEFAULT,max_iter);
+        }
+        else if(max_iter==-1){
+            EPSSetTolerances(eps,tol,PETSC_DEFAULT);
+        }
+        else{
+            EPSSetTolerances(eps,tol,max_iter);
+        }
         if (
                 which==EPS_TARGET_REAL ||
                 which==EPS_TARGET_IMAGINARY ||
