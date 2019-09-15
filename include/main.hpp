@@ -2,6 +2,7 @@
 #define MAIN_H
 #include <iostream>
 #include <petscksp.h>
+#include <tuple>
 #include "SPEMat.hpp"
 #include "SPEVec.hpp"
 #include "SPEprint.hpp"

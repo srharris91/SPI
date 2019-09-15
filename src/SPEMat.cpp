@@ -75,11 +75,22 @@ namespace SPE{
     /** \brief get local value at row m, column n \return scalar at specified location */ // TODO: make global on all processors
     PetscScalar SPEMat::operator()(
             PetscInt m,         ///< [in] row to get scalar
-            PetscInt n          ///< [in] column to get scalar
+            PetscInt n,         ///< [in] column to get scalar
+            PetscBool global    ///< [in] whether to broadcast value to all processors or not (default is false)
             ){
-        PetscScalar v;
-        ierr = MatGetValues(mat,1,&m, 1,&n, &v);
-        return v;
+        PetscScalar v,v_global=0.;
+        PetscInt low,high;
+        ierr = MatGetOwnershipRange(mat,&low, &high);CHKERRXX(ierr);
+        if ((low<=m) && (m<high)){
+            ierr = MatGetValues(mat,1,&m, 1,&n, &v);
+        }
+        if (global){ // if broadcast to all processors
+            MPIU_Allreduce(&v,&v_global,1,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
+        }
+        else{
+            v_global=v; // return local value
+        }
+        return v_global;
     }
     // overloaded operator, set
     /** \brief set operator the same as set function \return current matrix after setting value */
@@ -438,7 +449,7 @@ namespace SPE{
         PetscInt Isubstart,Isubend;
         ierr = MatGetOwnershipRange(A.mat,&Isubstart,&Isubend);CHKERRXX(ierr);
         for (PetscInt rowi=0; rowi<na; rowi++){
-            PetscPrintf(PETSC_COMM_WORLD,"kron rowi=%i of %i\n",rowi,m);
+            //PetscPrintf(PETSC_COMM_WORLD,"kron rowi=%i of %i\n",rowi,m);
             bool onprocessor=(Isubstart<=rowi) and (rowi<Isubend);
             if(onprocessor){
                 // extract row of one A

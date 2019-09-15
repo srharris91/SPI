@@ -31,7 +31,7 @@ docs:
 
 clean:
 	rm -f src/*o $(EXECUTABLE) *dat *hdf5
-	rm -rf docs
+	rm -rf docs/*
 
 .cpp.o:
 	$(CPP) $(CPPFLAGS) $< -o $@

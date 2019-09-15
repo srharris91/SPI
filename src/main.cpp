@@ -1,5 +1,4 @@
 #include "main.hpp"
-#include <tuple>
 
 static char help[] = "SPE class to wrap PETSc Mat variables \n\n";
 
@@ -22,7 +21,7 @@ int main(int argc, char **args){
     ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
 
     // Vec tests
-    if(1){
+    if(0){
         SPE::printf("------------ Vec tests start-------------");
         // initialize SPEVec and Init function
         SPE::SPEVec X1(4,"X1"),X2(4,"X2"),X3("X3");
@@ -197,59 +196,54 @@ int main(int argc, char **args){
             A2(i,i,1.+PETSC_i);
         }
         A2(0,n-1,0.43);
-        A2.print();
+        A2();
+        test_if_close(PetscImaginaryPart(A2(2,2,PETSC_TRUE)),1.,"SPEMat(PetscInt,PetscInt,PETSC_TRUE)");
         B(0,1,1);
         B();
-        B.print();
+        test_if_close(B(0,1,PETSC_TRUE),1.,"SPEMat(PetscInt,PetscInt,PetscInt)");
         B=(3.4+PETSC_i*4.2)*A2+4.*A2;
-        B.print();
+        test_if_close(B(1,1,PETSC_TRUE),3.2,"PetscScalar*SPEMat+double*SPEMat");
         E(0,0,A2);
         E(m,n,B);
-        E.print();
+        E();
+        test_if_close(E(1,1,PETSC_TRUE),1.,     "SPEMat(PetscInt,PetscInt,SPEMat) 1");
+        test_if_close(E(4,7,PETSC_TRUE),3.182,  "SPEMat(PetscInt,PetscInt,SPEMat) 2");
         A2+=B;
-        A2.print();
+        test_if_close(A2(1,1,PETSC_TRUE),4.2,  "SPEMat+=SPEMat");
         SPE::SPEMat A2T("A2T");
         A2.T(A2T);
-        A2T.print();
+        test_if_close(A2T(3,0,PETSC_TRUE),3.612,  "SPEMat.T(SPEMat)");
         D = A2T*B;
-        D.print();
+        test_if_close(D(0,3,PETSC_TRUE),-9.3912,  "SPEMat*SPEMat");
         D *= 4.;
-        D.print();
+        test_if_close(D(0,3,PETSC_TRUE),4.*-9.3912,  "SPEMat*=PetscScalar");
         D.~SPEMat();
-        A2*B;
         D = A2*I;
-        D.print();
+        test_if_close(A2(0,3,PETSC_TRUE),3.612,  "SPEMat*eye(SPEMat)");
         B.T();
-        B.print();
-        A2.print();
-        D.print();
-        D();
+        test_if_close(B(3,0,PETSC_TRUE),3.182,  "SPEMat.T()");
         D=I;
-        D.print();
-        E(4,7,B);// insert
-        E(0,0,A2);
-        E(1,5,D);
+        test_if_close(D(1,1,PETSC_TRUE),1.,  "SPEMat=SPEMat");
+        E(4,8,B);// insert
         E();
-        E.print();
-        E.H().print();
-        E.conj().print();
-        E.T().print();
+        test_if_close(E(7,8,PETSC_TRUE),3.182,  "SPEMat(PetscInt,PetscInt,SPEMat) 3");
+        test_if_close(PetscImaginaryPart(E(6,10,PETSC_TRUE)),11.6,  "SPEMat(PetscInt,PetscInt,SPEMat) 4");
+        E.H();
+        test_if_close(PetscImaginaryPart(E(10,6,PETSC_TRUE)),-11.6,  "SPEMat.H()");
+        E.conj();
+        test_if_close(PetscImaginaryPart(E(10,6,PETSC_TRUE)),11.6,  "SPEMat.conj()");
+        E.T();
+        test_if_close(PetscImaginaryPart(E(6,10,PETSC_TRUE)),11.6,  "SPEMat.T()");
         SPE::SPEMat F(E,"F");
-        F.print();
-        D.diag().print();
-        //F.~SPEMat();
-        //A2.~SPEMat();
-        //B.~SPEMat();
-        //D.~SPEMat();
-        //E.~SPEMat();
-        //CT.~SPEMat();
-        //I.~SPEMat();
-        std::cout<<"------------ Mat tests end   ---------------"<<std::endl;
+        test_if_close(PetscImaginaryPart(F(6,10,PETSC_TRUE)),11.6,  "SPEMat(SPEMat)");
+        D.diag();
+        test_if_close(D.diag()(1,PETSC_TRUE),1.,  "diag(SPEMat)");
+        SPE::printf("------------ Mat tests end   ---------------");
     }
 
-    // test A*x
+    // test A*x 
     if(0){
-        std::cout<<"------------ A*x tests start ---------------"<<std::endl;
+        SPE::printf("------------ A*x tests start ---------------");
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec x(4,"x"),b;
 
@@ -257,17 +251,17 @@ int main(int argc, char **args){
             A(i,i,1.+i);
             x(i,2.3+PETSC_i*1.);
         }
-        A.print();
-        x.print();
+        A();
+        x();
         b=A*x;
-        b.print();
+        test_if_close(b(2,PETSC_TRUE),6.9,"SPEMat*SPEVec");
 
-        std::cout<<"------------ A*x tests end   ---------------"<<std::endl;
+        SPE::printf("------------ A*x tests end   ---------------");
     }
 
     // linear system solver test Ax=b solved with x=b/A
     if(0){
-        std::cout<<"------------ A*x=b tests start ---------------"<<std::endl;
+        SPE::printf("------------ A*x=b tests start ---------------");
         SPE::SPEMat A(4,4,"A");
         SPE::SPEVec b(4,"x"),x;
 
@@ -275,41 +269,39 @@ int main(int argc, char **args){
             A(i,i,1.+i);
             b(i,2.);
         }
-        A.print();
-        b.print();
+        A();
+        b();
         x=b/A;
-        x.print();
+        test_if_close(x(3,PETSC_TRUE),0.5,"SPEVec/SPEMat");
         std::cout<<"------------ A*x=b tests end   ---------------"<<std::endl;
     }
     // check Mat functions (eye, kron, diag)
     if(0){
         std::cout<<"------------ Mat func tests start-------------"<<std::endl;
         SPE::SPEMat I(SPE::eye(4),"I-identity");
-        //I=SPE::eye(4);
-        I.print();
+        test_if_close(I(1,1,PETSC_TRUE),1.,"eye(PetscInt)");
 
         SPE::SPEVec two(3,"two");
         for (int i=0; i<3; i++) two(i,2.);
-        two.print();
+        two();
 
         SPE::SPEMat A("A");
         A = SPE::diag(two);
-
-        A.print();
+        test_if_close(A(2,2,PETSC_TRUE),2.,"diag(SPEVec)");
 
         SPE::SPEMat C("C");
         C=SPE::kron(I,A);
-        C.print();
+        test_if_close(C(6,6,PETSC_TRUE),2.,"kron(SPEMat,SPEMat) 1");
 
         SPE::SPEMat D(2,2,"D");
         D(0,0,1.); D(0,1,2.);
         D(1,0,3.); D(1,1,4.);
         D();
 
-        SPE::kron(D,I).print();
-        std::cout<<"------------ Mat func tests end  -------------"<<std::endl;
+        test_if_close(SPE::kron(D,I)(5,1,PETSC_TRUE),3.,"kron(SPEMat,SPEMat) 2");
+        SPE::printf("------------ Mat func tests end  -------------");
     }
-    if(0){// eig test
+    if(1){// eig test
         std::cout<<"------------ Mat eig tests start-------------"<<std::endl;
         SPE::SPEMat A(2,"A");
         A(0,0,1.);
