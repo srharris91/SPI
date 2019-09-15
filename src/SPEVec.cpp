@@ -1,6 +1,7 @@
 #include "SPEVec.hpp"
 #include <petscviewerhdf5.h>
 #include "SPEprint.hpp"
+#include <math.h>
 
 namespace SPE{
 
@@ -476,6 +477,24 @@ namespace SPE{
         for (PetscInt i=0; i<rows; ++i){
             y(i,value);
             value += step;
+        }
+        y();
+        return y;
+    }
+    /** \brief return a range of number of equally spaced points between begin and end by step size step*/
+    SPEVec arange(
+            const PetscScalar begin,    ///< [in] beginning scalar of equally spaced points
+            const PetscScalar end,      ///< [in] end scalar of equally spaced points
+            const PetscScalar stepsize  ///< [in] step size for equally spaced points
+            ){ // return linspace of number of rows equally spaced points between begin and end
+        PetscInt rows=ceil(PetscRealPart((end-begin)/stepsize));
+        SPEVec y(rows);
+        //PetscScalar step = (end-begin)/((PetscScalar)(rows-1));
+        PetscScalar value=begin;
+        //PetscInt i=0;
+        for (PetscInt i=0; i<rows; ++i){
+            y(i,value);
+            value += stepsize;
         }
         y();
         return y;

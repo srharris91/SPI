@@ -32,5 +32,5 @@
 *.app
 
 # generated doc
-doc/html*
+# docs/html*
 

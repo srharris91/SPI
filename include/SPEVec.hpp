@@ -81,6 +81,7 @@ namespace SPE{
     SPEVec real(const SPEVec &A); // return real part of vector
     SPEVec imag(const SPEVec &A); // return imaginary part of vector
     SPEVec linspace(const PetscScalar begin, const PetscScalar end, const PetscInt rows); // return linspace of number of rows equally spaced points between begin and end
+    SPEVec arange(const PetscScalar begin, const PetscScalar end, const PetscScalar stepsize=1); // return a range of number of rows equally spaced points between begin and end of step stepsize
     template <class T>
     SPEVec _Function_on_each_element(T (*f)(T const&), const SPEVec &A); // take the function of element in vector
     SPEVec sin(const SPEVec &A); // take the sin of element

@@ -24,14 +24,14 @@ CPP = mpicxx
 
 $(EXECUTABLE): $(OBJFILES)
 	$(CLINKER) $(OBJFILES) ${SLEPC_LIB} -o $(EXECUTABLE) 
-	#$(CLINKER) $(OBJFILES) ${PETSC_LIB} -o $(EXECUTABLE) 
+	@#$(CLINKER) $(OBJFILES) ${PETSC_LIB} -o $(EXECUTABLE) 
 
 docs:
 	doxygen
 
 clean:
 	rm -f src/*o $(EXECUTABLE) *dat *hdf5
-	rm -rf doc/html
+	rm -rf docs
 
 .cpp.o:
 	$(CPP) $(CPPFLAGS) $< -o $@
