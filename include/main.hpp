@@ -6,12 +6,13 @@
 #include "SPIMat.hpp"
 #include "SPIVec.hpp"
 #include "SPIprint.hpp"
-/** \mainpage SPI Solver
+/** \mainpage SPI (SLEPc PETSc Interface)
  *
  * \author Shaun Harris (<A HREF="https://srharris91.github.io/" TARGET="_top">https://srharris91.github.io/</A>)\n
  * Copyright (C) 2019\n
  * \section Info Information
- * This code is being implemented to make the PETSc Mat and Vec easier to work with and use.  It is intended for simplifying many of the MatAXPY calls and things to make them more intuitive and easier to parallelize.  It's main use is to make use of operator overloading.
+ * This library is to work with SLEPc and PETSc Mat and Vec in C++ to aid in rapid development of solvers.
+ * This code is being implemented to make the PETSc Mat and Vec easier to work with and use.  It is intended for simplifying many of the MatAXPY calls and things to make them more intuitive and easier to parallelize.  It's main purpose is to make use of operator overloading such that two parallel matrices can be added with A+B and MatMatMult type calls are replaced with A*B, etc.  Other helper functions such as linspace, eig, kron, block, and other functions are implemented to make matrix/vector creation easier for rapid development.  
  *
  * \section PETSc PETSc configuration
  * Use the following code to configure your PETSc Submodule.   This will capture all the necessary packages for MPI and C++ items. Then follow the directions generated to compile and test. Everything should work.

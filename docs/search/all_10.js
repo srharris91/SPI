@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['spi_20solver',['SPI Solver',['../index.html',1,'']]],
+  ['spi_20_28slepc_20petsc_20interface_29',['SPI (SLEPc PETSc Interface)',['../index.html',1,'']]],
   ['save',['save',['../namespaceSPI.html#a98f8f5549899c577a8bf8febf05748af',1,'SPI::save(const SPIMat &amp;A,const std::string filename)'],['../namespaceSPI.html#a8245d7982ea9d0c1aa5b5f03f9c0ae74',1,'SPI::save(const std::vector&lt; SPIMat &gt; &amp;As,const std::string filename)'],['../namespaceSPI.html#a6d186d00e2ab905c91eeb08d46b26567',1,'SPI::save(const SPIVec &amp;A, std::string filename)']]],
   ['set',['set',['../structSPI_1_1SPIMat.html#aec416214c8b573382f9c98b15baf24c6',1,'SPI::SPIMat::set()'],['../structSPI_1_1SPIVec.html#af69b0d36870524b5c91bdd1f7eb9e533',1,'SPI::SPIVec::set(const PetscInt _row, const PetscScalar v)'],['../structSPI_1_1SPIVec.html#ade0db928e7a88ac202606facd655e4b9',1,'SPI::SPIVec::set(const PetscScalar v)']]],
   ['sin',['sin',['../namespaceSPI.html#a71c0b19be55e53d5ccbfc1175be7f22b',1,'SPI']]],

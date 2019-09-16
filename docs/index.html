@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>SPI Solver</title>
+<title>SPI (SLEPc PETSc Interface)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="headertitle">
-<div class="title"><a class="el" href="namespaceSPI.html">SPI</a> Solver </div>  </div>
+<div class="title"><a class="el" href="namespaceSPI.html">SPI</a> (SLEPc PETSc Interface) </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="section author"><dt>Author</dt><dd>Shaun Harris (<a href="https://srharris91.github.io/" target="_top">https://srharris91.github.io/</a>)<br />
@@ -87,7 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </dd></dl>
 <h1><a class="anchor" id="Info"></a>
 Information</h1>
-<p>This code is being implemented to make the PETSc Mat and Vec easier to work with and use. It is intended for simplifying many of the MatAXPY calls and things to make them more intuitive and easier to parallelize. It's main use is to make use of operator overloading.</p>
+<p>This library is to work with SLEPc and PETSc Mat and Vec in C++ to aid in rapid development of solvers. This code is being implemented to make the PETSc Mat and Vec easier to work with and use. It is intended for simplifying many of the MatAXPY calls and things to make them more intuitive and easier to parallelize. It's main purpose is to make use of operator overloading such that two parallel matrices can be added with A+B and MatMatMult type calls are replaced with A*B, etc. Other helper functions such as linspace, eig, kron, block, and other functions are implemented to make matrix/vector creation easier for rapid development.</p>
 <h1><a class="anchor" id="PETSc"></a>
 PETSc configuration</h1>
 <p>Use the following code to configure your PETSc Submodule. This will capture all the necessary packages for MPI and C++ items. Then follow the directions generated to compile and test. Everything should work. </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;python2 &#39;./configure&#39; &#39;--with-scalar-type=complex&#39; &#39;--with-precision=double&#39; &#39;with-clanguage=c++&#39; &#39;--download-mumps&#39; &#39;--download-hdf5&#39; &#39;--download-scalapack&#39; &#39;--download-parmetis&#39; &#39;--download-metis&#39; &#39;--download-ptscotch&#39; &#39;--with-cc=mpicc&#39; &#39;--with-cxx=mpicxx&#39; &#39;--with-fc=mpif90&#39; &#39;--with-debugging=0&#39; &#39;COPTFLAGS=&#39;-O3 -march=native -mtune=native&#39;&#39; &#39;CXXOPTFLAGS=&#39;-O3 -march=native -mtune=native&#39;&#39; &#39;FOPTFLAGS=&#39;-O3 -march=native -mtune=native&#39;&#39;</div></div><!-- fragment --> <h1><a class="anchor" id="SLEPc"></a>
