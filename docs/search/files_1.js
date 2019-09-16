@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['spemat_2ecpp',['SPEMat.cpp',['../SPEMat_8cpp.html',1,'']]],
-  ['spemat_2ehpp',['SPEMat.hpp',['../SPEMat_8hpp.html',1,'']]],
-  ['speprint_2ecpp',['SPEprint.cpp',['../SPEprint_8cpp.html',1,'']]],
-  ['speprint_2ehpp',['SPEprint.hpp',['../SPEprint_8hpp.html',1,'']]],
-  ['spevec_2ecpp',['SPEVec.cpp',['../SPEVec_8cpp.html',1,'']]],
-  ['spevec_2ehpp',['SPEVec.hpp',['../SPEVec_8hpp.html',1,'']]]
+  ['spimat_2ecpp',['SPIMat.cpp',['../SPIMat_8cpp.html',1,'']]],
+  ['spimat_2ehpp',['SPIMat.hpp',['../SPIMat_8hpp.html',1,'']]],
+  ['spiprint_2ecpp',['SPIprint.cpp',['../SPIprint_8cpp.html',1,'']]],
+  ['spiprint_2ehpp',['SPIprint.hpp',['../SPIprint_8hpp.html',1,'']]],
+  ['spivec_2ecpp',['SPIVec.cpp',['../SPIVec_8cpp.html',1,'']]],
+  ['spivec_2ehpp',['SPIVec.hpp',['../SPIVec_8hpp.html',1,'']]]
 ];

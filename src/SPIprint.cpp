@@ -1,6 +1,6 @@
-#include "SPEprint.hpp"
+#include "SPIprint.hpp"
 
-namespace SPE{
+namespace SPI{
     /** print a message to string using PetscPrintf (also adds a newline at end) (note: only prints on rank 0 processor) \return 0 if successful */
     PetscInt printf(
             std::string msg, ///< [in] message to print with formatting such as \%g

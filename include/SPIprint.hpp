@@ -1,12 +1,12 @@
-#ifndef SPEPRINT_H
-#define SPEPRINT_H
+#ifndef SPIPRINT_H
+#define SPIPRINT_H
 #include <iostream>
 #include <string>
 #include <petscksp.h>
 // #include <errno.h>
 // #include <../src/sys/fileio/mprint.h>
 
-namespace SPE{
+namespace SPI{
     PetscInt printf(std::string msg,...); // print a message to string using PetscPrintf (also adds newline at end)
 
 

@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['abs',['abs',['../namespaceSPE.html#a7336f59c99d2223d0d9b38b9ae1e8bf4',1,'SPE']]],
-  ['acos',['acos',['../namespaceSPE.html#a6ec9fbcefdf477161344175c92626664',1,'SPE']]],
-  ['acosh',['acosh',['../namespaceSPE.html#ad3dbfc37c51bfe581e9503084e41836b',1,'SPE']]],
-  ['add',['add',['../structSPE_1_1SPEMat.html#ad80caa2e0f7f8d3a6bfe99c997f66ebd',1,'SPE::SPEMat::add()'],['../structSPE_1_1SPEVec.html#a96d495bc8428599688c604e1f1410b71',1,'SPE::SPEVec::add()']]],
-  ['arange',['arange',['../namespaceSPE.html#a5b58225e99330534cb966d7b5255155a',1,'SPE']]],
-  ['asin',['asin',['../namespaceSPE.html#a6c774f307f3e24c7e82049e4f9aee062',1,'SPE']]],
-  ['asinh',['asinh',['../namespaceSPE.html#aee0c6a800f1400a474aeb562340da15a',1,'SPE']]],
-  ['atan',['atan',['../namespaceSPE.html#ab564bc64b79add2b628dcfc2b9e4d46e',1,'SPE']]],
-  ['atanh',['atanh',['../namespaceSPE.html#a291fdedab5b042d0b15eb65ad7b4d906',1,'SPE']]],
-  ['axpy',['axpy',['../structSPE_1_1SPEMat.html#a71e980df5b6b717f97de0b54913cd9d7',1,'SPE::SPEMat::axpy()'],['../structSPE_1_1SPEVec.html#a94ba11f5972eb02d8395edcd7d371422',1,'SPE::SPEVec::axpy()']]]
+  ['abs',['abs',['../namespaceSPI.html#a4dc7e443a5d0994436c1a28269550284',1,'SPI']]],
+  ['acos',['acos',['../namespaceSPI.html#a24c88dc870d0d40a3bd85439cb20bad3',1,'SPI']]],
+  ['acosh',['acosh',['../namespaceSPI.html#a64dd4c846499276ff78052628f087f98',1,'SPI']]],
+  ['add',['add',['../structSPI_1_1SPIMat.html#a99e48a9d19f80141205522d6ba07e32f',1,'SPI::SPIMat::add()'],['../structSPI_1_1SPIVec.html#a9a2d5b65f85aad78d1390a8949040595',1,'SPI::SPIVec::add()']]],
+  ['arange',['arange',['../namespaceSPI.html#a5404bc4702c11cb7996a57a8115d847e',1,'SPI']]],
+  ['asin',['asin',['../namespaceSPI.html#a9f916f772affb70e354a936ad690ea0a',1,'SPI']]],
+  ['asinh',['asinh',['../namespaceSPI.html#a6bb0eda0add46d3dc1e8f468fe4ea022',1,'SPI']]],
+  ['atan',['atan',['../namespaceSPI.html#af545599719a66e9f794f7ffb4c3f23a5',1,'SPI']]],
+  ['atanh',['atanh',['../namespaceSPI.html#ac7948017c5b11e55fffcf80496877557',1,'SPI']]],
+  ['axpy',['axpy',['../structSPI_1_1SPIMat.html#aaa63fdd3a707c2c50828562b3d660bbe',1,'SPI::SPIMat::axpy()'],['../structSPI_1_1SPIVec.html#a781edfe84e1fae1acb6488cb146e14ab',1,'SPI::SPIVec::axpy()']]]
 ];

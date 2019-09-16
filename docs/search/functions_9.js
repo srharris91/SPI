@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['l2',['L2',['../namespaceSPE.html#af337d69b6070d95b3891154ed9e770af',1,'SPE::L2(SPEVec x1,const SPEVec x2,NormType type)'],['../namespaceSPE.html#a8b15e2409f4534111bfabba2761b916d',1,'SPE::L2(const SPEVec x1,NormType type)']]],
-  ['linspace',['linspace',['../namespaceSPE.html#a6377a754c0c3e9cb14af73f3bbf1775e',1,'SPE']]],
-  ['load',['load',['../namespaceSPE.html#acbca3dadb58dd30c7d21a5f52a8b4180',1,'SPE::load(SPEMat &amp;A,const std::string filename)'],['../namespaceSPE.html#a4741ee4da93678d68ca7cd65b416ceab',1,'SPE::load(std::vector&lt; SPEMat &gt; &amp;As,const std::string filename)'],['../namespaceSPE.html#a4319756478986886ba4e4d0dcd880ab7',1,'SPE::load(SPEVec &amp;A, const std::string filename)']]],
-  ['log',['log',['../namespaceSPE.html#aa99c5e76ace4ec8e672b3decc99fc907',1,'SPE']]],
-  ['log10',['log10',['../namespaceSPE.html#a322c78a11da3b7f164f2f844b28cae5a',1,'SPE']]]
+  ['l2',['L2',['../namespaceSPI.html#a63a416571bf07d940160e02b416b1df3',1,'SPI::L2(SPIVec x1,const SPIVec x2,NormType type)'],['../namespaceSPI.html#afb2baee2788614347bc74656cbbe2295',1,'SPI::L2(const SPIVec x1,NormType type)']]],
+  ['linspace',['linspace',['../namespaceSPI.html#a7cdca86ff3c8397edbaef5d785401b0a',1,'SPI']]],
+  ['load',['load',['../namespaceSPI.html#a958a7a8701c2984455223713983cf39a',1,'SPI::load(SPIMat &amp;A,const std::string filename)'],['../namespaceSPI.html#ae3187956fb963a07a979643c9b4b63db',1,'SPI::load(std::vector&lt; SPIMat &gt; &amp;As,const std::string filename)'],['../namespaceSPI.html#ae28ff518a25f23700e41fa40b4a13d84',1,'SPI::load(SPIVec &amp;A, const std::string filename)']]],
+  ['log',['log',['../namespaceSPI.html#a9e2fa14478c040339d3d650371607f3e',1,'SPI']]],
+  ['log10',['log10',['../namespaceSPI.html#afdfba2d87bb1304ee951dd8d6fb7051c',1,'SPI']]]
 ];

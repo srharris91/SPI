@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['real',['real',['../structSPE_1_1SPEVec.html#a1bba05bcef0e2a892b12a46d81a15c43',1,'SPE::SPEVec::real()'],['../namespaceSPE.html#ab2b6bfe48db055ab9b3920bc67de61c7',1,'SPE::real()']]]
+  ['real',['real',['../structSPI_1_1SPIVec.html#a4be7aea5bd0f1b0e0cb50932408eca12',1,'SPI::SPIVec::real()'],['../namespaceSPI.html#aa5cb8aeaa26a19b2af68fa1dc1b33f0e',1,'SPI::real()']]]
 ];

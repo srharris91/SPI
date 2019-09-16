@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['block',['block',['../namespaceSPE.html#a0f90ecfc207b8d8763761f415378bde0',1,'SPE']]]
+  ['block',['block',['../namespaceSPI.html#a733f79588e90b3ef4546227cdd21a404',1,'SPI']]]
 ];

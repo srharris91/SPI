@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zeros',['zeros',['../namespaceSPE.html#a982857c4c2ca8851cc05420ba0c5586a',1,'SPE']]]
+  ['zeros',['zeros',['../namespaceSPI.html#afa58913149b40db8f093186c695f37a3',1,'SPI']]]
 ];

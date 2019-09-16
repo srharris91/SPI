@@ -1,44 +1,44 @@
-#include "SPEMat.hpp"
-#include "SPEprint.hpp"
+#include "SPIMat.hpp"
+#include "SPIprint.hpp"
 #include <petscviewerhdf5.h>
 
-namespace SPE{
+namespace SPI{
 
     // constructors
     /** \brief constructor with no arguments (no initialization) */
-    SPEMat::SPEMat(
-            std::string _name   ///< [in] name of SPEMat
+    SPIMat::SPIMat(
+            std::string _name   ///< [in] name of SPIMat
             ){name=_name; }
-    /** constructor using another SPEMat */
-    SPEMat::SPEMat(
-            const SPEMat &A,    ///< [in] another SPEMat to copy into this new SPEMat
-            std::string _name   ///< [in] name of SPEMat
+    /** constructor using another SPIMat */
+    SPIMat::SPIMat(
+            const SPIMat &A,    ///< [in] another SPIMat to copy into this new SPIMat
+            std::string _name   ///< [in] name of SPIMat
             ){
         name=_name; 
         (*this) = A;
     }
     /** constructor with one arguement to make square matrix */
-    SPEMat::SPEMat(
+    SPIMat::SPIMat(
             PetscInt rowscols,  ///< [in] number of rows and columns to make the square matrix
-            std::string _name   ///< [in] name of SPEMat
+            std::string _name   ///< [in] name of SPIMat
             ){
         Init(rowscols,rowscols,_name);
     }
     /** \brief constructor of rectangular matrix */
-    SPEMat::SPEMat(
+    SPIMat::SPIMat(
             PetscInt rowsm,     ///< [in] number of rows in matrix
             PetscInt colsn,     ///< [in] number of columns in matrix
-            std::string _name   ///< [in] name of SPEMat
+            std::string _name   ///< [in] name of SPIMat
             ){
         Init(rowsm,colsn,_name);
     }
 
     // Initialize matrix
     /** initialize the matrix of size m by n \return 0 if successful */
-    PetscInt SPEMat::Init(
+    PetscInt SPIMat::Init(
             PetscInt m,         ///< [in] number of rows
             PetscInt n,         ///< [in] number of columns
-            std::string _name   ///< [in] name of SPEMat
+            std::string _name   ///< [in] name of SPIMat
             ){
         name=_name;
         rows=m;
@@ -52,8 +52,8 @@ namespace SPE{
         return 0;
     }
 
-    /** set a scalar value at position row m and column n \return current SPEMat after setting value */
-    SPEMat& SPEMat::set(
+    /** set a scalar value at position row m and column n \return current SPIMat after setting value */
+    SPIMat& SPIMat::set(
             PetscInt m,         ///< [in] row to insert scalar
             PetscInt n,         ///< [in] column to insert scalar
             const PetscScalar v ///< [in] scalar to insert in matrix
@@ -62,7 +62,7 @@ namespace SPE{
         return (*this);
     }
     /** \brief add a scalar value at position row m and column n \return current matrix after adding the value*/
-    SPEMat& SPEMat::add(
+    SPIMat& SPIMat::add(
             PetscInt m,         ///< [in] row to add scalar
             PetscInt n,         ///< [in] column to add scalar
             const PetscScalar v ///< [in] scalar to add in matrix
@@ -73,7 +73,7 @@ namespace SPE{
 
     // overloaded operators, get
     /** \brief get local value at row m, column n \return scalar at specified location */
-    PetscScalar SPEMat::operator()(
+    PetscScalar SPIMat::operator()(
             PetscInt m,         ///< [in] row to get scalar
             PetscInt n,         ///< [in] column to get scalar
             PetscBool global    ///< [in] whether to broadcast value to all processors or not (default is false)
@@ -94,7 +94,7 @@ namespace SPE{
     }
     // overloaded operator, set
     /** \brief set operator the same as set function \return current matrix after setting value */
-    SPEMat& SPEMat::operator()(
+    SPIMat& SPIMat::operator()(
             PetscInt m,         ///< [in] row to set scalar
             PetscInt n,         ///< [in] column to set scalar
             const PetscScalar v ///< [in] scalar to set in matrix
@@ -103,7 +103,7 @@ namespace SPE{
         return (*this);
     }
     /** \brief set operator the same as set function \return current matrix after setting value */
-    SPEMat& SPEMat::operator()(
+    SPIMat& SPIMat::operator()(
             PetscInt m,         ///< [in] row to set scalar
             PetscInt n,         ///< [in] column to set scalar
             const double v      ///< [in] scalar to set in matrix
@@ -112,7 +112,7 @@ namespace SPE{
         return (*this)(m,n,(PetscScalar)v);
     }
     /** \brief set operator the same as set function \return current matrix after setting value */
-    SPEMat& SPEMat::operator()(
+    SPIMat& SPIMat::operator()(
             PetscInt m,         ///< [in] row to set scalar
             PetscInt n,         ///< [in] column to set scalar
             const int v         ///< [in] scalar to set in matrix
@@ -123,10 +123,10 @@ namespace SPE{
 
     // overloaded operator, set
     /** \brief set submatrix into matrix at row m, col n \return current matrix after setting value */
-    SPEMat& SPEMat::operator()(
+    SPIMat& SPIMat::operator()(
             PetscInt m,         ///< [in] row to set submatrix
             PetscInt n,         ///< [in] column to set submatrix
-            const SPEMat &Asub, ///< [in] submatrix to set in matrix
+            const SPIMat &Asub, ///< [in] submatrix to set in matrix
             InsertMode addv     ///< [in] default to ADD_VALUES in submatrix, can do INSERT_VALUES instead
             ){
         //InsertMode addv = INSERT_VALUES;
@@ -161,33 +161,33 @@ namespace SPE{
     }
     // overloaded operator, assemble
     /** \brief assmelbe the matrix \return the current matrix */
-    SPEMat& SPEMat::operator()(){
+    SPIMat& SPIMat::operator()(){
         ierr = MatAssemblyBegin(mat,MAT_FINAL_ASSEMBLY);CHKERRXX(ierr);
         ierr = MatAssemblyEnd(mat,MAT_FINAL_ASSEMBLY);CHKERRXX(ierr);
         return (*this);
     }
     // overloaded operator, MatAXPY
     /** \brief MatAXPY,  Y = 1.*X + Y operation \return current matrix after operation */
-    SPEMat& SPEMat::operator+=(
-            const SPEMat &X ///< [in] X in Y+=X operation
+    SPIMat& SPIMat::operator+=(
+            const SPIMat &X ///< [in] X in Y+=X operation
             ){
         ierr = MatAXPY(this->mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return *this;
     }
     /** \brief MatAXPY function call to add a*X to the current mat \return current matrix after operation */
-    SPEMat& SPEMat::axpy(
+    SPIMat& SPIMat::axpy(
             const PetscScalar a,    ///< [in] scalar a in Y = a*X + Y operation
-            const SPEMat &X         ///< [in] matrix X in Y = a*X + Y operation
+            const SPIMat &X         ///< [in] matrix X in Y = a*X + Y operation
             ){
         ierr = MatAXPY(this->mat,a,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return (*this);
     }
     // overloaded operator, MatAXPY
     /** \brief Y + X operation \return new matrix after operation */
-    SPEMat SPEMat::operator+(
-            const SPEMat &X ///< [in] X in Y+X operation
+    SPIMat SPIMat::operator+(
+            const SPIMat &X ///< [in] X in Y+X operation
             ){
-        SPEMat A;
+        SPIMat A;
         A=*this;
         ierr = MatAXPY(A.mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         ierr = MatSetType(A.mat,MATMPIAIJ);CHKERRXX(ierr);
@@ -195,59 +195,59 @@ namespace SPE{
     }
     // overloaded operator, MatAXPY
     /** \brief Y = -1.*X + Y operation \return Y after operation */
-    SPEMat& SPEMat::operator-=(
-            const SPEMat &X ///< [in] X in Y = -1.*X + Y operation
+    SPIMat& SPIMat::operator-=(
+            const SPIMat &X ///< [in] X in Y = -1.*X + Y operation
             ){
         ierr = MatAXPY(this->mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         return *this;
     }
     // overloaded operator, MatAXPY
     /** \brief Y - X operation \return new matrix after operation */
-    SPEMat SPEMat::operator-(
-            const SPEMat &X     ///< [in] X in Y-X operation
+    SPIMat SPIMat::operator-(
+            const SPIMat &X     ///< [in] X in Y-X operation
             ){
-        SPEMat A;
+        SPIMat A;
         A=*this;
         ierr = MatAXPY(A.mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         ierr = MatSetType(A.mat,MATMPIAIJ);CHKERRXX(ierr);
         return A;
     }
     /** \brief -X operation \return new matrix after operation */
-    SPEMat SPEMat::operator-() const {
-        SPEMat A;
+    SPIMat SPIMat::operator-() const {
+        SPIMat A;
         A=-1.*(*this);
         return A;
     }
     // overload operator, scale with scalar
     /** \brief Y*a operation \return new matrix after operation */
-    SPEMat SPEMat::operator*(
+    SPIMat SPIMat::operator*(
             const PetscScalar a     ///< [in] scalar
             ){
-        SPEMat A;
+        SPIMat A;
         A=*this;
         ierr = MatScale(A.mat,a);CHKERRXX(ierr);
         return A;
     }
     /** \brief Y*a operation \return new matrix after operation */
-    SPEMat SPEMat::operator*(
+    SPIMat SPIMat::operator*(
             const double a          ///< [in] scalar
             ){
-        SPEMat A;
+        SPIMat A;
         A=*this;
         ierr = MatScale(A.mat,a);CHKERRXX(ierr);
         return A;
     }
     /** \brief A*x operation to return a vector \return new vector after operation */
-    SPEVec SPEMat::operator*(
-            const SPEVec &x         ///< [in] x in A*x matrix vector multiplication
+    SPIVec SPIMat::operator*(
+            const SPIVec &x         ///< [in] x in A*x matrix vector multiplication
             ){
-        SPEVec b(x.rows);
+        SPIVec b(x.rows);
         ierr = MatMult(mat,x.vec,b.vec);CHKERRXX(ierr);
         return b;
     }
     // overload operator, scale with scalar
     /** \brief Y = Y*a operation \return Y after operation */
-    SPEMat& SPEMat::operator*=(
+    SPIMat& SPIMat::operator*=(
             const PetscScalar a     ///< [in] scalar in Y*a operation
             ){
         ierr = MatScale(this->mat,a);CHKERRXX(ierr);
@@ -255,10 +255,10 @@ namespace SPE{
     }
     // overload operator, matrix multiply
     /** \brief Y*A operation \return new matrix after matrix matrix multiply */
-    SPEMat SPEMat::operator*(
-            const SPEMat &A         ///< [in] A matrix in Y*A operation
+    SPIMat SPIMat::operator*(
+            const SPIMat &A         ///< [in] A matrix in Y*A operation
             ){
-        SPEMat C;
+        SPIMat C;
         C.rows=rows;
         C.cols=cols;
         ierr = MatMatMult(mat,A.mat,MAT_INITIAL_MATRIX,PETSC_DEFAULT,&C.mat); CHKERRXX(ierr);
@@ -267,11 +267,11 @@ namespace SPE{
     }
     // overload operator, copy and initialize
     /** \brief Y=X with initialization of Y using MatConvert \return Y after operation */
-    SPEMat& SPEMat::operator=(
-            const SPEMat &A         ///< [in] A in Y=A operation
+    SPIMat& SPIMat::operator=(
+            const SPIMat &A         ///< [in] A in Y=A operation
             ){
         if(flag_init){
-            this->~SPEMat();
+            this->~SPIMat();
             //ierr = MatCopy(A.mat,mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         }
         //else{
@@ -284,12 +284,12 @@ namespace SPE{
         return *this;
     }
     // overload % for element wise multiplication
-    //SPEMat operator%(SPEMat A){
+    //SPIMat operator%(SPIMat A){
     //return *this;
     //}     
     /** \brief A = Transpose(*this.mat) operation with initialization of A \return transpose of current matrix */
-    PetscInt SPEMat::T(
-            SPEMat &A       ///< [out] transpose of current matrix
+    PetscInt SPIMat::T(
+            SPIMat &A       ///< [out] transpose of current matrix
             ){
         //ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
         //A();
@@ -298,41 +298,41 @@ namespace SPE{
         return 0;
     }
     /** \brief Transpose the current mat \return current matrix after transpose */
-    SPEMat& SPEMat::T(){
+    SPIMat& SPIMat::T(){
         ierr = MatTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
         return (*this);
-        //SPEMat T1;
+        //SPIMat T1;
         //ierr = MatCreateTranspose(mat,&T1.mat);CHKERRXX(ierr);
-        //SPEMat T1;
+        //SPIMat T1;
         //ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&T1.mat);CHKERRXX(ierr);
         //return T1;
     }
     /** \brief A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate) \return current matrix without hermitian transpose */
-    PetscInt SPEMat::H(
-            SPEMat &A       ///< [out] hermitian transpose of current matrix saved in new initialized matrix
+    PetscInt SPIMat::H(
+            SPIMat &A       ///< [out] hermitian transpose of current matrix saved in new initialized matrix
             ){ // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
         ierr = MatHermitianTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
         return 0;
     }
     /** \brief Hermitian Transpose the current mat \return current matrix after transpose */
-    SPEMat& SPEMat::H(){ // Hermitian Transpose the current mat
+    SPIMat& SPIMat::H(){ // Hermitian Transpose the current mat
         ierr = MatHermitianTranspose(mat,MAT_INPLACE_MATRIX,&mat);CHKERRXX(ierr);
         return (*this);
     }
     /** \brief elemenwise conjugate current matrix \return current matrix after conjugate of each element */
-    SPEMat& SPEMat::conj(){
+    SPIMat& SPIMat::conj(){
         ierr = MatConjugate(mat);CHKERRXX(ierr);
         return (*this);
     }
     /** \brief get diagonal of matrix \return vector of current diagonal */
-    SPEVec SPEMat::diag(){ // get diagonal of matrix
-        SPEVec d(rows);
+    SPIVec SPIMat::diag(){ // get diagonal of matrix
+        SPIVec d(rows);
         ierr = MatGetDiagonal(mat,d.vec); CHKERRXX(ierr);
         return d;
     }
     // print matrix to screen
     /** \brief print mat to screen using PETSC_VIEWER_STDOUT_WORLD \return 0 if successful */
-    PetscInt SPEMat::print(){
+    PetscInt SPIMat::print(){
         (*this)();
         PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
         ierr = MatView(mat,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
@@ -341,36 +341,36 @@ namespace SPE{
     }
 
     /** \brief destructor to delete memory */
-    SPEMat::~SPEMat(){
+    SPIMat::~SPIMat(){
         flag_init=PETSC_FALSE;
         ierr = MatDestroy(&mat);CHKERRXX(ierr);
     }
 
     // overload operator, scale with scalar
     /** \brief a*A operation to be equivalent to A*a \return new matrix of a*A */
-    SPEMat operator*(
+    SPIMat operator*(
             const PetscScalar a,    ///< [in] scalar a in a*A
-            const SPEMat A          ///< [in] matrix A in a*A
+            const SPIMat A          ///< [in] matrix A in a*A
             ){
-        SPEMat B;
+        SPIMat B;
         B=A;
         B.ierr = MatScale(B.mat,a);CHKERRXX(B.ierr);
         return B;
     }
     /** \brief A*a operation to be equivalent to A*a \return new matrix of A*a operation */
-    SPEMat operator*(const SPEMat A, const PetscScalar a){
-        SPEMat B;
+    SPIMat operator*(const SPIMat A, const PetscScalar a){
+        SPIMat B;
         B=A;
         B.ierr = MatScale(B.mat,a);CHKERRXX(B.ierr);
         return B;
     }
     // overload operator, Linear System solve Ax=b
     /** \brief Solve linear system, Ax=b using b/A notation \return x vector in Ax=b solved linear system */
-    SPEVec operator/(
-            const SPEVec &b,    ///< [in] b in Ax=b
-            const SPEMat &A     ///< [in] A in Ax=b
+    SPIVec operator/(
+            const SPIVec &b,    ///< [in] b in Ax=b
+            const SPIMat &A     ///< [in] A in Ax=b
             ){
-        SPEVec x;
+        SPIVec x;
         KSP    ksp;  // Linear solver context
         PetscErrorCode ierr;
         ierr = VecDuplicate(b.vec,&x.vec);CHKERRXX(ierr);
@@ -408,11 +408,11 @@ namespace SPE{
     }
     // identity matrix formation
     /** \brief create, form, and return identity matrix of size n \return identity matrix of size nxn */
-    SPEMat eye(
+    SPIMat eye(
             const PetscInt n        ///< [in] n size of square identity matrix
             ){
-        SPEMat I(n,"I");
-        SPEVec one(n);
+        SPIMat I(n,"I");
+        SPIVec one(n);
         I.ierr = VecSet(one.vec,1.);CHKERRXX(I.ierr);
         I.ierr = MatDiagonalSet(I.mat,one.vec,INSERT_VALUES);CHKERRXX(I.ierr);
 
@@ -420,19 +420,19 @@ namespace SPE{
     }
     // diagonal matrix
     /** \brief set diagonal of matrix \return new matrix with  a diagonal vector set as the main diagonal */
-    SPEMat diag(
-            const SPEVec &d     ///< [in] diagonal vector to set along main diagonal
+    SPIMat diag(
+            const SPIVec &d     ///< [in] diagonal vector to set along main diagonal
             ){ // set diagonal of matrix
-        SPEMat A(d.rows);
+        SPIMat A(d.rows);
         A.ierr = MatDiagonalSet(A.mat,d.vec,INSERT_VALUES);CHKERRXX(A.ierr);
         return A;
     }
 
     // kron inner product
     /** \brief set kronecker inner product of two matrices \return kronecker inner product of the two matrices */
-    SPEMat kron(
-            const SPEMat &A,    ///< [in] A in A kron B operation
-            const SPEMat &B     ///< [in] B in A kron B operation
+    SPIMat kron(
+            const SPIMat &A,    ///< [in] A in A kron B operation
+            const SPIMat &B     ///< [in] B in A kron B operation
             ){
         PetscErrorCode ierr;
 
@@ -446,7 +446,7 @@ namespace SPE{
         nc=m*p;
 
         // init C
-        SPEMat C(nc);
+        SPIMat C(nc);
 
         // kron function C=kron(A,B)
         PetscInt ncols;
@@ -500,10 +500,10 @@ namespace SPE{
         return C;
     }
 
-    /** \brief solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value e.g.  std::tie(alpha, eig_vector) = eig(A,B,0.1+0.4*PETSC_i) */
-    std::tuple<PetscScalar, SPEVec> eig(
-            const SPEMat &A,        ///< [in] A in Ax=kBx generalized eigenvalue problem
-            const SPEMat &B,        ///< [in] B in Ax=kBx generalized eigenvalue problem
+    /** \brief solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value e.g.  std::tie(alpha, eig_vector) = eig(A,B,0.1+0.4*PETSC_i) */
+    std::tuple<PetscScalar, SPIVec> eig(
+            const SPIMat &A,        ///< [in] A in Ax=kBx generalized eigenvalue problem
+            const SPIMat &B,        ///< [in] B in Ax=kBx generalized eigenvalue problem
             const PetscScalar target,   ///< [in] target eigenvalue to solve for
             const PetscReal tol,    ///< [in] tolerance of eigenvalue solver
             const PetscInt max_iter ///< [in] maximum number of iterations
@@ -515,7 +515,7 @@ namespace SPE{
         //KSP             ksp;        /* linear solver context petsc */
         PetscErrorCode  ierr;
         PetscScalar ki,alpha;
-        SPEVec xi(rows),eig_vec(rows);
+        SPIVec xi(rows),eig_vec(rows);
 
         PetscScalar kr_temp, ki_temp;
         
@@ -635,16 +635,16 @@ namespace SPE{
         return std::make_tuple(alpha,eig_vec);
         //return std::make_tuple(alpha,alpha);
     }
-    /** \brief solve general polynomial eigenvalue problem of (A0 + A1*alpha + A2*alpha^2 + ...)*x = 0 and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value e.g.  std::tie(alpha, eig_vector) = eig({A0,A1,A2...},0.1+0.4*PETSC_i) */
-    std::tuple<PetscScalar, SPEVec> polyeig(
-            const std::vector<SPEMat> &As,        ///< [in] {A0,A1,A2...} in generalized polynomial eigenvalue problem
+    /** \brief solve general polynomial eigenvalue problem of (A0 + A1*alpha + A2*alpha^2 + ...)*x = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value e.g.  std::tie(alpha, eig_vector) = eig({A0,A1,A2...},0.1+0.4*PETSC_i) */
+    std::tuple<PetscScalar, SPIVec> polyeig(
+            const std::vector<SPIMat> &As,        ///< [in] {A0,A1,A2...} in generalized polynomial eigenvalue problem
             const PetscScalar target,   ///< [in] target eigenvalue to solve for
             const PetscReal tol,    ///< [in] tolerance of eigenvalue solver
             const PetscInt max_iter ///< [in] maximum number of iterations
             ){
         // if linear eigenvalue problem, use EPS
         if(As.size()==1){
-            return eig(As[0],SPE::eye(As[0].rows),target,tol,max_iter);
+            return eig(As[0],SPI::eye(As[0].rows),target,tol,max_iter);
         }
         else if(As.size()==2){
             return eig(As[0],-As[1],target,tol,max_iter);
@@ -654,7 +654,7 @@ namespace SPE{
             PEP             pep;        /* polynomial eigenproblem solver context slepc */
             PetscErrorCode  ierr;
             PetscScalar ki,alpha;
-            SPEVec xi(rows),eig_vec(rows);
+            SPIVec xi(rows),eig_vec(rows);
             PetscScalar kr_temp, ki_temp;
             // Create the eigenvalue solver and set various options
             ierr = PEPCreate(PETSC_COMM_WORLD,&pep);CHKERRXX(ierr);
@@ -687,8 +687,8 @@ namespace SPE{
         }
     }
     // /** \brief set block matrices using an input array of size rows*cols.  Fills rows first \return new matrix with inserted blocks */
-    //SPEMat block(
-    //        const SPEMat Blocks[],  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
+    //SPIMat block(
+    //        const SPIMat Blocks[],  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
     //        const PetscInt rows,    ///< [in] number of rows of submatrices e.g. 2
     //        const PetscInt cols     ///< [in] number of columns of submatrices e.g. 2
     //        ){
@@ -708,7 +708,7 @@ namespace SPE{
 
     //    // TODO check if all rows and columns match for block matrix....
 
-    //    SPEMat A(msum,nsum);
+    //    SPIMat A(msum,nsum);
 
     //    for (PetscInt j=0; j<cols; ++j){
     //        for(PetscInt i=0; i<rows; ++i){
@@ -719,9 +719,9 @@ namespace SPE{
     //    return A;
     //}
     /** \brief set block matrices using an input array of size rows*cols.  Fills rows first \return new matrix with inserted blocks */
-    SPEMat block(
-            //std::vector<std::vector<SPEMat>> Blocks  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
-            const Block2D<SPEMat> Blocks                        ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
+    SPIMat block(
+            //std::vector<std::vector<SPIMat>> Blocks  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
+            const Block2D<SPIMat> Blocks                        ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
             ){
         const PetscInt rows=Blocks.size();    // number of rows of submatrices e.g. 2
         const PetscInt cols=Blocks[0].size(); // number of columns of submatrices e.g. 2
@@ -741,7 +741,7 @@ namespace SPE{
 
         // TODO check if all rows and columns match for block matrix.... user error catch
 
-        SPEMat A(msum,nsum);
+        SPIMat A(msum,nsum);
 
         for (PetscInt j=0; j<cols; ++j){
             for(PetscInt i=0; i<rows; ++i){
@@ -764,7 +764,7 @@ namespace SPE{
      *
      * \returns 0 if successful */
     PetscInt save(
-            const SPEMat &A,        ///< [in] A to save in 
+            const SPIMat &A,        ///< [in] A to save in 
             const std::string filename ///< [in] filename to save data to
             ){
         PetscViewer     viewer;
@@ -784,7 +784,7 @@ namespace SPE{
     }
     /** \brief save matrices to filename in binary format (see Petsc documentation for format \returns 0 if successful */
     PetscInt save(
-            const std::vector<SPEMat> &As,        ///< [in] A to save in 
+            const std::vector<SPIMat> &As,        ///< [in] A to save in 
             const std::string filename ///< [in] filename to save data to
             ){
         PetscViewer     viewer;
@@ -804,9 +804,9 @@ namespace SPE{
         ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
         return 0;
     }
-    /** \brief load matrix from filename from binary format (works with save(SPEMat,std::string) function \returns 0 if successful */
+    /** \brief load matrix from filename from binary format (works with save(SPIMat,std::string) function \returns 0 if successful */
     PetscInt load(
-            SPEMat &A,        ///< [inout] A to load data into (must be initialized to the right size)
+            SPIMat &A,        ///< [inout] A to load data into (must be initialized to the right size)
             const std::string filename ///< [in] filename to read
             ){
         PetscViewer viewer;
@@ -816,9 +816,9 @@ namespace SPE{
         A.ierr = PetscViewerDestroy(&viewer); CHKERRQ(A.ierr);
         return 0;
     }
-    /** \brief load matrix from filename from binary format (works with save(SPEMat,std::string) function \returns 0 if successful */
+    /** \brief load matrix from filename from binary format (works with save(SPIMat,std::string) function \returns 0 if successful */
     PetscInt load(
-            std::vector<SPEMat> &As,         ///< [inout] matrices to load data into (must be initialized to the right size)
+            std::vector<SPIMat> &As,         ///< [inout] matrices to load data into (must be initialized to the right size)
             const std::string filename      ///< [in] filename to read
             ){
         PetscViewer viewer;
@@ -834,7 +834,7 @@ namespace SPE{
 
     /** \brief draw nonzero structure of matrix \returns 0 if successful */
     PetscInt draw(
-            const SPEMat &A         ///< [in] A to draw nonzero structure
+            const SPIMat &A         ///< [in] A to draw nonzero structure
             ){
         PetscViewer     viewer;
         PetscErrorCode ierr;
@@ -842,7 +842,7 @@ namespace SPE{
         ierr = MatView(A.mat,viewer);CHKERRQ(ierr);
 
         // pause until user inputs at command line
-        SPE::printf("  draw(SPEMat) with title=%s, hit ENTER to continue",A.name.c_str());
+        SPI::printf("  draw(SPIMat) with title=%s, hit ENTER to continue",A.name.c_str());
         std::cin.ignore();
 
         ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);

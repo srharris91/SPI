@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['cols',['cols',['../structSPE_1_1SPEMat.html#a4da19954a207f07f640361cd883d611e',1,'SPE::SPEMat']]],
-  ['conj',['conj',['../structSPE_1_1SPEMat.html#aa6b1ac7e266cfdcc69c5f76b54f3d6d1',1,'SPE::SPEMat::conj()'],['../structSPE_1_1SPEVec.html#a7820467bcf42a2d78b9657cb972c1a45',1,'SPE::SPEVec::conj()'],['../namespaceSPE.html#a8af42711c734dbbbac2186f96090cb92',1,'SPE::conj()']]],
-  ['cos',['cos',['../namespaceSPE.html#ac59f3f652cb0ba5bd3b5096050ec3521',1,'SPE']]],
-  ['cosh',['cosh',['../namespaceSPE.html#ab131499a260bec24d6d2d7686de65dbb',1,'SPE']]]
+  ['cols',['cols',['../structSPI_1_1SPIMat.html#aa738c1f222a190aadea196974dca7ff4',1,'SPI::SPIMat']]],
+  ['conj',['conj',['../structSPI_1_1SPIMat.html#adc052274746877067cd9229eac330c31',1,'SPI::SPIMat::conj()'],['../structSPI_1_1SPIVec.html#a505d5754c4cb1c10a4672492a775e20d',1,'SPI::SPIVec::conj()'],['../namespaceSPI.html#af66d1265ead393fe9706d8d80382db82',1,'SPI::conj()']]],
+  ['cos',['cos',['../namespaceSPI.html#a825313ca488cd0b92b6934333c985be4',1,'SPI']]],
+  ['cosh',['cosh',['../namespaceSPI.html#acc457b5b69a04146b0c21091e3789596',1,'SPI']]]
 ];

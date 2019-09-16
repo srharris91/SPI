@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['block',['block',['../namespaceSPE.html#a0f90ecfc207b8d8763761f415378bde0',1,'SPE']]],
-  ['block2d',['Block2D',['../namespaceSPE.html#a595ce37f5989caedb2fce6495bd900eb',1,'SPE']]]
+  ['block',['block',['../namespaceSPI.html#a733f79588e90b3ef4546227cdd21a404',1,'SPI']]],
+  ['block2d',['Block2D',['../namespaceSPI.html#a7bee169eed9eeff05293a672f19b0454',1,'SPI']]]
 ];

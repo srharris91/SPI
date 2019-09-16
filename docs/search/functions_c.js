@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['polyeig',['polyeig',['../namespaceSPE.html#a10260fad80ec7ed1bf8c905d1714ffb6',1,'SPE']]],
-  ['pow',['pow',['../namespaceSPE.html#a8f629d2328571a525b4d43c29632d2f3',1,'SPE::pow(const SPEVec &amp;A, SPEVec &amp;B)'],['../namespaceSPE.html#aee09c85c691dd2308f56cc1eef0bfc96',1,'SPE::pow(const SPEVec &amp;A,PetscScalar b)']]],
-  ['print',['print',['../structSPE_1_1SPEMat.html#a2ddf10b406fc27f20c8b07158e3b6e26',1,'SPE::SPEMat::print()'],['../structSPE_1_1SPEVec.html#aaf77d3a342ac4e93b1de5003588ebba6',1,'SPE::SPEVec::print()']]],
-  ['printf',['printf',['../namespaceSPE.html#ab42b87ed04574124cb2ced5ab24046b1',1,'SPE']]]
+  ['polyeig',['polyeig',['../namespaceSPI.html#a0f40808f47313232edd670eadc286d21',1,'SPI']]],
+  ['pow',['pow',['../namespaceSPI.html#a90c004a37109f4dc4e9ed819f7057820',1,'SPI::pow(const SPIVec &amp;A, SPIVec &amp;B)'],['../namespaceSPI.html#ab78e33c8489584bfff4fa4f6d3ab2683',1,'SPI::pow(const SPIVec &amp;A,PetscScalar b)']]],
+  ['print',['print',['../structSPI_1_1SPIMat.html#a54985e2734e903ab7972d202f8bde7ed',1,'SPI::SPIMat::print()'],['../structSPI_1_1SPIVec.html#a76f51795267dbf0161ee13657dad9d47',1,'SPI::SPIVec::print()']]],
+  ['printf',['printf',['../namespaceSPI.html#a5de3301bb631185b58f689053d52deb8',1,'SPI']]]
 ];

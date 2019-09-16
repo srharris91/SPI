@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rows',['rows',['../structSPE_1_1SPEMat.html#ac211907027c52bf16466f11666512fb0',1,'SPE::SPEMat::rows()'],['../structSPE_1_1SPEVec.html#ade9297dee4f6779e732af192626ba950',1,'SPE::SPEVec::rows()']]]
+  ['rows',['rows',['../structSPI_1_1SPIMat.html#a48536e4f21c35c09c9ade4450ef0f848',1,'SPI::SPIMat::rows()'],['../structSPI_1_1SPIVec.html#ad170878751ae7ad7ea2f0c16fa348be3',1,'SPI::SPIVec::rows()']]]
 ];

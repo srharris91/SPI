@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mat',['mat',['../structSPE_1_1SPEMat.html#a67c0676766fe8b58155c3273b1074d75',1,'SPE::SPEMat']]]
+  ['mat',['mat',['../structSPI_1_1SPIMat.html#ab0d6926a5834585539acf4f8728c4177',1,'SPI::SPIMat']]]
 ];

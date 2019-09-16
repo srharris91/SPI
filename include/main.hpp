@@ -3,10 +3,10 @@
 #include <iostream>
 #include <petscksp.h>
 #include <tuple>
-#include "SPEMat.hpp"
-#include "SPEVec.hpp"
-#include "SPEprint.hpp"
-/** \mainpage SPE Solver
+#include "SPIMat.hpp"
+#include "SPIVec.hpp"
+#include "SPIprint.hpp"
+/** \mainpage SPI Solver
  *
  * \author Shaun Harris (<A HREF="https://srharris91.github.io/" TARGET="_top">https://srharris91.github.io/</A>)\n
  * Copyright (C) 2019\n
