@@ -129,11 +129,14 @@ Functions</h2></td></tr>
 <tr class="memitem:afd712e3d955e3cef2d918d1794a2a359"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#afd712e3d955e3cef2d918d1794a2a359">eig</a> (const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;A,const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;B,const PetscScalar target,const PetscReal tol,const PetscInt max_iter)</td></tr>
 <tr class="memdesc:afd712e3d955e3cef2d918d1794a2a359"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)  <a href="#afd712e3d955e3cef2d918d1794a2a359">More...</a><br /></td></tr>
 <tr class="separator:afd712e3d955e3cef2d918d1794a2a359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10260fad80ec7ed1bf8c905d1714ffb6"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#a10260fad80ec7ed1bf8c905d1714ffb6">polyeig</a> (const std::vector&lt; <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &gt; &amp;As,const PetscScalar target,const PetscReal tol,const PetscInt max_iter)</td></tr>
+<tr class="memdesc:a10260fad80ec7ed1bf8c905d1714ffb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general polynomial eigenvalue problem of (A0 + A1*alpha + A2*alpha^2 + ...)*x = 0 and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)  <a href="#a10260fad80ec7ed1bf8c905d1714ffb6">More...</a><br /></td></tr>
+<tr class="separator:a10260fad80ec7ed1bf8c905d1714ffb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f90ecfc207b8d8763761f415378bde0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#a0f90ecfc207b8d8763761f415378bde0">block</a> (const <a class="el" href="namespaceSPE.html#a595ce37f5989caedb2fce6495bd900eb">Block2D</a>&lt; <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &gt; Blocks)</td></tr>
 <tr class="memdesc:a0f90ecfc207b8d8763761f415378bde0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set block matrices using an input array of size rows*cols. Fills rows first  <a href="#a0f90ecfc207b8d8763761f415378bde0">More...</a><br /></td></tr>
 <tr class="separator:a0f90ecfc207b8d8763761f415378bde0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb5bdf1c9046cf32e273971059536a3f"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#adb5bdf1c9046cf32e273971059536a3f">save</a> (const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;A,const std::string filename)</td></tr>
-<tr class="memdesc:adb5bdf1c9046cf32e273971059536a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">save matrix to filename in binary format (see Petsc documentation for format  <a href="#adb5bdf1c9046cf32e273971059536a3f">More...</a><br /></td></tr>
+<tr class="memdesc:adb5bdf1c9046cf32e273971059536a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">save matrix to filename in binary format (see Petsc documentation for format ) Format is (from Petsc documentation): int MAT_FILE_CLASSID int number of rows int number of columns int total number of nonzeros int *number nonzeros in each row int *column indices of all nonzeros (starting index is zero) PetscScalar *values of all nonzeros  <a href="#adb5bdf1c9046cf32e273971059536a3f">More...</a><br /></td></tr>
 <tr class="separator:adb5bdf1c9046cf32e273971059536a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac104d0884b7029533f624fccd1fe7bfd"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#ac104d0884b7029533f624fccd1fe7bfd">save</a> (const std::vector&lt; <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &gt; &amp;As,const std::string filename)</td></tr>
 <tr class="memdesc:ac104d0884b7029533f624fccd1fe7bfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">save matrices to filename in binary format (see Petsc documentation for format  <a href="#ac104d0884b7029533f624fccd1fe7bfd">More...</a><br /></td></tr>
@@ -144,6 +147,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a4741ee4da93678d68ca7cd65b416ceab"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#a4741ee4da93678d68ca7cd65b416ceab">load</a> (std::vector&lt; <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &gt; &amp;As,const std::string filename)</td></tr>
 <tr class="memdesc:a4741ee4da93678d68ca7cd65b416ceab"><td class="mdescLeft">&#160;</td><td class="mdescRight">load matrix from filename from binary format (works with save(SPEMat,std::string) function  <a href="#a4741ee4da93678d68ca7cd65b416ceab">More...</a><br /></td></tr>
 <tr class="separator:a4741ee4da93678d68ca7cd65b416ceab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2560a0953e789466983c57c9456089b"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#ac2560a0953e789466983c57c9456089b">draw</a> (const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;A)</td></tr>
+<tr class="memdesc:ac2560a0953e789466983c57c9456089b"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw nonzero structure of matrix  <a href="#ac2560a0953e789466983c57c9456089b">More...</a><br /></td></tr>
+<tr class="separator:ac2560a0953e789466983c57c9456089b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab42b87ed04574124cb2ced5ab24046b1"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#ab42b87ed04574124cb2ced5ab24046b1">printf</a> (std::string msg,...)</td></tr>
 <tr class="separator:ab42b87ed04574124cb2ced5ab24046b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78d497a4b89e9e7c0bc9774b501efaa1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPE.html#a78d497a4b89e9e7c0bc9774b501efaa1">operator*</a> (const PetscScalar a, const <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &amp;A)</td></tr>
@@ -271,7 +277,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="SPEMat_8hpp_source.html#l00013">13</a> of file <a class="el" href="SPEMat_8hpp_source.html">SPEMat.hpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8hpp_source.html#l00014">14</a> of file <a class="el" href="SPEMat_8hpp_source.html">SPEMat.hpp</a>.</p>
 
 </div>
 </div>
@@ -570,7 +576,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00666">666</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00722">722</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -663,7 +669,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00417">417</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00423">423</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -731,6 +737,33 @@ new matrix with inserted blocks </dd></dl>
 
 </div>
 </div>
+<a class="anchor" id="ac2560a0953e789466983c57c9456089b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PetscInt SPE::draw </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>draw nonzero structure of matrix </p>
+<dl class="section return"><dt>Returns</dt><dd>0 if successful </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">A</td><td>A to draw nonzero structure </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00836">836</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="afd712e3d955e3cef2d918d1794a2a359"></a>
 <div class="memitem">
 <div class="memproto">
@@ -786,7 +819,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00498">498</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00504">504</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -833,7 +866,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00405">405</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00411">411</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -897,7 +930,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00427">427</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00433">433</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1098,7 +1131,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00742">742</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00808">808</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1136,7 +1169,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00754">754</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00820">820</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1205,6 +1238,42 @@ new matrix with inserted blocks </dd></dl>
 
 </div>
 </div>
+<a class="anchor" id="a78d497a4b89e9e7c0bc9774b501efaa1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> SPE::operator* </td>
+          <td>(</td>
+          <td class="paramtype">const PetscScalar&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &amp;&#160;</td>
+          <td class="paramname"><em>Y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Z=a*Y operation to be equivalent to Y*a </p><dl class="section return"><dt>Returns</dt><dd>Z in Z=a*Y operation </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">a</td><td>scalar a in a*Y operation </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">Y</td><td>Y in Z=a*Y </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="SPEVec_8cpp_source.html#l00361">361</a> of file <a class="el" href="SPEVec_8cpp_source.html">SPEVec.cpp</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a45b25e7b8c500ceff3679856901facfc"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1239,7 +1308,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00345">345</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00351">351</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1270,43 +1339,7 @@ new matrix with inserted blocks </dd></dl>
 <p>A*a operation to be equivalent to A*a. </p>
 <dl class="section return"><dt>Returns</dt><dd>new matrix of A*a operation </dd></dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00355">355</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a78d497a4b89e9e7c0bc9774b501efaa1"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> SPE::operator* </td>
-          <td>(</td>
-          <td class="paramtype">const PetscScalar&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &amp;&#160;</td>
-          <td class="paramname"><em>Y</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Z=a*Y operation to be equivalent to Y*a </p><dl class="section return"><dt>Returns</dt><dd>Z in Z=a*Y operation </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">a</td><td>scalar a in a*Y operation </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">Y</td><td>Y in Z=a*Y </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Definition at line <a class="el" href="SPEVec_8cpp_source.html#l00361">361</a> of file <a class="el" href="SPEVec_8cpp_source.html">SPEVec.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00361">361</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1416,7 +1449,59 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00363">363</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00369">369</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a10260fad80ec7ed1bf8c905d1714ffb6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::tuple&lt; PetscScalar, <a class="el" href="structSPE_1_1SPEVec.html">SPEVec</a> &gt; SPE::polyeig </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structSPE_1_1SPEMat.html">SPEMat</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>As</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const PetscScalar&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const PetscReal&#160;</td>
+          <td class="paramname"><em>tol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const PetscInt&#160;</td>
+          <td class="paramname"><em>max_iter</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>solve general polynomial eigenvalue problem of (A0 + A1*alpha + A2*alpha^2 + ...)*x = 0 and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector) </p>
+<dl class="section return"><dt>Returns</dt><dd>tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(alpha, eig_vector) = eig({A0,A1,A2...},0.1+0.4*PETSC_i) </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">As</td><td>{A0,A1,A2...} in generalized polynomial eigenvalue problem </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">target</td><td>target eigenvalue to solve for </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">tol</td><td>tolerance of eigenvalue solver </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">max_iter</td><td>maximum number of iterations </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00639">639</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1609,7 +1694,7 @@ new matrix with inserted blocks </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>save matrix to filename in binary format (see Petsc documentation for format </p>
+<p>save matrix to filename in binary format (see Petsc documentation for format ) Format is (from Petsc documentation): int MAT_FILE_CLASSID int number of rows int number of columns int total number of nonzeros int *number nonzeros in each row int *column indices of all nonzeros (starting index is zero) PetscScalar *values of all nonzeros </p>
 <dl class="section return"><dt>Returns</dt><dd>0 if successful </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1619,7 +1704,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00700">700</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00766">766</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1657,7 +1742,7 @@ new matrix with inserted blocks </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00720">720</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
+<p>Definition at line <a class="el" href="SPEMat_8cpp_source.html#l00786">786</a> of file <a class="el" href="SPEMat_8cpp_source.html">SPEMat.cpp</a>.</p>
 
 </div>
 </div>

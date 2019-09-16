@@ -320,9 +320,42 @@ int main(int argc, char **args){
         std::tie(alpha2,eig2) = SPE::eig(A,B,-1.0+PETSC_i*0.00005,1.E-19,10);
         eig2 /= eig2.max(); // normalize by max amplitude
         test_if_close(alpha2,1.,"eig(SPEMat,SPEMat,PetscScalar) 2",1.E-8);
+
+        std::tie(alpha,eig) = SPE::polyeig({A,-B},1.0+0.5*PETSC_i);
+        test_if_close(alpha,1.,"polyeig(std::vector<SPEMat>,PetscScalar) 1",1.E-8);
+        std::tie(alpha,eig) = SPE::polyeig({A},1.0+0.5*PETSC_i);
+        test_if_close(alpha,1.,"polyeig(std::vector<SPEMat>,PetscScalar) 2",1.E-8);
+
+        SPE::SPEMat M(4,"M"),C(4,"C"),K(4,"K"); // (M*lambda^2 + C*lambda + K)*x = 0 from MatLab mathworks documentation
+        // M
+        M(0,0,3.);
+                    M(1,1,1.);
+                                M(2,2,3.);
+                                            M(3,3,1.);
+        // C
+        C(0,0,0.4);             C(0,2,-0.3);
+
+        C(2,0,-0.3);            C(2,2,0.5); C(2,3,-0.2);
+                                C(3,2,-0.2);C(3,3,0.2);
+        // K
+        K(0,0,-7.); K(0,1,2.);  K(0,2,4);
+        K(1,0,2);   K(1,1,-4);  K(1,2,2);
+        K(2,0,4);   K(2,1,2);   K(2,2,-9);  K(2,3,3);
+                                K(3,2,3);   K(3,3,-3);
+        // assemble
+        M();C();K();
+
+
+        PetscScalar alpha4;
+        SPE::SPEVec eig4(4);
+        std::tie(alpha4,eig4) = SPE::polyeig({K,C,M},-2.5+0.5*PETSC_i);
+        test_if_close(alpha4,-2.44985,"polyeig(std::vector<SPEMat>,PetscScalar) 3",1.E-5);
+        std::tie(alpha4,eig4) = SPE::polyeig({K,C,M},0.33+0.005*PETSC_i);
+        test_if_close(alpha4,0.3353,"polyeig(std::vector<SPEMat>,PetscScalar) 4",1.E-5);
+
         SPE::printf("------------ Mat eig tests end  -------------");
     }
-    if(1){// I/O using hdf5
+    if(0){// I/O using hdf5
         SPE::printf("------------ I/O tests start  -------------");
         SPE::SPEVec A(2,"A_Vec");
         A(0,1.);
@@ -336,7 +369,7 @@ int main(int argc, char **args){
         SPE::save(B,"saved_data.hdf5");
         SPE::printf("------------ I/O tests end    -------------");
     }
-    if(1){
+    if(0){
         SPE::printf("------------ I/O tests2 start  -------------");
         SPE::SPEVec A_read(2,"A_Vec");
         SPE::load(A_read,"saved_data.hdf5");
@@ -348,7 +381,7 @@ int main(int argc, char **args){
         test_if_close(B_read(1,PETSC_TRUE),0.,"load(SPEVec,std::string) 4");
         SPE::printf("------------ I/O tests2 end    -------------");
     }
-    if(1){// I/O using binary for Mat
+    if(0){// I/O using binary for Mat
         SPE::printf("------------ I/O tests3 start  -------------");
         SPE::SPEMat A(2,2,"A");
         A(0,0,1.);
@@ -364,7 +397,7 @@ int main(int argc, char **args){
         SPE::save(B,"saved_data_mat.dat");
         SPE::printf("------------ I/O tests3 end    -------------");
     }
-    if(1){
+    if(0){
         SPE::printf("------------ I/O tests4 start  -------------");
         SPE::SPEMat A_read(2,2,"A_Mat");
         SPE::load(A_read,"saved_data_mat.dat");
@@ -382,6 +415,9 @@ int main(int argc, char **args){
         test_if_close(AB[1](1,0,PETSC_TRUE),4.,"load(std::vector<SPEMat>,std::string) 6");
         test_if_close(AB[1](1,1,PETSC_TRUE),5.,"load(std::vector<SPEMat>,std::string) 7");
         test_if_close(PetscImaginaryPart(AB[1](1,1,PETSC_TRUE)),4.89,"load(std::vector<SPEMat>,std::string) 8");
+
+        SPE::draw(AB[1]);
+
         SPE::printf("------------ I/O tests4 end    -------------");
     }
     if(1){

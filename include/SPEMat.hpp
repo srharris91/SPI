@@ -4,6 +4,7 @@
 #include <vector>
 #include <petscksp.h>
 #include <slepceps.h>
+#include <slepcpep.h>
 #include <string>
 #include <tuple>
 #include "SPEVec.hpp"
@@ -45,6 +46,7 @@ namespace SPE{
         SPEMat operator+(const SPEMat &X); // Y + X operation
         SPEMat& operator-=(const SPEMat &X); // Y = -1.*X + Y operation
         SPEMat operator-(const SPEMat &X); // Y - X operation
+        SPEMat operator-() const; // -X operation
         // * operators
         SPEMat operator*(const PetscScalar a); // Y*a operation
         SPEMat operator*(const double a); // Y*a operation
@@ -75,6 +77,7 @@ namespace SPE{
     SPEMat diag(const SPEVec &diag); // set diagonal of matrix
     SPEMat kron(const SPEMat &A, const SPEMat &B); // set kronecker inner product of two matrices
     std::tuple<PetscScalar,SPEVec> eig(const SPEMat &A, const SPEMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)
+    std::tuple<PetscScalar,SPEVec> polyeig(const std::vector<SPEMat> &As, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector)
     //SPEMat block(const SPEMat Blocks[], const PetscInt rows,const PetscInt cols); // set block matrices using an input array of size rows*cols.  Fills rows first
     //SPEMat block(const std::vector<std::vector<SPEMat>> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first
     SPEMat block(const Block2D<SPEMat> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first
@@ -82,6 +85,7 @@ namespace SPE{
     PetscInt save(const std::vector<SPEMat> &A, const std::string filename); // save matrix to filename to binary format
     PetscInt load(SPEMat &A, const std::string filename); // load matrix to filename from binary format
     PetscInt load(std::vector<SPEMat> &A, const std::string filename); // load matrix to filename from binary format
+    PetscInt draw(const SPEMat &A); // draw nonzero structure and wait at command line input
 }
 
 

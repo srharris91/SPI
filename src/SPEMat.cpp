@@ -72,7 +72,7 @@ namespace SPE{
     }
 
     // overloaded operators, get
-    /** \brief get local value at row m, column n \return scalar at specified location */ // TODO: make global on all processors
+    /** \brief get local value at row m, column n \return scalar at specified location */
     PetscScalar SPEMat::operator()(
             PetscInt m,         ///< [in] row to get scalar
             PetscInt n,         ///< [in] column to get scalar
@@ -210,6 +210,12 @@ namespace SPE{
         A=*this;
         ierr = MatAXPY(A.mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         ierr = MatSetType(A.mat,MATMPIAIJ);CHKERRXX(ierr);
+        return A;
+    }
+    /** \brief -X operation \return new matrix after operation */
+    SPEMat SPEMat::operator-() const {
+        SPEMat A;
+        A=-1.*(*this);
         return A;
     }
     // overload operator, scale with scalar
@@ -502,7 +508,6 @@ namespace SPE{
             const PetscReal tol,    ///< [in] tolerance of eigenvalue solver
             const PetscInt max_iter ///< [in] maximum number of iterations
             ){
-        //TODO use PEP in slepc (polynomial eigenvalue problem) instead of the generalized eigenvalue problem.  Will make things easier, and faster hopefully
         PetscInt rows=A.rows;
         EPS             eps;        /* eigenproblem solver context slepc */
         //ST              st;
@@ -630,6 +635,57 @@ namespace SPE{
         return std::make_tuple(alpha,eig_vec);
         //return std::make_tuple(alpha,alpha);
     }
+    /** \brief solve general polynomial eigenvalue problem of (A0 + A1*alpha + A2*alpha^2 + ...)*x = 0 and return a tuple of tie(PetscScalar alpha, SPEVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value e.g.  std::tie(alpha, eig_vector) = eig({A0,A1,A2...},0.1+0.4*PETSC_i) */
+    std::tuple<PetscScalar, SPEVec> polyeig(
+            const std::vector<SPEMat> &As,        ///< [in] {A0,A1,A2...} in generalized polynomial eigenvalue problem
+            const PetscScalar target,   ///< [in] target eigenvalue to solve for
+            const PetscReal tol,    ///< [in] tolerance of eigenvalue solver
+            const PetscInt max_iter ///< [in] maximum number of iterations
+            ){
+        // if linear eigenvalue problem, use EPS
+        if(As.size()==1){
+            return eig(As[0],SPE::eye(As[0].rows),target,tol,max_iter);
+        }
+        else if(As.size()==2){
+            return eig(As[0],-As[1],target,tol,max_iter);
+        }
+        else{// else polynomial eigenvalue problem use PEP
+            PetscInt rows=As[0].rows;
+            PEP             pep;        /* polynomial eigenproblem solver context slepc */
+            PetscErrorCode  ierr;
+            PetscScalar ki,alpha;
+            SPEVec xi(rows),eig_vec(rows);
+            PetscScalar kr_temp, ki_temp;
+            // Create the eigenvalue solver and set various options
+            ierr = PEPCreate(PETSC_COMM_WORLD,&pep);CHKERRXX(ierr);
+            // Set operators. Here the matrix that defines the eigenvalue system
+            std::vector<Mat> AsMat(As.size());
+            for (unsigned i=0; i<As.size(); ++i){ AsMat[i]=As[i].mat; }
+            ierr = PEPSetOperators(pep,AsMat.size(),AsMat.data());CHKERRXX(ierr);
+            // Set runtime options, e.g.,
+            ierr = PEPSetFromOptions(pep);CHKERRXX(ierr);
+            // set convergence type
+            PEPWhich which=PEP_TARGET_MAGNITUDE;
+            PetscInt nev=1;
+            PEPSetWhichEigenpairs(pep,which);
+            PEPSetDimensions(pep,nev,PETSC_DEFAULT,PETSC_DEFAULT);
+            if ((max_iter==-1) && (tol==-1.)){  PEPSetTolerances(pep,PETSC_DEFAULT, PETSC_DEFAULT); }
+            else if(tol==-1.){                  PEPSetTolerances(pep,PETSC_DEFAULT, max_iter); }
+            else if(max_iter==-1){              PEPSetTolerances(pep,tol,           PETSC_DEFAULT); }
+            else{                               PEPSetTolerances(pep,tol,           max_iter); }
+            PEPSetTarget(pep,target);
+            // Solve the system
+            ierr = PEPSolve(pep);CHKERRXX(ierr);
+            // output iterations
+            PetscInt nconv;
+            ierr = PEPGetConverged(pep,&nconv);CHKERRXX(ierr);
+            if (nconv>0) { ierr = PEPGetEigenpair(pep,0,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr); }
+            // destroy pep
+            ierr = PEPDestroy(&pep);CHKERRXX(ierr);
+            // return
+            return std::make_tuple(alpha,eig_vec);
+        }
+    }
     // /** \brief set block matrices using an input array of size rows*cols.  Fills rows first \return new matrix with inserted blocks */
     //SPEMat block(
     //        const SPEMat Blocks[],  ///< [in] array of matrices to set into larger matrix e.g. { A, B, C, D }
@@ -683,7 +739,7 @@ namespace SPE{
             nsum += n[j];
         }
 
-        // TODO check if all rows and columns match for block matrix....
+        // TODO check if all rows and columns match for block matrix.... user error catch
 
         SPEMat A(msum,nsum);
 
@@ -696,7 +752,17 @@ namespace SPE{
         return A;
     }
 
-    /** \brief save matrix to filename in binary format (see Petsc documentation for format \returns 0 if successful */
+    /** \brief save matrix to filename in binary format (see Petsc documentation for format )
+     * Format is (from Petsc documentation):
+     * int    MAT_FILE_CLASSID
+     * int    number of rows
+     * int    number of columns
+     * int    total number of nonzeros
+     * int    *number nonzeros in each row
+     * int    *column indices of all nonzeros (starting index is zero)
+     * PetscScalar *values of all nonzeros
+     *
+     * \returns 0 if successful */
     PetscInt save(
             const SPEMat &A,        ///< [in] A to save in 
             const std::string filename ///< [in] filename to save data to
@@ -763,6 +829,23 @@ namespace SPE{
             ierr = MatLoad(As[i].mat,viewer); CHKERRQ(ierr);
         }
         ierr = PetscViewerDestroy(&viewer); CHKERRQ(ierr);
+        return 0;
+    }
+
+    /** \brief draw nonzero structure of matrix \returns 0 if successful */
+    PetscInt draw(
+            const SPEMat &A         ///< [in] A to draw nonzero structure
+            ){
+        PetscViewer     viewer;
+        PetscErrorCode ierr;
+        ierr = PetscViewerDrawOpen(PETSC_COMM_WORLD,NULL,A.name.c_str(),PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,&viewer);CHKERRQ(ierr);
+        ierr = MatView(A.mat,viewer);CHKERRQ(ierr);
+
+        // pause until user inputs at command line
+        SPE::printf("  draw(SPEMat) with title=%s, hit ENTER to continue",A.name.c_str());
+        std::cin.ignore();
+
+        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
         return 0;
     }
 }
