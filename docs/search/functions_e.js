@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['save',['save',['../namespaceSPE.html#a96721ae1851541aa8f8613147f310ea0',1,'SPE']]],
+  ['save',['save',['../namespaceSPE.html#adb5bdf1c9046cf32e273971059536a3f',1,'SPE::save(const SPEMat &amp;A,const std::string filename)'],['../namespaceSPE.html#ac104d0884b7029533f624fccd1fe7bfd',1,'SPE::save(const std::vector&lt; SPEMat &gt; &amp;As,const std::string filename)'],['../namespaceSPE.html#a96721ae1851541aa8f8613147f310ea0',1,'SPE::save(const SPEVec &amp;A, std::string filename)']]],
   ['set',['set',['../structSPE_1_1SPEMat.html#ae11d194d080bf4fba9119ab106c5c9c6',1,'SPE::SPEMat::set()'],['../structSPE_1_1SPEVec.html#ae1aed98ae3fcea5f03143d3628fc3a85',1,'SPE::SPEVec::set(const PetscInt _row, const PetscScalar v)'],['../structSPE_1_1SPEVec.html#abd9efe5a50c008266e2ace5b0cf734e1',1,'SPE::SPEVec::set(const PetscScalar v)']]],
   ['sin',['sin',['../namespaceSPE.html#adb6c805cfa30c5b06e96b54f7aae91c5',1,'SPE']]],
   ['sinh',['sinh',['../namespaceSPE.html#a47cf7142ad45fb50762288bce197bcab',1,'SPE']]],

@@ -417,7 +417,7 @@ namespace SPE{
             ){
         A.ierr = PetscObjectSetName((PetscObject)A.vec, A.name.c_str());CHKERRQ(A.ierr);
         PetscViewer viewer;
-        std::ifstream f(filename.c_str());
+        //std::ifstream f(filename.c_str());
         A.ierr = PetscViewerHDF5Open(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRQ(A.ierr);
         A.ierr = VecLoad(A.vec,viewer); CHKERRQ(A.ierr);
         A.ierr = PetscViewerDestroy(&viewer); CHKERRQ(A.ierr);

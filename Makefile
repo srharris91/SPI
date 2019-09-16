@@ -26,7 +26,7 @@ $(EXECUTABLE): $(OBJFILES)
 	$(CLINKER) $(OBJFILES) ${SLEPC_LIB} -o $(EXECUTABLE) 
 	@#$(CLINKER) $(OBJFILES) ${PETSC_LIB} -o $(EXECUTABLE) 
 
-docs:
+doc:
 	doxygen
 
 clean:

@@ -28,9 +28,15 @@
 
 # Executables
 *.exe
+*.exec
 *.out
 *.app
 
 # generated doc
 # docs/html*
+
+# data files
+*hdf5
+*dat
+*dat.info
 

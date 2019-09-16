@@ -78,6 +78,10 @@ namespace SPE{
     //SPEMat block(const SPEMat Blocks[], const PetscInt rows,const PetscInt cols); // set block matrices using an input array of size rows*cols.  Fills rows first
     //SPEMat block(const std::vector<std::vector<SPEMat>> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first
     SPEMat block(const Block2D<SPEMat> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first
+    PetscInt save(const SPEMat &A, const std::string filename); // save matrix to filename to binary format
+    PetscInt save(const std::vector<SPEMat> &A, const std::string filename); // save matrix to filename to binary format
+    PetscInt load(SPEMat &A, const std::string filename); // load matrix to filename from binary format
+    PetscInt load(std::vector<SPEMat> &A, const std::string filename); // load matrix to filename from binary format
 }
 
 

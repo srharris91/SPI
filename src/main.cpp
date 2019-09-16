@@ -348,6 +348,42 @@ int main(int argc, char **args){
         test_if_close(B_read(1,PETSC_TRUE),0.,"load(SPEVec,std::string) 4");
         SPE::printf("------------ I/O tests2 end    -------------");
     }
+    if(1){// I/O using binary for Mat
+        SPE::printf("------------ I/O tests3 start  -------------");
+        SPE::SPEMat A(2,2,"A");
+        A(0,0,1.);
+        A(1,0,2.);
+        A(1,1,3.+4.59*PETSC_i);
+        A();
+        SPE::save(A,"saved_data_mat.dat");
+        SPE::SPEMat B(2,2,"B");
+        B(0,0,3.);
+        B(1,0,4.);
+        B(1,1,5.+4.89*PETSC_i);
+        B();
+        SPE::save(B,"saved_data_mat.dat");
+        SPE::printf("------------ I/O tests3 end    -------------");
+    }
+    if(1){
+        SPE::printf("------------ I/O tests4 start  -------------");
+        SPE::SPEMat A_read(2,2,"A_Mat");
+        SPE::load(A_read,"saved_data_mat.dat");
+        test_if_close(A_read(0,0,PETSC_TRUE),1.,"load(SPEMat,std::string) 1");
+        test_if_close(A_read(1,0,PETSC_TRUE),2.,"load(SPEMat,std::string) 2");
+        test_if_close(A_read(1,1,PETSC_TRUE),3.,"load(SPEMat,std::string) 3");
+        test_if_close(PetscImaginaryPart(A_read(1,1,PETSC_TRUE)),4.59,"load(SPEMat,std::string) 4");
+        std::vector<SPE::SPEMat> AB(2,SPE::eye(2)*0.);
+        SPE::load(AB,"saved_data_mat.dat");
+        test_if_close(AB[0](0,0,PETSC_TRUE),1.,"load(std::vector<SPEMat>,std::string) 1");
+        test_if_close(AB[0](1,0,PETSC_TRUE),2.,"load(std::vector<SPEMat>,std::string) 2");
+        test_if_close(AB[0](1,1,PETSC_TRUE),3.,"load(std::vector<SPEMat>,std::string) 3");
+        test_if_close(PetscImaginaryPart(AB[0](1,1,PETSC_TRUE)),4.59,"load(std::vector<SPEMat>,std::string) 4");
+        test_if_close(AB[1](0,0,PETSC_TRUE),3.,"load(std::vector<SPEMat>,std::string) 5");
+        test_if_close(AB[1](1,0,PETSC_TRUE),4.,"load(std::vector<SPEMat>,std::string) 6");
+        test_if_close(AB[1](1,1,PETSC_TRUE),5.,"load(std::vector<SPEMat>,std::string) 7");
+        test_if_close(PetscImaginaryPart(AB[1](1,1,PETSC_TRUE)),4.89,"load(std::vector<SPEMat>,std::string) 8");
+        SPE::printf("------------ I/O tests4 end    -------------");
+    }
     if(1){
         SPE::printf("------------ block test start  -------------");
         SPE::SPEMat A(2,"A");

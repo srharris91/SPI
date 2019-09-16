@@ -695,6 +695,76 @@ namespace SPE{
 
         return A;
     }
+
+    /** \brief save matrix to filename in binary format (see Petsc documentation for format \returns 0 if successful */
+    PetscInt save(
+            const SPEMat &A,        ///< [in] A to save in 
+            const std::string filename ///< [in] filename to save data to
+            ){
+        PetscViewer     viewer;
+        //PetscViewerASCIIOpen(PETSC_COMM_WORLD,name.c_str(),&viewer);
+        PetscErrorCode ierr;
+        std::ifstream f(filename.c_str());
+        if(f.good()){
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_APPEND,&viewer);CHKERRQ(ierr);
+        }
+        else{
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+        }
+        //ierr = PetscViewerPushFormat(viewer,format);CHKERRQ(ierr);
+        ierr = MatView(A.mat,viewer);CHKERRQ(ierr);
+        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+        return 0;
+    }
+    /** \brief save matrices to filename in binary format (see Petsc documentation for format \returns 0 if successful */
+    PetscInt save(
+            const std::vector<SPEMat> &As,        ///< [in] A to save in 
+            const std::string filename ///< [in] filename to save data to
+            ){
+        PetscViewer     viewer;
+        //PetscViewerASCIIOpen(PETSC_COMM_WORLD,name.c_str(),&viewer);
+        PetscErrorCode ierr;
+        std::ifstream f(filename.c_str());
+        if(f.good()){
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_APPEND,&viewer);CHKERRQ(ierr);
+        }
+        else{
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+        }
+        //ierr = PetscViewerPushFormat(viewer,format);CHKERRQ(ierr);
+        for(unsigned i=0; i<As.size(); ++i){
+            ierr = MatView(As[i].mat,viewer);CHKERRQ(ierr);
+        }
+        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+        return 0;
+    }
+    /** \brief load matrix from filename from binary format (works with save(SPEMat,std::string) function \returns 0 if successful */
+    PetscInt load(
+            SPEMat &A,        ///< [inout] A to load data into (must be initialized to the right size)
+            const std::string filename ///< [in] filename to read
+            ){
+        PetscViewer viewer;
+        //std::ifstream f(filename.c_str());
+        A.ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRQ(A.ierr);
+        A.ierr = MatLoad(A.mat,viewer); CHKERRQ(A.ierr);
+        A.ierr = PetscViewerDestroy(&viewer); CHKERRQ(A.ierr);
+        return 0;
+    }
+    /** \brief load matrix from filename from binary format (works with save(SPEMat,std::string) function \returns 0 if successful */
+    PetscInt load(
+            std::vector<SPEMat> &As,         ///< [inout] matrices to load data into (must be initialized to the right size)
+            const std::string filename      ///< [in] filename to read
+            ){
+        PetscViewer viewer;
+        //std::ifstream f(filename.c_str());
+        PetscErrorCode ierr;
+        ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRQ(ierr);
+        for(unsigned i=0; i<As.size(); ++i){
+            ierr = MatLoad(As[i].mat,viewer); CHKERRQ(ierr);
+        }
+        ierr = PetscViewerDestroy(&viewer); CHKERRQ(ierr);
+        return 0;
+    }
 }
 
 
