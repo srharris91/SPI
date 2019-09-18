@@ -23,8 +23,8 @@ include ${SLEPC_DIR}/lib/slepc/conf/slepc_variables
 CPP = mpicxx
 
 $(EXECUTABLE): $(OBJFILES)
-	$(CLINKER) $(OBJFILES) ${SLEPC_LIB} -o $(EXECUTABLE) 
 	@#$(CLINKER) $(OBJFILES) ${PETSC_LIB} -o $(EXECUTABLE) 
+	$(CLINKER) $(OBJFILES) ${SLEPC_LIB} -o $(EXECUTABLE) 
 
 doc:
 	doxygen
