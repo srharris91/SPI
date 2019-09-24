@@ -1,7 +1,8 @@
 [submodule "petsc"]
 	path = petsc
-	url = https://bitbucket.org/petsc/petsc.git
+	url = https://gitlab.com/petsc/petsc.git
 	branch = maint
 [submodule "slepc"]
 	path = slepc
 	url = https://bitbucket.org/slepc/slepc.git
+	branch = maint
