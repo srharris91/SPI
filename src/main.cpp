@@ -12,10 +12,26 @@ int main(int argc, char **args){
     if(1){// set to 1 if wanting to test SPI Mat and Vec and other operations found in tests.cpp
         tests();
     }
-    else{
-        SPI::SPIVec X1(61,"X1");
-        X1 = SPI::linspace(0,24,61);
-        X1.print();
+    else{// started working on derivative operators, but it didn't quite work yet
+        SPI::SPIVec s(5,"X1");
+        s = SPI::arange(-2,3,1.);
+        PetscInt d=1;
+        // get_D_coeffs function with inputs s,d
+        PetscInt N = s.rows;
+        SPI::SPIVec spow(N);
+        spow = s;
+        SPI::SPIMat A(N,"A");
+        for(PetscInt i=0; i<N; i++){
+            std::cout<<"i = "<<i<<std::endl;
+            spow = s^((PetscScalar)i);
+            spow.print();
+            for(PetscInt j=0; j<N; j++){
+                std::cout<<"i,j = "<<i<<","<<j<<std::endl;
+                A(i,j,spow(j));
+            }
+        }
+        A();
+        A.print();
     }
 
     ierr = PetscFinalize();CHKERRQ(ierr);

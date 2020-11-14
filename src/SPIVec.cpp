@@ -72,6 +72,14 @@ namespace SPI{
         }
         return 0;
     }
+    // get size of matrix
+    /** get the global size of the vector */
+    PetscInt SPIVec::size(){
+        PetscInt n;
+        ierr = VecGetSize(vec,&n);CHKERRXX(ierr);
+        rows=n; // update rows
+        return n;
+    }
 
     // overloaded operators, get
     /** get value at row (on all processors) \return scalar value at row specified */

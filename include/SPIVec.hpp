@@ -25,6 +25,8 @@ namespace SPI{
         PetscInt set(const PetscInt _row, const PetscScalar v); // set a scalar value at position row 
         PetscInt set(const PetscScalar v); // set a scalar value at all positions
         PetscInt add(PetscInt _row, const PetscScalar v); // add a scalar value at position row 
+        // get info operators
+        PetscInt size(); // get the size of the vector using VecGetSize
         // () operators
         PetscScalar operator()(PetscInt _row, PetscBool global=PETSC_FALSE);     // get value at row
         PetscInt operator()(PetscInt _row, const PetscScalar v);  // set operator the same as set function

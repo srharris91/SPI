@@ -2,6 +2,7 @@ export PETSC_DIR=$(PWD)/petsc
 export SLEPC_DIR=$(PWD)/slepc
 # export PETSC_ARCH=arch-linux2-c-opt
 export PETSC_ARCH=arch-linux2-cxx-opt
+#export PETSC_ARCH=arch-linux-cxx-opt
 
 SRCFILES = $(wildcard ./src/*cpp)
 INCLUDE_DIR = ./include
