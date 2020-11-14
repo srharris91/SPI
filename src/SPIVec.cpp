@@ -222,6 +222,13 @@ namespace SPI{
         ierr = VecScale(this->vec,a);CHKERRXX(ierr);
         return *this;
     }
+    /** Y = Y*a operation \return Y in Y*=a */
+    SPIVec& SPIVec::operator*=(
+            const SPIVec &a ///< [in] SPIVec a in Y*=a operation
+            ){
+        ierr = VecPointwiseMult(vec,a.vec,(*this).vec);CHKERRXX(ierr);
+        return *this;
+    }
     // overload operator, pointwise multiply
     /** Y*X pointwise multiply operation \return Z in Z=Y*X operation */
     SPIVec SPIVec::operator*(
@@ -275,6 +282,12 @@ namespace SPI{
     }
     /** \brief pow operation pow(this,p) */
     SPIVec SPIVec::operator^(
+            const int p ///< [in] exponent of this^p operation
+            ){
+        return pow(*this,(PetscScalar)p);
+    }
+    /** \brief pow operation pow(this,p) */
+    SPIVec SPIVec::operator^(
             SPIVec p ///< [in] exponent of this^p operation
             ){
         return pow(*this,p);
@@ -283,15 +296,20 @@ namespace SPI{
     /** Y=X with initialization of Y using VecCopy and VecDuplicate \return Y initialized and copied of X */
     SPIVec& SPIVec::operator=(const SPIVec &X){
         if(flag_init){
-            ierr = VecCopy(X.vec,vec);CHKERRXX(ierr);
+            if(X.rows==rows){
+                ierr = VecCopy(X.vec,vec);CHKERRXX(ierr); // use copy if size matches
+            }
+            else{
+                this->~SPIVec(); // destroy and recreate from scratch
+            }
         }
-        else{
-            rows=X.rows;
-            ierr = VecDuplicate(X.vec,&vec); CHKERRXX(ierr);
-            ierr = VecCopy(X.vec,vec); CHKERRXX(ierr);
-            //ierr = VecSetType(vec,VECMPI);CHKERRXX(ierr);
-            flag_init=PETSC_TRUE;
-        }
+        //else{
+        rows=X.rows;
+        ierr = VecDuplicate(X.vec,&vec); CHKERRXX(ierr);
+        ierr = VecCopy(X.vec,vec); CHKERRXX(ierr);
+        //ierr = VecSetType(vec,VECMPI);CHKERRXX(ierr);
+        flag_init=PETSC_TRUE;
+        //}
         return (*this);
     }
     /** \brief == VecEqual test if this==x2 \returns PETSC_TRUE if this==x2 */
@@ -432,7 +450,7 @@ namespace SPI{
         return 0;
     }
 
-    /** createa vector of size rows full of ones \return vector of size rows */
+    /** create a vector of size rows full of ones \return vector of size rows */
     SPIVec ones(
             const PetscInt rows ///< [in] number of rows for vector size
             ){
@@ -685,6 +703,21 @@ namespace SPI{
         // return trapezoidal rule sum((y[i+1]+y[i])/2. * diff(x))
         return sum((y1+y0)/2. * diff(x));
     }
+    /** \brief draw nonzero structure and wait at command line input */
+    PetscInt draw(
+            const SPIVec &x     ///< [in] vector to draw
+            ){
+        PetscViewer viewer;
+        PetscErrorCode ierr;
+        ierr = PetscViewerDrawOpen(PETSC_COMM_WORLD,NULL,x.name.c_str(),PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,&viewer);CHKERRQ(ierr);
+        ierr = VecView(x.vec,viewer);CHKERRQ(ierr);
+        SPI::printf("  draw(SPIVec) with title=%s, hit Enter to continue",x.name.c_str());
+        std::cin.ignore();
+
+        ierr = PetscViewerDestroy(&viewer); CHKERRQ(ierr);
+        return 0;
+    }
+    
 }
 
 

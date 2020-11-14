@@ -318,7 +318,7 @@ $(function() {
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ Mat eig tests end  -------------&quot;</span>);</div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    }</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="keywordflow">if</span>(0){<span class="comment">// I/O using hdf5</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="keywordflow">if</span>(1){<span class="comment">// I/O using hdf5</span></div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ I/O tests start  -------------&quot;</span>);</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        <a class="code" href="structSPI_1_1SPIVec.html">SPI::SPIVec</a> A(2,<span class="stringliteral">&quot;A_Vec&quot;</span>);</div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        A(0,1.);</div>
@@ -332,7 +332,7 @@ $(function() {
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <a class="code" href="namespaceSPI.html#a3d69f6509631ee5a016f6648874a8db7">SPI::save</a>(B,<span class="stringliteral">&quot;saved_data.hdf5&quot;</span>);</div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ I/O tests end    -------------&quot;</span>);</div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    }</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordflow">if</span>(0){</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordflow">if</span>(1){</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ I/O tests2 start  -------------&quot;</span>);</div>
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <a class="code" href="structSPI_1_1SPIVec.html">SPI::SPIVec</a> A_read(2,<span class="stringliteral">&quot;A_Vec&quot;</span>);</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <a class="code" href="namespaceSPI.html#a2d13f1ebbb64cb8b98505d76a4a12946">SPI::load</a>(A_read,<span class="stringliteral">&quot;saved_data.hdf5&quot;</span>);</div>
@@ -344,7 +344,7 @@ $(function() {
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        <a class="code" href="tests_8cpp.html#aa07cf74e1c0a5cd426b0c9146482c83f">test_if_close</a>(B_read(1,PETSC_TRUE),0.,<span class="stringliteral">&quot;load(SPIVec,std::string) 4&quot;</span>);</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ I/O tests2 end    -------------&quot;</span>);</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    }</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">if</span>(0){<span class="comment">// I/O using binary for Mat</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">if</span>(1){<span class="comment">// I/O using binary for Mat</span></div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ I/O tests3 start  -------------&quot;</span>);</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPI::SPIMat</a> A(2,2,<span class="stringliteral">&quot;A&quot;</span>);</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        A(0,0,1.);</div>
@@ -360,7 +360,7 @@ $(function() {
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        <a class="code" href="namespaceSPI.html#a3d69f6509631ee5a016f6648874a8db7">SPI::save</a>(B,<span class="stringliteral">&quot;saved_data_mat.dat&quot;</span>);</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ I/O tests3 end    -------------&quot;</span>);</div>
 <div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    }</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordflow">if</span>(0){</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordflow">if</span>(1){</div>
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        <a class="code" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a>(<span class="stringliteral">&quot;------------ I/O tests4 start  -------------&quot;</span>);</div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPI::SPIMat</a> A_read(2,2,<span class="stringliteral">&quot;A_Mat&quot;</span>);</div>
 <div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        <a class="code" href="namespaceSPI.html#a2d13f1ebbb64cb8b98505d76a4a12946">SPI::load</a>(A_read,<span class="stringliteral">&quot;saved_data_mat.dat&quot;</span>);</div>
@@ -426,7 +426,7 @@ $(function() {
 <div class="ttc" id="astructSPI_1_1SPIMat_html_adc052274746877067cd9229eac330c31"><div class="ttname"><a href="structSPI_1_1SPIMat.html#adc052274746877067cd9229eac330c31">SPI::SPIMat::conj</a></div><div class="ttdeci">SPIMat &amp; conj()</div><div class="ttdoc">elemenwise conjugate current matrix</div><div class="ttdef"><b>Definition:</b> <a href="SPIMat_8cpp_source.html#l00323">SPIMat.cpp:323</a></div></div>
 <div class="ttc" id="atests_8hpp_html"><div class="ttname"><a href="tests_8hpp.html">tests.hpp</a></div></div>
 <div class="ttc" id="astructSPI_1_1SPIMat_html_abed5eb74c5e20ef25e884fdd8b1e9953"><div class="ttname"><a href="structSPI_1_1SPIMat.html#abed5eb74c5e20ef25e884fdd8b1e9953">SPI::SPIMat::T</a></div><div class="ttdeci">PetscInt T(SPIMat &amp;A)</div><div class="ttdoc">A = Transpose(*this.mat) operation with initialization of A.</div><div class="ttdef"><b>Definition:</b> <a href="SPIMat_8cpp_source.html#l00291">SPIMat.cpp:291</a></div></div>
-<div class="ttc" id="astructSPI_1_1SPIVec_html_a3ad9ac1a93b5bc0fb01eb50bb5c0e59e"><div class="ttname"><a href="structSPI_1_1SPIVec.html#a3ad9ac1a93b5bc0fb01eb50bb5c0e59e">SPI::SPIVec::max</a></div><div class="ttdeci">PetscScalar max()</div><div class="ttdef"><b>Definition:</b> <a href="SPIVec_8cpp_source.html#l00319">SPIVec.cpp:319</a></div></div>
+<div class="ttc" id="astructSPI_1_1SPIVec_html_a3ad9ac1a93b5bc0fb01eb50bb5c0e59e"><div class="ttname"><a href="structSPI_1_1SPIVec.html#a3ad9ac1a93b5bc0fb01eb50bb5c0e59e">SPI::SPIVec::max</a></div><div class="ttdeci">PetscScalar max()</div><div class="ttdef"><b>Definition:</b> <a href="SPIVec_8cpp_source.html#l00337">SPIVec.cpp:337</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

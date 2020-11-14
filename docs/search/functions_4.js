@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['diag_117',['diag',['../structSPI_1_1SPIMat.html#aa77ac871b38a69d4547d68e437a07244',1,'SPI::SPIMat::diag()'],['../namespaceSPI.html#a8558d6543dbc5d66669d15da99655982',1,'SPI::diag()']]],
-  ['diff_118',['diff',['../namespaceSPI.html#a84c63545bf0256641e103e701288a879',1,'SPI']]],
-  ['dot_119',['dot',['../structSPI_1_1SPIVec.html#a9f19a3e8af5a2466e41d1c5a94183a16',1,'SPI::SPIVec::dot()'],['../namespaceSPI.html#acfb4ed75b0463e2f854990341200c1a9',1,'SPI::dot()']]],
-  ['draw_120',['draw',['../namespaceSPI.html#ab2330a199d5c446ee9d4efb3ea4dff5f',1,'SPI']]]
+  ['diag_118',['diag',['../structSPI_1_1SPIMat.html#aa77ac871b38a69d4547d68e437a07244',1,'SPI::SPIMat::diag()'],['../namespaceSPI.html#a8558d6543dbc5d66669d15da99655982',1,'SPI::diag()']]],
+  ['diff_119',['diff',['../namespaceSPI.html#a84c63545bf0256641e103e701288a879',1,'SPI']]],
+  ['dot_120',['dot',['../structSPI_1_1SPIVec.html#a9f19a3e8af5a2466e41d1c5a94183a16',1,'SPI::SPIVec::dot()'],['../namespaceSPI.html#acfb4ed75b0463e2f854990341200c1a9',1,'SPI::dot()']]],
+  ['draw_121',['draw',['../namespaceSPI.html#ab2330a199d5c446ee9d4efb3ea4dff5f',1,'SPI::draw(const SPIMat &amp;A)'],['../namespaceSPI.html#a97adfa700c65abf5dd7c60b1b4799272',1,'SPI::draw(const SPIVec &amp;x)']]]
 ];

@@ -239,7 +239,7 @@ int tests(){
         SPI::printf("------------ Mat eig tests end  -------------");
     }
 
-    if(0){// I/O using hdf5
+    if(1){// I/O using hdf5
         SPI::printf("------------ I/O tests start  -------------");
         SPI::SPIVec A(2,"A_Vec");
         A(0,1.);
@@ -253,7 +253,7 @@ int tests(){
         SPI::save(B,"saved_data.hdf5");
         SPI::printf("------------ I/O tests end    -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ I/O tests2 start  -------------");
         SPI::SPIVec A_read(2,"A_Vec");
         SPI::load(A_read,"saved_data.hdf5");
@@ -265,7 +265,7 @@ int tests(){
         test_if_close(B_read(1,PETSC_TRUE),0.,"load(SPIVec,std::string) 4");
         SPI::printf("------------ I/O tests2 end    -------------");
     }
-    if(0){// I/O using binary for Mat
+    if(1){// I/O using binary for Mat
         SPI::printf("------------ I/O tests3 start  -------------");
         SPI::SPIMat A(2,2,"A");
         A(0,0,1.);
@@ -281,7 +281,7 @@ int tests(){
         SPI::save(B,"saved_data_mat.dat");
         SPI::printf("------------ I/O tests3 end    -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ I/O tests4 start  -------------");
         SPI::SPIMat A_read(2,2,"A_Mat");
         SPI::load(A_read,"saved_data_mat.dat");

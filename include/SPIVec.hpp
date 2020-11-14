@@ -45,6 +45,7 @@ namespace SPI{
         SPIVec operator*(const PetscScalar a); // Y*a operation
         SPIVec operator*(const double a); // Y*a operation
         SPIVec& operator*=(const PetscScalar a); // Y = Y*a operation
+        SPIVec& operator*=(const SPIVec &a); // Y = Y*a operation
         SPIVec operator*(const SPIVec &X); // Y*X operation
         // / operators
         SPIVec operator/(const PetscScalar a); // Y/a operation
@@ -53,6 +54,7 @@ namespace SPI{
         // ^ operators
         SPIVec operator^(const PetscScalar p); // Y^p operation
         SPIVec operator^(const double p); // Y^p operation
+        SPIVec operator^(const int p); // Y^p operation
         SPIVec operator^(SPIVec p); // elementwise Y^p operation
         // = operator
         SPIVec& operator=(const SPIVec &X); // Y=X with initialization of Y
@@ -114,6 +116,7 @@ namespace SPI{
     SPIVec diff(SPIVec x1); // diff of vector (will be size x1.rows-1)
     PetscScalar trapz(const SPIVec y); // trapezoidal integration of y with x coordinates  \int y dx
     PetscScalar trapz(const SPIVec y, const SPIVec x); // trapezoidal integration of y with x coordinates  \int y dx
+    PetscInt draw(const SPIVec &x); // draw nonzero structure and wait at command line input
 }
 
 

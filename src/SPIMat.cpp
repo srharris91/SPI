@@ -43,10 +43,10 @@ namespace SPI{
         name=_name;
         rows=m;
         cols=n;
-        ierr = MatCreate(PETSC_COMM_WORLD,&mat);CHKERRQ(ierr);
-        ierr = MatSetSizes(mat,PETSC_DECIDE,PETSC_DECIDE,m,n);CHKERRQ(ierr);
+        ierr = MatCreate(PETSC_COMM_WORLD,&mat);CHKERRXX(ierr);
+        ierr = MatSetSizes(mat,PETSC_DECIDE,PETSC_DECIDE,m,n);CHKERRXX(ierr);
         //ierr = MatSetFromOptions(mat);CHKERRQ(ierr);
-        ierr = MatSetType(mat,MATMPIAIJ);CHKERRQ(ierr);
+        ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
         ierr = MatSetUp(mat);CHKERRQ(ierr);
         flag_init=PETSC_TRUE;
         return 0;
