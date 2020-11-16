@@ -39,6 +39,7 @@ namespace SPI{
         SPIVec operator+(const SPIVec &X); // Y + X operation
         SPIVec operator+(const PetscScalar a); // Y + a operation
         SPIVec operator-(const PetscScalar a); // Y - a operation
+        SPIVec operator-(const PetscInt a); // Y - a operation
         SPIVec& operator-=(const SPIVec &X); // Y = -1.*X + Y operation
         SPIVec operator-(const SPIVec &X); // Y - X operation
         // * operators
@@ -86,6 +87,7 @@ namespace SPI{
     SPIVec imag(const SPIVec &A); // return imaginary part of vector
     SPIVec linspace(const PetscScalar begin, const PetscScalar end, const PetscInt rows); // return linspace of number of rows equally spaced points between begin and end
     SPIVec arange(const PetscScalar begin, const PetscScalar end, const PetscScalar stepsize=1); // return a range of number of rows equally spaced points between begin and end of step stepsize
+    SPIVec arange(const PetscScalar end); // return a range of number of rows equally spaced by 1 points between 0 and end of step 1
     template <class T>
     SPIVec _Function_on_each_element(T (*f)(T const&), const SPIVec &A); // take the function of element in vector
     SPIVec sin(const SPIVec &A); // take the sin of element

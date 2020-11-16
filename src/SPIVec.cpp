@@ -177,6 +177,15 @@ namespace SPI{
         A -= a*ones(rows);
         return A;
     }
+    /** Y-a operation \return Z in Z=Y-a */
+    SPIVec SPIVec::operator-(
+            const PetscInt a ///< [in] scalar a in Y-a operation
+            ){ // Y - a operation
+        SPIVec A;
+        A=(*this);
+        A -= a*ones(rows);
+        return A;
+    }
     // overloaded operator, VecAXPY
     /** Y = -1.*X + Y operation \return Y in Y-=X */
     SPIVec& SPIVec::operator-=(
@@ -371,6 +380,7 @@ namespace SPI{
         (*this)();// assemble
         printf("\n---------------- "+name+"---start------");
         //PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
+        SPI::printf("shape = %d x 1",this->rows);
         ierr = VecView(vec,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
         //PetscPrintf(PETSC_COMM_WORLD,("---------------- "+name+"---done-------\n\n").c_str());
         printf("---------------- "+name+"---done-------\n");
@@ -379,6 +389,7 @@ namespace SPI{
 
     /** destructor to delete memory */
     SPIVec::~SPIVec(){
+        flag_init=PETSC_FALSE;
         ierr = VecDestroy(&vec);CHKERRXX(ierr);
     }
 
@@ -524,6 +535,12 @@ namespace SPI{
         }
         y();
         return y;
+    }
+    SPIVec arange(
+            const PetscScalar end      ///< [in] end scalar of equally spaced points
+            ){ // return linspace of number of rows equally spaced points between begin and end
+        PetscScalar begin=0.;
+        return arange(begin,end);
     }
 
     /** \brief take the function of each element in a vector, e.g. (*f)(A(i)) for each i */

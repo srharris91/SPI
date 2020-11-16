@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['real_59',['real',['../structSPI_1_1SPIVec.html#a4be7aea5bd0f1b0e0cb50932408eca12',1,'SPI::SPIVec::real()'],['../namespaceSPI.html#aa5cb8aeaa26a19b2af68fa1dc1b33f0e',1,'SPI::real()']]],
-  ['rows_60',['rows',['../structSPI_1_1SPIMat.html#a48536e4f21c35c09c9ade4450ef0f848',1,'SPI::SPIMat::rows()'],['../structSPI_1_1SPIVec.html#ad170878751ae7ad7ea2f0c16fa348be3',1,'SPI::SPIVec::rows()']]]
+  ['polyeig_56',['polyeig',['../namespaceSPI.html#a0911ebdeacbc175720357a5cea83a606',1,'SPI']]],
+  ['pow_57',['pow',['../namespaceSPI.html#a90c004a37109f4dc4e9ed819f7057820',1,'SPI::pow(const SPIVec &amp;A, SPIVec &amp;B)'],['../namespaceSPI.html#a38e41146ffb2f810c4ea35fc4f457776',1,'SPI::pow(const SPIVec &amp;A, PetscScalar b)']]],
+  ['print_58',['print',['../structSPI_1_1SPIMat.html#a54985e2734e903ab7972d202f8bde7ed',1,'SPI::SPIMat::print()'],['../structSPI_1_1SPIVec.html#a76f51795267dbf0161ee13657dad9d47',1,'SPI::SPIVec::print()']]],
+  ['printf_59',['printf',['../namespaceSPI.html#a5de3301bb631185b58f689053d52deb8',1,'SPI']]]
 ];

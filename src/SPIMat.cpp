@@ -45,9 +45,9 @@ namespace SPI{
         cols=n;
         ierr = MatCreate(PETSC_COMM_WORLD,&mat);CHKERRXX(ierr);
         ierr = MatSetSizes(mat,PETSC_DECIDE,PETSC_DECIDE,m,n);CHKERRXX(ierr);
-        //ierr = MatSetFromOptions(mat);CHKERRQ(ierr);
+        //ierr = MatSetFromOptions(mat);CHKERRXX(ierr);
         ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
-        ierr = MatSetUp(mat);CHKERRQ(ierr);
+        ierr = MatSetUp(mat);CHKERRXX(ierr);
         flag_init=PETSC_TRUE;
         return 0;
     }
@@ -253,6 +253,13 @@ namespace SPI{
         ierr = MatScale(this->mat,a);CHKERRXX(ierr);
         return *this;
     }
+    /** \brief Y = Y/a operation \return Y after operation */
+    SPIMat& SPIMat::operator/=(
+            const PetscScalar a     ///< [in] scalar in Y*a operation
+            ){
+        ierr = MatScale(this->mat,1./a);CHKERRXX(ierr);
+        return *this;
+    }
     // overload operator, matrix multiply
     /** \brief Y*A operation \return new matrix after matrix matrix multiply */
     SPIMat SPIMat::operator*(
@@ -291,10 +298,10 @@ namespace SPI{
     PetscInt SPIMat::T(
             SPIMat &A       ///< [out] transpose of current matrix
             ){
-        //ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
+        //ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRXX(ierr);
         //A();
         //A.Init(cols,rows);
-        ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
+        ierr = MatTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRXX(ierr);
         return 0;
     }
     /** \brief Transpose the current mat \return current matrix after transpose */
@@ -311,7 +318,7 @@ namespace SPI{
     PetscInt SPIMat::H(
             SPIMat &A       ///< [out] hermitian transpose of current matrix saved in new initialized matrix
             ){ // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
-        ierr = MatHermitianTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRQ(ierr);
+        ierr = MatHermitianTranspose(mat,MAT_INITIAL_MATRIX,&A.mat);CHKERRXX(ierr);
         return 0;
     }
     /** \brief Hermitian Transpose the current mat \return current matrix after transpose */
@@ -330,12 +337,37 @@ namespace SPI{
         ierr = MatGetDiagonal(mat,d.vec); CHKERRXX(ierr);
         return d;
     }
+    /** \brief set a row to zero \return matrix after setting the row to zero */
+    SPIMat& SPIMat::zero_row(
+        const PetscInt row ///< [in] which row to zero out of the matrix
+            ){
+        ierr = MatZeroRows(mat,1,&row,0.,0,0); CHKERRXX(ierr);
+        return (*this);
+    }
+    /** \brief set a row to zero using dense format \return matrix after setting the row to zero */
+    SPIMat& SPIMat::zero_row_full(
+        const PetscInt row ///< [in] which row to zero out of the matrix
+            ){
+        for(PetscInt j=0; j<cols; j++){
+            (*this)(row,j,0.0);
+        }
+        //ierr = MatZeroRows(mat,1,&row,0.,0,0); CHKERRXX(ierr);
+        return (*this);
+    }
+    /** \brief set rows to zero \return matrix after setting the rows to zero */
+    SPIMat& SPIMat::zero_rows(
+        std::vector<PetscInt> rows ///< [in] which rows to zero out of the matrix
+            ){
+        ierr = MatZeroRows(mat,rows.size(),rows.data(),0.,0,0); CHKERRXX(ierr);
+        return (*this);
+    }
     // print matrix to screen
     /** \brief print mat to screen using PETSC_VIEWER_STDOUT_WORLD \return 0 if successful */
     PetscInt SPIMat::print(){
         (*this)();
         PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
-        ierr = MatView(mat,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
+        SPI::printf("shape = %d x %d",this->rows,this->cols);
+        ierr = MatView(mat,PETSC_VIEWER_STDOUT_WORLD);CHKERRXX(ierr);
         PetscPrintf(PETSC_COMM_WORLD,("---------------- "+name+"---done-------\n\n").c_str());
         return 0;
     }
@@ -371,6 +403,7 @@ namespace SPI{
             const SPIMat &A     ///< [in] A in Ax=b
             ){
         SPIVec x;
+        x.rows=b.rows;
         KSP    ksp;  // Linear solver context
         PetscErrorCode ierr;
         ierr = VecDuplicate(b.vec,&x.vec);CHKERRXX(ierr);
@@ -383,7 +416,7 @@ namespace SPI{
         ierr = KSPSetOperators(ksp,A.mat,A.mat);CHKERRXX(ierr);
         // Set runtime options, e.g.,
         // -ksp_type <type> -pc_type <type> -ksp_monitor -ksp_rtol <rtol> -ksp_type <type> -pc_type <type>
-        //ierr = KSPSetFromOptions(ksp);CHKERRQ(ierr);
+        //ierr = KSPSetFromOptions(ksp);CHKERRXX(ierr);
         //ierr = KSPSetType(ksp,KSPPREONLY);CHKERRXX(ierr);
 
         PC pc;
@@ -418,14 +451,61 @@ namespace SPI{
 
         return I;
     }
+    /** \brief create, form, and return zeros matrix of size mxn \return zero matrix of size mxn */
+    SPIMat zeros(
+            const PetscInt m,       ///< [in] m size of zero matrix
+            const PetscInt n        ///< [in] n size of zero matrix
+            ){
+        SPIMat O(m,n,"zero");
+        O();
+        O.ierr = MatZeroEntries(O.mat); CHKERRXX(O.ierr);
+        return O;
+    }
     // diagonal matrix
     /** \brief set diagonal of matrix \return new matrix with  a diagonal vector set as the main diagonal */
     SPIMat diag(
-            const SPIVec &d     ///< [in] diagonal vector to set along main diagonal
+            const SPIVec &d,     ///< [in] diagonal vector to set along main diagonal
+            const PetscInt k     ///< [in] diagonal to set, k=0 is main diagonal, k=1 is offset one in positive direction
             ){ // set diagonal of matrix
-        SPIMat A(d.rows);
-        A.ierr = MatDiagonalSet(A.mat,d.vec,INSERT_VALUES);CHKERRXX(A.ierr);
-        return A;
+        if(k==0){
+            SPIMat A(d.rows);
+            A.ierr = MatDiagonalSet(A.mat,d.vec,INSERT_VALUES);CHKERRXX(A.ierr);
+            return A;
+        }
+        else if(k>0){
+            PetscInt r0=d.rows, r1=k;
+            PetscInt c0=k,      c1=d.rows;
+            SPIMat A00(zeros(r0,c0)), A01(r0,c1),
+                   A10(zeros(r1,c0)), A11(zeros(r1,c1));
+            A01.ierr = MatDiagonalSet(A01.mat,d.vec,INSERT_VALUES);CHKERRXX(A01.ierr);
+            SPIMat A(SPI::block({{A00,A01},
+                                 {A10,A11}}));
+            A();
+            return A;
+            
+        }
+        else if(k<0){
+            PetscInt r0=-k,     r1=d.rows;
+            PetscInt c0=d.rows, c1=-k;
+            SPIMat A00(zeros(r0,c0)); CHKERRXX(A00.ierr);
+            SPIMat A01(zeros(r0,c1)); CHKERRXX(A01.ierr);
+            SPIMat A10(r1,c0);        CHKERRXX(A10.ierr);
+            SPIMat A11(zeros(r1,c1)); CHKERRXX(A11.ierr);
+            //CHKERRXX(A00.ierr);
+            //CHKERRXX(A10.ierr);
+            //CHKERRXX(A01.ierr);
+            //CHKERRXX(A11.ierr);
+            A10.ierr = MatDiagonalSet(A10.mat,d.vec,INSERT_VALUES);CHKERRXX(A10.ierr);
+            //A00();CHKERRXX(A00.ierr);
+            //A01();CHKERRXX(A01.ierr);
+            //A10();CHKERRXX(A10.ierr);
+            //A11();CHKERRXX(A11.ierr);
+            SPIMat A(SPI::block({{A00,A01},
+                                 {A10,A11}}));
+            A();
+            return A();
+            
+        }
     }
 
     // kron inner product
@@ -730,21 +810,24 @@ namespace SPI{
         PetscInt n[cols];
         PetscInt nsum=Blocks[0][0].cols;
         m[0]=n[0]=0;
-        for (PetscInt i=1; i<rows; ++i){
-            m[i] = m[i-1]+Blocks[i-1][0].rows;
-            msum += m[i];
-        }
-        for (PetscInt j=1; j<cols; ++j){
-            n[j] = n[j-1]+Blocks[0][j].cols;
-            nsum += n[j];
-        }
+        for (PetscInt i=1; i<rows; ++i) m[i] = m[i-1]+Blocks[i-1][0].rows;
+        for (PetscInt i=1; i<rows; ++i) msum += Blocks[i][0].rows;
+        for (PetscInt j=1; j<cols; ++j) nsum += Blocks[0][j].rows;
+        for (PetscInt j=1; j<cols; ++j) n[j] = n[j-1]+Blocks[0][j-1].cols;
 
         // TODO check if all rows and columns match for block matrix.... user error catch
 
         SPIMat A(msum,nsum);
+        //printf("msum,nsum = %d,%d",msum,nsum);
+        //for (PetscInt j=0; j<cols; ++j){
+            //for(PetscInt i=0; i<rows; ++i){
+                //printf("m[%d],n[%d] = %d,%d",i,j,m[i],n[j]);
+            //}
+        //}
 
-        for (PetscInt j=0; j<cols; ++j){
-            for(PetscInt i=0; i<rows; ++i){
+        for(PetscInt i=0; i<rows; ++i){
+            for (PetscInt j=0; j<cols; ++j){
+                //printf("setting A[%d,%d] with shape=%dx%d",m[i],n[j],Blocks[i][j].rows,Blocks[i][j].cols);
                 A(m[i],n[j],Blocks[i][j]);
             }
         }
@@ -772,14 +855,14 @@ namespace SPI{
         PetscErrorCode ierr;
         std::ifstream f(filename.c_str());
         if(f.good()){
-            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_APPEND,&viewer);CHKERRQ(ierr);
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_APPEND,&viewer);CHKERRXX(ierr);
         }
         else{
-            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_WRITE,&viewer);CHKERRXX(ierr);
         }
-        //ierr = PetscViewerPushFormat(viewer,format);CHKERRQ(ierr);
-        ierr = MatView(A.mat,viewer);CHKERRQ(ierr);
-        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+        //ierr = PetscViewerPushFormat(viewer,format);CHKERRXX(ierr);
+        ierr = MatView(A.mat,viewer);CHKERRXX(ierr);
+        ierr = PetscViewerDestroy(&viewer);CHKERRXX(ierr);
         return 0;
     }
     /** \brief save matrices to filename in binary format (see Petsc documentation for format \returns 0 if successful */
@@ -792,16 +875,16 @@ namespace SPI{
         PetscErrorCode ierr;
         std::ifstream f(filename.c_str());
         if(f.good()){
-            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_APPEND,&viewer);CHKERRQ(ierr);
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_APPEND,&viewer);CHKERRXX(ierr);
         }
         else{
-            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_WRITE,&viewer);CHKERRQ(ierr);
+            ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD,filename.c_str(),FILE_MODE_WRITE,&viewer);CHKERRXX(ierr);
         }
-        //ierr = PetscViewerPushFormat(viewer,format);CHKERRQ(ierr);
+        //ierr = PetscViewerPushFormat(viewer,format);CHKERRXX(ierr);
         for(unsigned i=0; i<As.size(); ++i){
-            ierr = MatView(As[i].mat,viewer);CHKERRQ(ierr);
+            ierr = MatView(As[i].mat,viewer);CHKERRXX(ierr);
         }
-        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+        ierr = PetscViewerDestroy(&viewer);CHKERRXX(ierr);
         return 0;
     }
     /** \brief load matrix from filename from binary format (works with save(SPIMat,std::string) function \returns 0 if successful */
@@ -811,9 +894,9 @@ namespace SPI{
             ){
         PetscViewer viewer;
         //std::ifstream f(filename.c_str());
-        A.ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRQ(A.ierr);
-        A.ierr = MatLoad(A.mat,viewer); CHKERRQ(A.ierr);
-        A.ierr = PetscViewerDestroy(&viewer); CHKERRQ(A.ierr);
+        A.ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRXX(A.ierr);
+        A.ierr = MatLoad(A.mat,viewer); CHKERRXX(A.ierr);
+        A.ierr = PetscViewerDestroy(&viewer); CHKERRXX(A.ierr);
         return 0;
     }
     /** \brief load matrix from filename from binary format (works with save(SPIMat,std::string) function \returns 0 if successful */
@@ -824,11 +907,11 @@ namespace SPI{
         PetscViewer viewer;
         //std::ifstream f(filename.c_str());
         PetscErrorCode ierr;
-        ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRQ(ierr);
+        ierr = PetscViewerBinaryOpen(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_READ, &viewer); CHKERRXX(ierr);
         for(unsigned i=0; i<As.size(); ++i){
-            ierr = MatLoad(As[i].mat,viewer); CHKERRQ(ierr);
+            ierr = MatLoad(As[i].mat,viewer); CHKERRXX(ierr);
         }
-        ierr = PetscViewerDestroy(&viewer); CHKERRQ(ierr);
+        ierr = PetscViewerDestroy(&viewer); CHKERRXX(ierr);
         return 0;
     }
 
@@ -838,14 +921,14 @@ namespace SPI{
             ){
         PetscViewer     viewer;
         PetscErrorCode ierr;
-        ierr = PetscViewerDrawOpen(PETSC_COMM_WORLD,NULL,A.name.c_str(),PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,&viewer);CHKERRQ(ierr);
-        ierr = MatView(A.mat,viewer);CHKERRQ(ierr);
+        ierr = PetscViewerDrawOpen(PETSC_COMM_WORLD,NULL,A.name.c_str(),PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,PETSC_DECIDE,&viewer);CHKERRXX(ierr);
+        ierr = MatView(A.mat,viewer);CHKERRXX(ierr);
 
         // pause until user inputs at command line
         SPI::printf("  draw(SPIMat) with title=%s, hit ENTER to continue",A.name.c_str());
         std::cin.ignore();
 
-        ierr = PetscViewerDestroy(&viewer);CHKERRQ(ierr);
+        ierr = PetscViewerDestroy(&viewer);CHKERRXX(ierr);
         return 0;
     }
 }

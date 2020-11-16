@@ -4,7 +4,7 @@ var searchData=
   ['acos_2',['acos',['../namespaceSPI.html#a24c88dc870d0d40a3bd85439cb20bad3',1,'SPI']]],
   ['acosh_3',['acosh',['../namespaceSPI.html#a64dd4c846499276ff78052628f087f98',1,'SPI']]],
   ['add_4',['add',['../structSPI_1_1SPIMat.html#a99e48a9d19f80141205522d6ba07e32f',1,'SPI::SPIMat::add()'],['../structSPI_1_1SPIVec.html#a9a2d5b65f85aad78d1390a8949040595',1,'SPI::SPIVec::add()']]],
-  ['arange_5',['arange',['../namespaceSPI.html#ac68db62f7b4d44d88688acda8ecdb6a9',1,'SPI']]],
+  ['arange_5',['arange',['../namespaceSPI.html#ac68db62f7b4d44d88688acda8ecdb6a9',1,'SPI::arange(const PetscScalar begin, const PetscScalar end, const PetscScalar stepsize)'],['../namespaceSPI.html#a06a17bf65cd90b0f09ae1196f6bc65c4',1,'SPI::arange(const PetscScalar end)']]],
   ['asin_6',['asin',['../namespaceSPI.html#a9f916f772affb70e354a936ad690ea0a',1,'SPI']]],
   ['asinh_7',['asinh',['../namespaceSPI.html#a6bb0eda0add46d3dc1e8f468fe4ea022',1,'SPI']]],
   ['atan_8',['atan',['../namespaceSPI.html#af545599719a66e9f794f7ffb4c3f23a5',1,'SPI']]],

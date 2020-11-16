@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['t_163',['T',['../structSPI_1_1SPIMat.html#abed5eb74c5e20ef25e884fdd8b1e9953',1,'SPI::SPIMat::T(SPIMat &amp;A)'],['../structSPI_1_1SPIMat.html#a28bac8256143468e57507413fba38c88',1,'SPI::SPIMat::T()']]],
-  ['tan_164',['tan',['../namespaceSPI.html#a2d2c45f7e1d3d20aed98ce0a081d3093',1,'SPI']]],
-  ['tanh_165',['tanh',['../namespaceSPI.html#a5948e854af527d8524053bedb3ea5026',1,'SPI']]],
-  ['test_5fif_5fclose_166',['test_if_close',['../tests_8hpp.html#a4634a393ba816bf78c6b16b607e71e4f',1,'test_if_close(PetscScalar value, PetscScalar golden, std::string name, PetscReal tol=1.E-13):&#160;tests.cpp'],['../tests_8cpp.html#aa07cf74e1c0a5cd426b0c9146482c83f',1,'test_if_close(PetscScalar value, PetscScalar golden, std::string name, PetscReal tol):&#160;tests.cpp']]],
-  ['test_5fif_5ftrue_167',['test_if_true',['../tests_8hpp.html#a7d2c43d6cff712420ddcbe7a10289e1a',1,'test_if_true(PetscBool test, std::string name):&#160;tests.cpp'],['../tests_8cpp.html#a7d2c43d6cff712420ddcbe7a10289e1a',1,'test_if_true(PetscBool test, std::string name):&#160;tests.cpp']]],
-  ['tests_168',['tests',['../tests_8hpp.html#a0040b31a2648820e75882b52c2790efa',1,'tests():&#160;tests.cpp'],['../tests_8cpp.html#a0040b31a2648820e75882b52c2790efa',1,'tests():&#160;tests.cpp']]],
-  ['trapz_169',['trapz',['../namespaceSPI.html#a3c11ddefd30acbd05a138b883e9ecea5',1,'SPI::trapz(SPIVec y)'],['../namespaceSPI.html#a3870ae95b074ebbf93377e0fd3911ab4',1,'SPI::trapz(SPIVec y, SPIVec x)']]]
+  ['save_160',['save',['../namespaceSPI.html#a3d69f6509631ee5a016f6648874a8db7',1,'SPI::save(const SPIMat &amp;A, const std::string filename)'],['../namespaceSPI.html#a3920b2c22373c76bff62ff753d956026',1,'SPI::save(const std::vector&lt; SPIMat &gt; &amp;As, const std::string filename)'],['../namespaceSPI.html#a6d186d00e2ab905c91eeb08d46b26567',1,'SPI::save(const SPIVec &amp;A, std::string filename)']]],
+  ['set_161',['set',['../structSPI_1_1SPIMat.html#aec416214c8b573382f9c98b15baf24c6',1,'SPI::SPIMat::set()'],['../structSPI_1_1SPIVec.html#af69b0d36870524b5c91bdd1f7eb9e533',1,'SPI::SPIVec::set(const PetscInt _row, const PetscScalar v)'],['../structSPI_1_1SPIVec.html#ade0db928e7a88ac202606facd655e4b9',1,'SPI::SPIVec::set(const PetscScalar v)']]],
+  ['sin_162',['sin',['../namespaceSPI.html#a71c0b19be55e53d5ccbfc1175be7f22b',1,'SPI']]],
+  ['sinh_163',['sinh',['../namespaceSPI.html#ab8df690968369934279129455508063c',1,'SPI']]],
+  ['size_164',['size',['../structSPI_1_1SPIVec.html#a81c08d7153df37325ac93641de934945',1,'SPI::SPIVec']]],
+  ['spimat_165',['SPIMat',['../structSPI_1_1SPIMat.html#ad89a9da200d92b4e6dd52693dd868bfa',1,'SPI::SPIMat::SPIMat(std::string _name=&quot;SPIMat&quot;)'],['../structSPI_1_1SPIMat.html#a90bfcb9f9577021b0b0655050b863daa',1,'SPI::SPIMat::SPIMat(const SPIMat &amp;A, std::string _name=&quot;SPIMat&quot;)'],['../structSPI_1_1SPIMat.html#a2cabd449a5280896fe5a17406b895949',1,'SPI::SPIMat::SPIMat(PetscInt rowscols, std::string _name=&quot;SPIMat&quot;)'],['../structSPI_1_1SPIMat.html#a38d4fb8183f87bd90b9309a20d8c4650',1,'SPI::SPIMat::SPIMat(PetscInt rowsm, PetscInt colsn, std::string _name=&quot;SPIMat&quot;)']]],
+  ['spivec_166',['SPIVec',['../structSPI_1_1SPIVec.html#a5750d1b17bbe73d80c940d97668c89fd',1,'SPI::SPIVec::SPIVec(std::string _name=&quot;SPIVec&quot;)'],['../structSPI_1_1SPIVec.html#a7ef3812f50b740be08f2f540d8ca4c4a',1,'SPI::SPIVec::SPIVec(const SPIVec &amp;A, std::string _name=&quot;SPIVec&quot;)'],['../structSPI_1_1SPIVec.html#a173292f10c7e2f0c8116e001a5430a1d',1,'SPI::SPIVec::SPIVec(PetscInt rows, std::string _name=&quot;SPIVec&quot;)']]],
+  ['sum_167',['sum',['../namespaceSPI.html#a16a9d8de2cd233a150468930a0ad0421',1,'SPI']]]
 ];

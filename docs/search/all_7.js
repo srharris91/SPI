@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['h_26',['H',['../structSPI_1_1SPIMat.html#af7aad6046bc042a9e3b6f197b5c47099',1,'SPI::SPIMat::H(SPIMat &amp;A)'],['../structSPI_1_1SPIMat.html#a80ce191e11f8ad919754f8904172fdd2',1,'SPI::SPIMat::H()']]]
+  ['get_5fd_5fcoeffs_26',['get_D_Coeffs',['../main_8cpp.html#a5a9def01c69ac3597b3053842e4393f1',1,'main.cpp']]]
 ];

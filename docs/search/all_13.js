@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zeros_87',['zeros',['../namespaceSPI.html#afa58913149b40db8f093186c695f37a3',1,'SPI']]]
+  ['vec_87',['vec',['../structSPI_1_1SPIVec.html#a76af0b7122c6c93138b54a2768ed7223',1,'SPI::SPIVec']]]
 ];

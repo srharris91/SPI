@@ -52,6 +52,7 @@ namespace SPI{
         SPIMat operator*(const double a); // Y*a operation
         SPIVec operator*(const SPIVec &x); // A*x operation to return a vector
         SPIMat& operator*=(const PetscScalar a); // Y = Y*a operation
+        SPIMat& operator/=(const PetscScalar a); // Y = Y/a operation
         SPIMat operator*(const SPIMat &A); // Y*A operation
         // = operator
         SPIMat& operator=(const SPIMat &A); // Y=X with initialization of Y using MatConvert
@@ -65,6 +66,9 @@ namespace SPI{
         SPIMat& H(); // Hermitian Transpose the current mat
         SPIMat& conj(); // elemenwise conjugate current matrix
         SPIVec diag(); // get diagonal of matrix
+        SPIMat& zero_row(const PetscInt row); // zero a row
+        SPIMat& zero_row_full(const PetscInt row); // zero a row
+        SPIMat& zero_rows(std::vector<PetscInt> rows); // zero every row
         PetscInt print(); // print mat to screen using PETSC_VIEWER_STDOUT_WORLD
 
         ~SPIMat(); // destructor to delete memory
@@ -74,7 +78,8 @@ namespace SPI{
     SPIMat operator*(const SPIMat A, const PetscScalar a); // A*a operation to be equivalent to A*a
     SPIVec operator/(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using b/A notation
     SPIMat eye(const PetscInt n); // create, form, and return identity matrix of size n
-    SPIMat diag(const SPIVec &diag); // set diagonal of matrix
+    SPIMat zeros(const PetscInt m,const PetscInt n); // create, form, and return zero matrix of size mxn
+    SPIMat diag(const SPIVec &diag,const PetscInt k=0); // set diagonal of matrix
     SPIMat kron(const SPIMat &A, const SPIMat &B); // set kronecker inner product of two matrices
     std::tuple<PetscScalar,SPIVec> eig(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
     std::tuple<PetscScalar,SPIVec> polyeig(const std::vector<SPIMat> &As, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)

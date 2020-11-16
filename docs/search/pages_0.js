@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['spi_20_28slepc_20petsc_20interface_29_181',['SPI (SLEPc PETSc Interface)',['../index.html',1,'']]]
+  ['spi_20_28slepc_20petsc_20interface_29_189',['SPI (SLEPc PETSc Interface)',['../index.html',1,'']]]
 ];
