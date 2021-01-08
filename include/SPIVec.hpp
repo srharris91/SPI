@@ -75,6 +75,7 @@ namespace SPI{
         ~SPIVec(); // destructor to delete memory
 
     };
+    SPIVec operator/(const PetscScalar a, const SPIVec &A); // a/A operation
     SPIVec operator*(const PetscScalar a, const SPIVec &A); // a*A operation to be equivalent to A*a
     SPIVec operator+(const PetscScalar a, const SPIVec &A); // a+A operation to be equivalent to A+a
     SPIVec operator-(const PetscScalar a, const SPIVec &A); // a-A operation to be equivalent to A-a

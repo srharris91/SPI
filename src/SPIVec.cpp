@@ -394,6 +394,19 @@ namespace SPI{
     }
 
     // overload operator, scale with scalar
+    /** Z=a/Y operation \return Z in Z=a/Y operation */
+    SPIVec operator/(
+            const PetscScalar a, ///< [in] scalar a in a/Y operation
+            const SPIVec &Y     ///< [in] Y in Z=a/Y
+            ){
+        SPIVec B(Y.rows);
+        SPIVec A(ones(Y.rows)*a);
+        //B=Y;
+        //B.ierr = VecScale(B.vec,a);CHKERRXX(B.ierr);
+        B.ierr = VecPointwiseDivide(B.vec,A.vec,Y.vec);CHKERRXX(B.ierr);
+        return B;
+    }
+
     /** Z=a*Y operation to be equivalent to Y*a \return Z in Z=a*Y operation */
     SPIVec operator*(
             const PetscScalar a, ///< [in] scalar a in a*Y operation
