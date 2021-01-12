@@ -17,7 +17,9 @@ namespace SPI{
         ierr = MPI_Comm_rank(comm,&rank);CHKERRQ(ierr);
         if (!rank) {
             va_list Argp;
-            va_start(Argp,format);
+            //va_start(Argp,format,1);
+            va_start(Argp,msg);
+            va_arg(Argp,const char*);
             ierr = (*PetscVFPrintf)(PETSC_STDOUT,format,Argp);CHKERRQ(ierr);
             va_end(Argp);
         }

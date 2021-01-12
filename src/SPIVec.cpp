@@ -168,6 +168,15 @@ namespace SPI{
         A += a*ones(rows);
         return A;
     }
+    /** Y+a operation \return SPIVec Z=Y+a */
+    SPIVec SPIVec::operator+(
+            const double a ///< [in] scalar a in Y+a operation
+            ){ // Y + a operation
+        SPIVec A;
+        A=(*this);
+        A += a*ones(rows);
+        return A;
+    }
     /** Y-a operation \return Z in Z=Y-a */
     SPIVec SPIVec::operator-(
             const PetscScalar a ///< [in] scalar a in Y-a operation
@@ -267,6 +276,14 @@ namespace SPI{
         A=*this;
         ierr = VecScale(A.vec,1./as);CHKERRXX(ierr);
         return A;
+    }
+    /** pointwise divide by X  \return Z in Z=Y/X operation */
+    SPIVec SPIVec::operator/(
+            const SPIVec X ///< [in] X in Z=Y/X operation
+            ){
+        SPIVec Z(X.rows);
+        ierr = VecPointwiseDivide(Z.vec,this->vec,X.vec);CHKERRXX(ierr);
+        return Z;
     }
     // overload operator, scale with scalar
     /** Y = Y*a pointwise divide operation \return Y in Y/=a operation */
@@ -380,7 +397,8 @@ namespace SPI{
         (*this)();// assemble
         printf("\n---------------- "+name+"---start------");
         //PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
-        SPI::printf("shape = %d x 1",this->rows);
+        //SPI::printf("shape = %d x 1",this->rows);
+        SPI::printf("shape = "+std::to_string(this->rows)+" x 1");
         ierr = VecView(vec,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
         //PetscPrintf(PETSC_COMM_WORLD,("---------------- "+name+"---done-------\n\n").c_str());
         printf("---------------- "+name+"---done-------\n");
@@ -389,8 +407,10 @@ namespace SPI{
 
     /** destructor to delete memory */
     SPIVec::~SPIVec(){
-        flag_init=PETSC_FALSE;
-        ierr = VecDestroy(&vec);CHKERRXX(ierr);
+        if(flag_init){
+            flag_init=PETSC_FALSE;
+            ierr = VecDestroy(&vec);CHKERRXX(ierr);
+        }
     }
 
     // overload operator, scale with scalar
@@ -435,8 +455,8 @@ namespace SPI{
             const SPIVec &Y     ///< [in] Y in a-Y operation
             ){
         SPIVec B;
-        B = Y;
-        B -= a*ones(B.rows);
+        B = -1.*Y;
+        B += a*ones(B.rows);
         return B;
     }
 
@@ -449,10 +469,10 @@ namespace SPI{
         ierr = PetscObjectSetName((PetscObject)A.vec, A.name.c_str());CHKERRQ(ierr);
         PetscViewer viewer;
         std::ifstream f(filename.c_str());
-        if(f.good()){
+        if(f.good()){// if filename exists, then append
             ierr = PetscViewerHDF5Open(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_APPEND, &viewer); CHKERRQ(ierr);
         }
-        else{
+        else{ // if not, then write a new file
             ierr = PetscViewerHDF5Open(PETSC_COMM_WORLD, filename.c_str(), FILE_MODE_WRITE, &viewer); CHKERRQ(ierr);
         }
         ierr = VecView(A.vec,viewer); CHKERRQ(ierr);

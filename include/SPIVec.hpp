@@ -38,6 +38,7 @@ namespace SPI{
         SPIVec& axpy(const PetscScalar a, const SPIVec &X); // VecAXPY function call to add a*X to the current vec
         SPIVec operator+(const SPIVec &X); // Y + X operation
         SPIVec operator+(const PetscScalar a); // Y + a operation
+        SPIVec operator+(const double a); // Y + a operation
         SPIVec operator-(const PetscScalar a); // Y - a operation
         SPIVec operator-(const PetscInt a); // Y - a operation
         SPIVec& operator-=(const SPIVec &X); // Y = -1.*X + Y operation
@@ -51,6 +52,7 @@ namespace SPI{
         // / operators
         SPIVec operator/(const PetscScalar a); // Y/a operation
         SPIVec operator/(const double a); // Y*a operation
+        SPIVec operator/(const SPIVec X);   // Y/X operation
         SPIVec& operator/=(const PetscScalar a); // Y = Y/a operation
         // ^ operators
         SPIVec operator^(const PetscScalar p); // Y^p operation
@@ -117,7 +119,7 @@ namespace SPI{
     PetscReal L2(SPIVec x1, const SPIVec x2, NormType type=NORM_2);
     PetscReal L2(const SPIVec x1, NormType type=NORM_2);
     SPIVec diff(SPIVec x1); // diff of vector (will be size x1.rows-1)
-    PetscScalar trapz(const SPIVec y); // trapezoidal integration of y with x coordinates  \int y dx
+    PetscScalar trapz(const SPIVec y); // trapezoidal integration of y with unity spacing \int y dx
     PetscScalar trapz(const SPIVec y, const SPIVec x); // trapezoidal integration of y with x coordinates  \int y dx
     PetscInt draw(const SPIVec &x); // draw nonzero structure and wait at command line input
 }

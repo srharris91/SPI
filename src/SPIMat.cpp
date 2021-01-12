@@ -100,6 +100,7 @@ namespace SPI{
             const PetscScalar v ///< [in] scalar to set in matrix
             ){
         ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRXX(ierr);
+        (*this)(); // assemble after every insertion
         return (*this);
     }
     /** \brief set operator the same as set function \return current matrix after setting value */
@@ -366,7 +367,7 @@ namespace SPI{
     PetscInt SPIMat::print(){
         (*this)();
         PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
-        SPI::printf("shape = %d x %d",this->rows,this->cols);
+        SPI::printf("shape = "+std::to_string(this->rows)+" x "+std::to_string(this->cols));
         ierr = MatView(mat,PETSC_VIEWER_STDOUT_WORLD);CHKERRXX(ierr);
         PetscPrintf(PETSC_COMM_WORLD,("---------------- "+name+"---done-------\n\n").c_str());
         return 0;
@@ -506,6 +507,9 @@ namespace SPI{
             return A();
             
         }
+        else{
+            exit(0);
+        }
     }
 
     // kron inner product
@@ -588,6 +592,7 @@ namespace SPI{
             const PetscReal tol,    ///< [in] tolerance of eigenvalue solver
             const PetscInt max_iter ///< [in] maximum number of iterations
             ){
+        std::cout<<"target = "<<target<<std::endl;
         PetscInt rows=A.rows;
         EPS             eps;        /* eigenproblem solver context slepc */
         //ST              st;
@@ -666,43 +671,44 @@ namespace SPI{
            Get number of converged approximate eigenpairs
            */
         ierr = EPSGetConverged(eps,&nconv);CHKERRXX(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD," Number of converged eigenpairs: %D\n\n",nconv);CHKERRXX(ierr);
+        // ierr = PetscPrintf(PETSC_COMM_WORLD," Number of converged eigenpairs: %D\n\n",nconv);CHKERRXX(ierr);
 
         if (nconv>0) {
             /*
                Display eigenvalues and relative errors
                */
-            //ierr = PetscPrintf(PETSC_COMM_WORLD,
-                    //"      k                ||Ax-kx||/||kx||\n"
-                    //"   ----------------- ------------------\n");CHKERRXX(ierr);
+             // ierr = PetscPrintf(PETSC_COMM_WORLD,
+             //         "      k                ||Ax-kx||/||kx||\n"
+             //         "   ----------------- ------------------\n");CHKERRXX(ierr);
 
-            //for (i=0;i<nconv;i++) {
-            //    /*
-            //       Get converged eigenpairs: i-th eigenvalue is stored in kr (real part) and
-            //       ki (imaginary part)
-            //       */
-            //    ierr = EPSGetEigenpair(eps,i,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
-            //    /*
-            //       Compute the relative error associated to each eigenpair
-            //       */
-            //    ierr = EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);CHKERRXX(ierr);
-
-            //    re = PetscRealPart(alpha);
-            //    im = PetscImaginaryPart(alpha);
-            //    if (im!=0.0) {
-            //        ierr = PetscPrintf(PETSC_COMM_WORLD," (%9e+%9ei)  %12g\n",(double)re,(double)im,(double)error);CHKERRXX(ierr);
-            //    } else {
-            //        ierr = PetscPrintf(PETSC_COMM_WORLD,"   %12e       %12g\n",(double)re,(double)error);CHKERRXX(ierr);
-            //    }
-            //}
-            //ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
+             // for (PetscInt i=0;i<nconv;i++) {
+             //     /*
+             //        Get converged eigenpairs: i-th eigenvalue is stored in kr (real part) and
+             //        ki (imaginary part)
+             //        */
+             //     ierr = EPSGetEigenpair(eps,i,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
+             //     /*
+             //        Compute the relative error associated to each eigenpair
+             //        */
+             //     PetscReal error, re, im;
+             //     ierr = EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);CHKERRXX(ierr);
+             //     re = PetscRealPart(alpha);
+             //     im = PetscImaginaryPart(alpha);
+             //     if (im!=0.0) {
+             //         ierr = PetscPrintf(PETSC_COMM_WORLD," (%9e+%9ei)  %12g\n",(double)re,(double)im,(double)error);CHKERRXX(ierr);
+             //     } else {
+             //         ierr = PetscPrintf(PETSC_COMM_WORLD,"   %12e       %12g\n",(double)re,(double)error);CHKERRXX(ierr);
+             //     }
+             // }
+             // ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
 
             ierr = EPSGetEigenpair(eps,0,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
         }
 
-        //ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
-        //ierr = PetscPrintf(PETSC_COMM_WORLD,"ksp iterations %D\n",its);CHKERRXX(ierr);
-        //PetscPrintf(PETSC_COMM_WORLD,"EPS Solved in %D iterations \n",its);
+        // PetscInt its;
+        // ierr = EPSGetIterationNumber(eps,&its);CHKERRXX(ierr);
+        // //ierr = PetscPrintf(PETSC_COMM_WORLD,"ksp iterations %D\n",its);CHKERRXX(ierr);
+        // ierr = PetscPrintf(PETSC_COMM_WORLD,"EPS Solved in %D iterations \n",its); CHKERRXX(ierr);
         // Free work space.  All PETSc objects should be destroyed when they
         // are no longer needed.
         //set_Vec(x);
