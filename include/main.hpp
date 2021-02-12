@@ -1,15 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
-#include <iostream>
-#include <petscksp.h>
-#include <tuple>
-#include "SPIMat.hpp"
-#include "SPIVec.hpp"
-#include "SPIprint.hpp"
-#include "SPIgrid.hpp"
-#include "SPIbaseflow.hpp"
-#include "SPIparams.hpp"
-#include "SPILST.hpp"
+#include "SPI.hpp"
 /** \mainpage SPI (SLEPc PETSc Interface)
  *
  * \author Shaun Harris (<A HREF="https://srharris91.github.io/" TARGET="_top">https://srharris91.github.io/</A>)\n
