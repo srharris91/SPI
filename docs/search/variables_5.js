@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['name_227',['name',['../structSPI_1_1SPIgrid.html#aa386e1b00a548b37c05a346393396766',1,'SPI::SPIgrid::name()'],['../structSPI_1_1SPIMat.html#aa0e7ddffbdabffe6e536ff96bc5caf48',1,'SPI::SPIMat::name()'],['../structSPI_1_1SPIVec.html#a10b3830e5d8061989a47f88c71a7e845',1,'SPI::SPIVec::name()']]]
+  ['h_282',['h',['../structSPI_1_1SPIparams.html#a7d3f8002c310c360b0b3f81716508e63',1,'SPI::SPIparams']]]
 ];

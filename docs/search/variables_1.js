@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['dy_220',['Dy',['../structSPI_1_1SPIgrid.html#a4b362a10980bd35ad7863303156f9a0c',1,'SPI::SPIgrid']]],
-  ['dyy_221',['Dyy',['../structSPI_1_1SPIgrid.html#adc784f83584b1b3a3f170ed4cfa464a7',1,'SPI::SPIgrid']]]
+  ['beta_274',['beta',['../structSPI_1_1SPIparams.html#a7388282854df09544e6ca8700c130204',1,'SPI::SPIparams']]]
 ];

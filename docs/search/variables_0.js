@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cols_219',['cols',['../structSPI_1_1SPIMat.html#aa738c1f222a190aadea196974dca7ff4',1,'SPI::SPIMat']]]
+  ['alpha_273',['alpha',['../structSPI_1_1SPIparams.html#a82cb781342cbf9d90e1a11cc5ed4e31e',1,'SPI::SPIparams']]]
 ];

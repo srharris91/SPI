@@ -298,6 +298,8 @@ namespace SPI{
         this->set_grid(y);
         // set respective derivatives
         this->set_derivatives();
+        // set respective operators
+        this->set_operators();
     }
 
 
@@ -309,6 +311,10 @@ namespace SPI{
             this->Dy.print();
             this->Dyy.print();
         }
+        if(this->flag_set_operators){
+            this->O.print();
+            this->I.print();
+        }
     SPI::printf("---------------- "+this->name+" done ---------------------------");
     }
 
@@ -318,6 +324,7 @@ namespace SPI{
             ){
         this->y=y;
         this->y.name=std::string("y");
+        this->ny = y.rows;
         this->flag_set_grid=PETSC_TRUE;
     }
 
@@ -339,6 +346,17 @@ namespace SPI{
             this->Dyy.name=std::string("Dyy");
             this->flag_set_derivatives=PETSC_TRUE;
         }
+    }
+
+    /** \brief sets zero and identity operators for grid */
+    void SPIgrid::set_operators(){
+        PetscInt m = Dy.rows;
+        PetscInt n = Dy.cols;
+        this->O=zeros(m,n);;   // default Chebyshev operator on non-uniform grid
+        this->O.name="zero";
+        this->I=eye(m);   // default Chebyshev operator on non-uniform grid
+        this->I.name="eye";
+        this->flag_set_operators=PETSC_TRUE;
     }
 
     /** \brief destructor of saved SPIVec and SPIMat */

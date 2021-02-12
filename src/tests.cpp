@@ -195,19 +195,25 @@ int tests(){
         SPI::SPIMat B(SPI::eye(2),"I-identity");
         PetscScalar alpha;
         SPI::SPIVec eig(2,"eig1");
-        std::tie(alpha,eig) = SPI::eig(A,B,1.0+PETSC_i*0.5);
+        SPI::SPIVec eig2(2,"eig2");
+        std::tie(alpha,eig,eig2) = SPI::eig(A,B,1.0+PETSC_i*0.5);
         eig /= eig.max(); // normalize by max amplitude
         test_if_close(alpha,1.,"eig(SPIMat,SPIMat,PetscScalar) 1",1.E-8);
         PetscScalar alpha2;
-        SPI::SPIVec eig2(2,"eig2");
-        std::tie(alpha2,eig2) = SPI::eig(A,B,-1.0+PETSC_i*0.00005,1.E-19,10);
+        std::tie(alpha2,eig2,eig) = SPI::eig(A,B,-1.0+PETSC_i*0.00005,1.E-19,10);
         eig2 /= eig2.max(); // normalize by max amplitude
-        test_if_close(alpha2,1.,"eig(SPIMat,SPIMat,PetscScalar) 2",1.E-8);
+        test_if_close(alpha2,1.,"eig(SPIMat,SPIMat,PetscScalar) 2",1.E-7);
+        // eig_init
+        std::tie(alpha,eig,eig2) = SPI::eig_init(A,B,1.0+PETSC_i*0.5,eig.conj(),eig);
+        test_if_close(alpha,1.,"eig_init(SPIMat,SPIMat,PetscScalar,SPIVec) 1",1.E-8);
+        std::tie(alpha2,eig2,eig) = SPI::eig_init(A,B,-1.0+PETSC_i*0.00005,eig.conj(),eig,1.E-19,10);
+        test_if_close(alpha2,1.,"eig_init(SPIMat,SPIMat,PetscScalar,SPIVec,PetscReal,PetscInt) 2",1.E-7);
 
-        std::tie(alpha,eig) = SPI::polyeig({A,-B},1.0+0.5*PETSC_i);
-        test_if_close(alpha,1.,"polyeig(std::vector<SPIMat>,PetscScalar) 1",1.E-8);
-        std::tie(alpha,eig) = SPI::polyeig({A},1.0+0.5*PETSC_i);
-        test_if_close(alpha,1.,"polyeig(std::vector<SPIMat>,PetscScalar) 2",1.E-8);
+        // TODO these cases don't work as it is a linear problem
+        //std::tie(alpha,eig) = SPI::polyeig({A,-B},1.0+0.5*PETSC_i);
+        //test_if_close(alpha,1.,"polyeig(std::vector<SPIMat>,PetscScalar) 1",1.E-8);
+        //std::tie(alpha,eig) = SPI::polyeig({A},1.0+0.5*PETSC_i);
+        //test_if_close(alpha,1.,"polyeig(std::vector<SPIMat>,PetscScalar) 2",1.E-8);
 
         SPI::SPIMat M(4,"M"),C(4,"C"),K(4,"K"); // (M*lambda^2 + C*lambda + K)*x = 0 from MatLab mathworks documentation
         // M
@@ -230,11 +236,20 @@ int tests(){
 
 
         PetscScalar alpha4;
-        SPI::SPIVec eig4(4);
+        SPI::SPIVec eig4(4),eig5(4);
         std::tie(alpha4,eig4) = SPI::polyeig({K,C,M},-2.5+0.5*PETSC_i);
-        test_if_close(alpha4,-2.44985,"polyeig(std::vector<SPIMat>,PetscScalar) 3",1.E-5);
+        test_if_close(alpha4,-2.44985,"polyeig(std::vector<SPIMat>,PetscScalar) 1",1.E-5);
         std::tie(alpha4,eig4) = SPI::polyeig({K,C,M},0.33+0.005*PETSC_i);
-        test_if_close(alpha4,0.3353,"polyeig(std::vector<SPIMat>,PetscScalar) 4",1.E-5);
+        test_if_close(alpha4,0.3353,"polyeig(std::vector<SPIMat>,PetscScalar) 2",1.E-5);
+        // polyeig_init
+        //std::tie(alpha,eig) = SPI::polyeig_init({A,-B},1.0+0.5*PETSC_i,eig);
+        //test_if_close(alpha,1.,"polyeig_init(std::vector<SPIMat>,PetscScalar,SPIVec) 1",1.E-8);
+        //std::tie(alpha,eig) = SPI::polyeig_init({A},1.0+0.5*PETSC_i,eig);
+        //test_if_close(alpha,1.,"polyeig_init(std::vector<SPIMat>,PetscScalar,SPIVec) 2",1.E-8);
+        std::tie(alpha4,eig4) = SPI::polyeig_init({K,C,M},-2.5+0.5*PETSC_i,eig4);
+        test_if_close(alpha4,-2.44985,"polyeig_init(std::vector<SPIMat>,PetscScalar) 1",1.E-5);
+        std::tie(alpha4,eig4) = SPI::polyeig_init({K,C,M},0.33+0.005*PETSC_i,eig4);
+        test_if_close(alpha4,0.3353,"polyeig_init(std::vector<SPIMat>,PetscScalar) 2",1.E-5);
 
         SPI::printf("------------ Mat eig tests end  -------------");
     }
@@ -319,6 +334,82 @@ int tests(){
         test_if_close(block(3,1,PETSC_TRUE),4.,"block(std::vector<std::vector<SPIMat>>) 3");
         test_if_close(block(3,3,PETSC_TRUE),1.,"block(std::vector<std::vector<SPIMat>>) 4");
         SPI::printf("------------ block test end    -------------");
+    }
+    if(1){
+        SPI::printf("------------ LST_temporal test start  -------------");
+        // create grid and derivatives using chebyshev polynomials
+        PetscInt n=64;
+        SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+
+        // channel flow Plane Poiseuille solution
+        SPI::SPIMat U(SPI::diag(1.0-((grid.y)^2)),"U");
+        SPI::SPIMat Uy(SPI::diag(-2.*grid.y),"Uy");
+        SPI::SPIVec o(U.diag()*0.0,"o"); // zero vector
+        SPI::SPIbaseflow channel(U.diag(),o,o,Uy.diag(),o,o,o,o,o,o,o);
+
+        // parameters for Orr-Sommerfield eq.
+        PetscScalar Re=2000.0;
+        PetscScalar alpha=1.0;
+        PetscScalar beta=0.0;
+
+        // set parameters into param struct
+        SPI::SPIparams params("channel parameter");
+        params.Re = Re;
+        params.omega = 0.3121002078-0.0197986590*PETSC_i;
+        params.alpha = alpha;
+        params.beta = beta;
+
+        // solve eigenvalue problem
+        SPI::SPIVec eigenfunction(grid.y.rows*4,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+        std::tie(eigenvalue,eigenfunction) = SPI::LST_temporal(params,grid,channel);
+        //SPI::printfc("eigenvalue is: %.10f+%.10fi",eigenvalue);
+        test_if_close(eigenvalue,0.3121002979-0.0197986590*PETSC_i,"LST_temporal 1",1e-9);
+        std::tie(eigenvalue,eigenfunction) = SPI::LST_temporal(params,grid,channel,eigenfunction);
+        //SPI::printfc(" eigenvalue is: %.10f+%.10fi",params.omega);
+        test_if_close(eigenvalue,0.3121002979-0.0197986590*PETSC_i,"LST_temporal 2",1e-9);
+        SPI::printf("------------ LST_temporal test end    -------------");
+    }
+    if(1){
+        SPI::printf("------------ LST_spatial test start   -------------");
+        PetscInt n=64;
+        SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        // channel flow Orr-Sommerfeld solution
+        SPI::SPIMat U(SPI::diag(1.0-((grid.y)^2)),"U");
+        SPI::SPIMat Uy(SPI::diag(-2.*grid.y),"Uy");
+        //SPI::SPIMat Uyy(SPI::diag(-2.*SPI::ones(grid.y.rows)),"Uyy");
+
+        SPI::SPIparams params("channel parameter");
+        params.Re = 2000.0;
+        params.omega = 0.3;
+        params.alpha = 0.97875+0.044394*PETSC_i;
+        params.beta = 0.0;
+
+        SPI::SPIVec eigenfunction(grid.y.rows*6,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIVec o(U.diag()*0.0,"o");
+        SPI::SPIbaseflow channel(U.diag(),o,o,Uy.diag(),o,o,o,o,o,o,o);
+
+        std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,channel);
+        test_if_close(eigenvalue,0.97875+0.044394*PETSC_i,"LST_spatial 1",1e-5);
+        test_if_close(params.alpha,0.97875+0.044394*PETSC_i,"LST_spatial 1",1e-5);
+        std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,channel,eigenfunction); // with initial guess
+        test_if_close(eigenvalue,0.97875+0.044394*PETSC_i,"LST_spatial 1",1e-5);
+        test_if_close(params.alpha,0.97875+0.044394*PETSC_i,"LST_spatial 1",1e-5);
+        params.alpha = 0.34312+0.049677*PETSC_i;
+        std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,channel,eigenfunction);
+        test_if_close(eigenvalue,0.34312+0.049677*PETSC_i,"LST_spatial 2",1e-5);
+        test_if_close(params.alpha,0.34312+0.049677*PETSC_i,"LST_spatial 2",1e-5);
+        params.alpha = 0.61+0.1*PETSC_i;
+        std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,channel,eigenfunction);
+        test_if_close(eigenvalue,0.61167+0.140492*PETSC_i,"LST_spatial 3",1e-5);
+        test_if_close(params.alpha,0.61167+0.140492*PETSC_i,"LST_spatial 3",1e-5);
+        SPI::printf("------------ LST_spatial test end     -------------");
     }
 
     return 0;

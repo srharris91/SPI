@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vec_229',['vec',['../structSPI_1_1SPIVec.html#a76af0b7122c6c93138b54a2768ed7223',1,'SPI::SPIVec']]]
+  ['mat_285',['mat',['../structSPI_1_1SPIMat.html#ab0d6926a5834585539acf4f8728c4177',1,'SPI::SPIMat']]]
 ];

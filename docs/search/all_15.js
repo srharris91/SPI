@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['zero_5frow_110',['zero_row',['../structSPI_1_1SPIMat.html#a039c4e57740da8c4b7589e416413a911',1,'SPI::SPIMat']]],
-  ['zero_5frow_5ffull_111',['zero_row_full',['../structSPI_1_1SPIMat.html#ad718b12a5577de78313a0e7d9e98e6be',1,'SPI::SPIMat']]],
-  ['zero_5frows_112',['zero_rows',['../structSPI_1_1SPIMat.html#ad869ce3cba04a43ce2627d5f01df2007',1,'SPI::SPIMat']]],
-  ['zeros_113',['zeros',['../namespaceSPI.html#a616eee4109721614603a992beb99e006',1,'SPI::zeros(const PetscInt m, const PetscInt n)'],['../namespaceSPI.html#afa58913149b40db8f093186c695f37a3',1,'SPI::zeros(const PetscInt rows)']]]
+  ['w_137',['W',['../structSPI_1_1SPIbaseflow.html#a3229e1eddad70bef7846f67ce402657b',1,'SPI::SPIbaseflow']]],
+  ['wx_138',['Wx',['../structSPI_1_1SPIbaseflow.html#ad340f4ac429cf9f85b2667cc85a855d1',1,'SPI::SPIbaseflow']]],
+  ['wxy_139',['Wxy',['../structSPI_1_1SPIbaseflow.html#ad44d3dc985fca9bc5ebfbf55ff42249c',1,'SPI::SPIbaseflow']]],
+  ['wy_140',['Wy',['../structSPI_1_1SPIbaseflow.html#abf7dcf2410b48b5c55a0e6dd9a7470f5',1,'SPI::SPIbaseflow']]]
 ];

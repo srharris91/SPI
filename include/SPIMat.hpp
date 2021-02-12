@@ -81,8 +81,10 @@ namespace SPI{
     SPIMat zeros(const PetscInt m,const PetscInt n); // create, form, and return zero matrix of size mxn
     SPIMat diag(const SPIVec &diag,const PetscInt k=0); // set diagonal of matrix
     SPIMat kron(const SPIMat &A, const SPIMat &B); // set kronecker inner product of two matrices
-    std::tuple<PetscScalar,SPIVec> eig(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
+    std::tuple<PetscScalar,SPIVec,SPIVec> eig(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
+    std::tuple<PetscScalar,SPIVec, SPIVec> eig_init(const SPIMat &A, const SPIMat &B, const PetscScalar target,const SPIVec &ql, const SPIVec &qr, const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
     std::tuple<PetscScalar,SPIVec> polyeig(const std::vector<SPIMat> &As, const PetscScalar target,const PetscReal tol=-1.,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
+    std::tuple<PetscScalar,SPIVec> polyeig_init(const std::vector<SPIMat> &As, const PetscScalar target, const SPIVec &qr,  const PetscReal tol=-1.,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
     //SPIMat block(const SPIMat Blocks[], const PetscInt rows,const PetscInt cols); // set block matrices using an input array of size rows*cols.  Fills rows first
     //SPIMat block(const std::vector<std::vector<SPIMat>> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first
     SPIMat block(const Block2D<SPIMat> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first

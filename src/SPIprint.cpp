@@ -25,4 +25,11 @@ namespace SPI{
         }
         PetscFunctionReturn(0);
     }
+    /** print a message to string using PetscPrintf (also adds a newline at end) (note: only prints on rank 0 processor) with PetscScalars as input and two formats per argument \return 0 if successful */
+    PetscInt printfc(
+            std::string msg, ///< [in] message to print with formatting such as \%g
+            PetscScalar val ///< [in] scalar or double or int to match formatting string to be output on processor with rank 0
+            ){
+        return printf(msg,PetscRealPart(val),PetscImaginaryPart(val));
+    }
 }

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['ierr_225',['ierr',['../structSPI_1_1SPIMat.html#ad8bb101775b16128bce8744f955b6f53',1,'SPI::SPIMat::ierr()'],['../structSPI_1_1SPIVec.html#a269a7888086304beae2f0f1fe777aa51',1,'SPI::SPIVec::ierr()']]]
+  ['dy_276',['Dy',['../structSPI_1_1SPIgrid.html#a4b362a10980bd35ad7863303156f9a0c',1,'SPI::SPIgrid']]],
+  ['dyy_277',['Dyy',['../structSPI_1_1SPIgrid.html#adc784f83584b1b3a3f170ed4cfa464a7',1,'SPI::SPIgrid']]]
 ];

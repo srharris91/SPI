@@ -103,9 +103,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a46863da6975b6f90c5d098226c40ea36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#a46863da6975b6f90c5d098226c40ea36">set_derivatives</a> (PetscInt order=4)</td></tr>
 <tr class="memdesc:a46863da6975b6f90c5d098226c40ea36"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets derivatives Dy and Dyy using saved grid  <a href="structSPI_1_1SPIgrid.html#a46863da6975b6f90c5d098226c40ea36">More...</a><br /></td></tr>
 <tr class="separator:a46863da6975b6f90c5d098226c40ea36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dae6bb316be32ce9f77e7655002de01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#a3dae6bb316be32ce9f77e7655002de01">set_operators</a> ()</td></tr>
+<tr class="memdesc:a3dae6bb316be32ce9f77e7655002de01"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets zero and identity operators for grid  <a href="structSPI_1_1SPIgrid.html#a3dae6bb316be32ce9f77e7655002de01">More...</a><br /></td></tr>
+<tr class="separator:a3dae6bb316be32ce9f77e7655002de01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
+<tr class="memitem:a3ade73460c8baecdece3ad270e6d17f0"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#a3ade73460c8baecdece3ad270e6d17f0">ny</a></td></tr>
+<tr class="separator:a3ade73460c8baecdece3ad270e6d17f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa386e1b00a548b37c05a346393396766"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#aa386e1b00a548b37c05a346393396766">name</a></td></tr>
 <tr class="memdesc:aa386e1b00a548b37c05a346393396766"><td class="mdescLeft">&#160;</td><td class="mdescRight">name of grid  <a href="structSPI_1_1SPIgrid.html#aa386e1b00a548b37c05a346393396766">More...</a><br /></td></tr>
 <tr class="separator:aa386e1b00a548b37c05a346393396766"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,12 +126,21 @@ Data Fields</h2></td></tr>
 <tr class="memitem:adc784f83584b1b3a3f170ed4cfa464a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#adc784f83584b1b3a3f170ed4cfa464a7">Dyy</a></td></tr>
 <tr class="memdesc:adc784f83584b1b3a3f170ed4cfa464a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">2nd derivative operator with respect to y  <a href="structSPI_1_1SPIgrid.html#adc784f83584b1b3a3f170ed4cfa464a7">More...</a><br /></td></tr>
 <tr class="separator:adc784f83584b1b3a3f170ed4cfa464a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab59a36f926fb7607f736953df81ab692"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#ab59a36f926fb7607f736953df81ab692">O</a></td></tr>
+<tr class="memdesc:ab59a36f926fb7607f736953df81ab692"><td class="mdescLeft">&#160;</td><td class="mdescRight">zero matrix same size as derivative operators  <a href="structSPI_1_1SPIgrid.html#ab59a36f926fb7607f736953df81ab692">More...</a><br /></td></tr>
+<tr class="separator:ab59a36f926fb7607f736953df81ab692"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acafbeb01da0f0bbbd0d6bdbb60ea502c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#acafbeb01da0f0bbbd0d6bdbb60ea502c">I</a></td></tr>
+<tr class="memdesc:acafbeb01da0f0bbbd0d6bdbb60ea502c"><td class="mdescLeft">&#160;</td><td class="mdescRight">identity matrix same size as derivative operators  <a href="structSPI_1_1SPIgrid.html#acafbeb01da0f0bbbd0d6bdbb60ea502c">More...</a><br /></td></tr>
+<tr class="separator:acafbeb01da0f0bbbd0d6bdbb60ea502c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0790966665c5d16456f9c2a265de5a0b"><td class="memItemLeft" align="right" valign="top">PetscBool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#a0790966665c5d16456f9c2a265de5a0b">flag_set_grid</a> =PETSC_FALSE</td></tr>
 <tr class="memdesc:a0790966665c5d16456f9c2a265de5a0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag if set_grid has been executed  <a href="structSPI_1_1SPIgrid.html#a0790966665c5d16456f9c2a265de5a0b">More...</a><br /></td></tr>
 <tr class="separator:a0790966665c5d16456f9c2a265de5a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6028501ab2f534229d3ffec3b811a7a7"><td class="memItemLeft" align="right" valign="top">PetscBool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#a6028501ab2f534229d3ffec3b811a7a7">flag_set_derivatives</a> =PETSC_FALSE</td></tr>
 <tr class="memdesc:a6028501ab2f534229d3ffec3b811a7a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag if set_derivatives has been executed  <a href="structSPI_1_1SPIgrid.html#a6028501ab2f534229d3ffec3b811a7a7">More...</a><br /></td></tr>
 <tr class="separator:a6028501ab2f534229d3ffec3b811a7a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a440ce923f313f2d629039253a2d24dbf"><td class="memItemLeft" align="right" valign="top">PetscBool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIgrid.html#a440ce923f313f2d629039253a2d24dbf">flag_set_operators</a> =PETSC_FALSE</td></tr>
+<tr class="memdesc:a440ce923f313f2d629039253a2d24dbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag if set_operators has been executed  <a href="structSPI_1_1SPIgrid.html#a440ce923f313f2d629039253a2d24dbf">More...</a><br /></td></tr>
+<tr class="separator:a440ce923f313f2d629039253a2d24dbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to contain various grid parameters. </p>
@@ -196,7 +210,7 @@ Data Fields</h2></td></tr>
 
 <p>destructor of saved <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> and <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00345">345</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00363">363</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
@@ -218,7 +232,7 @@ Data Fields</h2></td></tr>
 
 <p>saves grid to internal grid </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00305">305</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00307">307</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
@@ -246,7 +260,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00325">325</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00332">332</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
@@ -274,7 +288,28 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00316">316</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00322">322</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a3dae6bb316be32ce9f77e7655002de01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dae6bb316be32ce9f77e7655002de01">&#9670;&nbsp;</a></span>set_operators()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SPI::SPIgrid::set_operators </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>sets zero and identity operators for grid </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00352">352</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
@@ -293,7 +328,7 @@ Data Fields</h2></td></tr>
 
 <p>1st derivative operator with respect to y </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00040">40</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00042">42</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>
@@ -311,7 +346,7 @@ Data Fields</h2></td></tr>
 
 <p>2nd derivative operator with respect to y </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00041">41</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00043">43</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>
@@ -329,7 +364,7 @@ Data Fields</h2></td></tr>
 
 <p>flag if set_derivatives has been executed </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00044">44</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00048">48</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>
@@ -347,7 +382,43 @@ Data Fields</h2></td></tr>
 
 <p>flag if set_grid has been executed </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00043">43</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00047">47</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a440ce923f313f2d629039253a2d24dbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a440ce923f313f2d629039253a2d24dbf">&#9670;&nbsp;</a></span>flag_set_operators</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PetscBool SPI::SPIgrid::flag_set_operators =PETSC_FALSE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>flag if set_operators has been executed </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00049">49</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+
+</div>
+</div>
+<a id="acafbeb01da0f0bbbd0d6bdbb60ea502c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acafbeb01da0f0bbbd0d6bdbb60ea502c">&#9670;&nbsp;</a></span>I</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::SPIgrid::I</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>identity matrix same size as derivative operators </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00045">45</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>
@@ -365,7 +436,41 @@ Data Fields</h2></td></tr>
 
 <p>name of grid </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00034">34</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00036">36</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a3ade73460c8baecdece3ad270e6d17f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ade73460c8baecdece3ad270e6d17f0">&#9670;&nbsp;</a></span>ny</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">PetscInt SPI::SPIgrid::ny</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00030">30</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab59a36f926fb7607f736953df81ab692"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab59a36f926fb7607f736953df81ab692">&#9670;&nbsp;</a></span>O</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::SPIgrid::O</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>zero matrix same size as derivative operators </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00044">44</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>
@@ -383,7 +488,7 @@ Data Fields</h2></td></tr>
 
 <p>grid </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00036">36</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00038">38</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>
@@ -401,7 +506,7 @@ Data Fields</h2></td></tr>
 
 <p>type of grid </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00037">37</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00039">39</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>

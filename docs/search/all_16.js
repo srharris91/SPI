@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['_7espigrid_114',['~SPIgrid',['../structSPI_1_1SPIgrid.html#a7871f522b6702bc5e78bfe560f686e49',1,'SPI::SPIgrid']]],
-  ['_7espimat_115',['~SPIMat',['../structSPI_1_1SPIMat.html#adff7b882ac985093842df27cc4096281',1,'SPI::SPIMat']]],
-  ['_7espivec_116',['~SPIVec',['../structSPI_1_1SPIVec.html#a66d0b7f9e44df44d64beb1ec5326aa63',1,'SPI::SPIVec']]]
+  ['x_141',['x',['../structSPI_1_1SPIparams.html#a67b0a0b004a136e738940eb30d904262',1,'SPI::SPIparams']]],
+  ['x_5fprev_142',['x_prev',['../structSPI_1_1SPIparams.html#a93642afa0f3e2869ebfc75fba0fc6e73',1,'SPI::SPIparams']]],
+  ['x_5fstart_143',['x_start',['../structSPI_1_1SPIparams.html#a416dc9fcf78337f075663396c98176b3',1,'SPI::SPIparams']]]
 ];

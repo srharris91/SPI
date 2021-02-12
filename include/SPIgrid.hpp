@@ -27,9 +27,11 @@ namespace SPI{
     struct SPIgrid {
         SPIgrid(SPIVec &y, std::string name="SPIgrid", gridtype _gridtype=FD);            // constructor with set_grid arguments (set default values and derivatives)
         ~SPIgrid();                    // destructor
+        PetscInt ny;                // number of points in wall-normal coordinate
         void print();               // print all members of the class
         void set_grid( SPIVec &y ); // function to save grid to internal grid 
         void set_derivatives(PetscInt order=4);     // function to create derivatives on internal grid
+        void set_operators();     // function to create zero and identity operators on internal grid
         // vars
         std::string name;   ///< name of grid
         // grid
@@ -39,9 +41,12 @@ namespace SPI{
         // derivatives
         SPIMat Dy,      ///< 1st derivative operator with respect to y
                Dyy;     ///< 2nd derivative operator with respect to y
+        SPIMat O,       ///< zero matrix same size as derivative operators
+               I;       ///< identity matrix same size as derivative operators
         // flags
         PetscBool flag_set_grid=PETSC_FALSE,        ///< flag if set_grid has been executed
-                  flag_set_derivatives=PETSC_FALSE; ///< flag if set_derivatives has been executed
+                  flag_set_derivatives=PETSC_FALSE, ///< flag if set_derivatives has been executed
+                  flag_set_operators=PETSC_FALSE; ///< flag if set_operators has been executed
 
     };
 

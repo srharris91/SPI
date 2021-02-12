@@ -395,13 +395,13 @@ namespace SPI{
     /** print vec to screen using PETSC_VIEWER_STDOUT_WORLD \return 0 if successful */
     PetscInt SPIVec::print(){
         (*this)();// assemble
-        printf("\n---------------- "+name+"---start------");
+        printf("\n---------------- "+this->name+"---start------");
         //PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
         //SPI::printf("shape = %d x 1",this->rows);
         SPI::printf("shape = "+std::to_string(this->rows)+" x 1");
         ierr = VecView(vec,PETSC_VIEWER_STDOUT_WORLD);CHKERRQ(ierr);
         //PetscPrintf(PETSC_COMM_WORLD,("---------------- "+name+"---done-------\n\n").c_str());
-        printf("---------------- "+name+"---done-------\n");
+        printf("---------------- "+this->name+"---done-------\n");
         return 0;
     }
 
