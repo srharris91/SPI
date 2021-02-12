@@ -4,5 +4,5 @@
 	branch = maint
 [submodule "slepc"]
 	path = slepc
-	url = https://bitbucket.org/slepc/slepc.git
+	url = https://gitlab.com/slepc/slepc.git
 	branch = maint
