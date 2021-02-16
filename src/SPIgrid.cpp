@@ -201,13 +201,16 @@ namespace SPI{
                     PetscScalar ck=c(k,PETSC_TRUE);
                     PetscScalar xk=x(k,PETSC_TRUE);
                     if(j!=k){
-                        D(j,k,cj*pow(-1.,(PetscScalar)(j+k)) / (ck*(xj-xk)));
+                        D(j,k,cj*pow(-1.,(PetscScalar)((double)(j+k)+0.0*PETSC_i)) / (ck*(xj-xk)));
                     }
                     else if((j==k) && ((j!=0) && (j!=N))){
                         D(j,k,-xj/(2.*(1.-(pow(xj,2)))));
                     }
-                    else if((j==k) && ((j==0) || (j==N))){
-                        D(j,k,xj*(2.*pow((PetscScalar)N,2.)+1.)/6.);
+                    else if((j==k) && (j==0)){
+                        D(j,k,-1.0*(2.*pow((PetscScalar)((double)N+0.0*PETSC_i),2.)+1.)/6.); // make sure xj goes from -1 to 1
+                    }
+                    else if((j==k) && (j==N)){
+                        D(j,k,1.0*(2.*pow((PetscScalar)((double)N+0.0*PETSC_i),2.)+1.)/6.);
                     }
                     else{
                         std::cout<<"you messed up in set_D_Chebyshev"<<std::endl;

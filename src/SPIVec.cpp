@@ -116,12 +116,12 @@ namespace SPI{
     }
     /** same as above */
     PetscInt SPIVec::operator()(PetscInt _row, const double v){
-        ierr = (*this)(_row,(PetscScalar)v);CHKERRQ(ierr);
+        ierr = (*this)(_row,(PetscScalar)(v+0.0*PETSC_i));CHKERRQ(ierr);
         return 0;
     }
     /** same as above */
     PetscInt SPIVec::operator()(PetscInt _row, const int v){
-        ierr = (*this)(_row,(PetscScalar)v);CHKERRQ(ierr);
+        ierr = (*this)(_row,(PetscScalar)((double)v+0.0*PETSC_i));CHKERRQ(ierr);
         return 0;
     }
 

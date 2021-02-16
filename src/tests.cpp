@@ -411,6 +411,120 @@ int tests(){
         test_if_close(params.alpha,0.61167+0.140492*PETSC_i,"LST_spatial 3",1e-5);
         SPI::printf("------------ LST_spatial test end     -------------");
     }
+    if(1){
+        SPI::printf("------------ LSTNP_spatial test start   -------------");
+        PetscInt n=64;
+        SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        // channel flow Orr-Sommerfeld solution
+        SPI::SPIVec U((1.0-(grid.y*grid.y)),"U");
+        SPI::SPIVec Uy((-2.*grid.y),"Uy");
+        //SPI::SPIMat Uyy(SPI::diag(-2.*SPI::ones(grid.y.rows)),"Uyy");
+
+        SPI::SPIparams params("channel parameter");
+        params.Re = 2000.0;
+        params.omega = 0.3;
+        params.alpha = 0.97875+0.044394*PETSC_i;
+        params.beta = 0.0;
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"q");
+        SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIVec o(U*0.0,"o");
+        SPI::SPIbaseflow channel(U,o,o,Uy,o,o,o,o,o,o,o);
+
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel);
+        test_if_close(eigenvalue,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 1",1e-5);
+        test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 1",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+        params.alpha = 0.978748+0.04439397*PETSC_i;
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,eigenfunction.conj(),eigenfunction); // with initial guess
+        test_if_close(eigenvalue,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 2",1e-5);
+        test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 2",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+        params.alpha = 0.34305+0.0498376872*PETSC_i;
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
+        test_if_close(eigenvalue,0.34305+0.049837*PETSC_i,"LSTNP_spatial 3",1e-5);
+        //test_if_close(params.alpha,0.34305+0.049837*PETSC_i,"LSTNP_spatial 2",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+        params.alpha = 0.6116672+0.140493*PETSC_i;
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
+        test_if_close(eigenvalue,0.6116672+0.140493*PETSC_i,"LSTNP_spatial 4",1e-5);
+        //test_if_close(params.alpha,0.635797+0.08405*PETSC_i,"LSTNP_spatial 3",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+        SPI::printf("------------ LSTNP_spatial test end     -------------");
+    }
+    if(0){
+        SPI::printf("------------ Chebyshev derivatives start -----------");
+        PetscInt n=16;
+        //SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0,61.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        grid.Dyy.print();
+        SPI::printf("------------ Chebyshev derivatives end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ LSTNP Blasius boundary layer start -----------");
+        PetscInt n=168;
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
+        //SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        SPI::SPIVec y(SPI::set_FD_stretched_y(61.,n) ,"yFD");
+        SPI::SPIgrid grid(y,"grid",SPI::FD);
+        //grid.y.print();
+        grid.Dy.real();
+        grid.Dyy.real();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        params.Re = 400.0;
+        params.omega = 86.*params.Re/(1000000.);
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = 0.094966+0.004564*PETSC_i;
+        //params.alpha = 0.106654+0.0018979*PETSC_i;
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"q");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        if(0){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        //std::tie(eigenvalue,eig_vec) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(eigenvalue,0.094966+0.004564*PETSC_i,"LSTNP_spatial 1",1e-5);
+        test_if_close(params.alpha,0.094966+0.004564*PETSC_i,"LSTNP_spatial 1",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        test_if_close(eigenvalue,0.094966+0.004564*PETSC_i,"LSTNP_spatial 2",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+
+        params.alpha = 0.1067+0.001898*PETSC_i;
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow); 
+        test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial 3",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial 4",1e-5);
+        SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+
+        SPI::printf("------------ LSTNP Blasius boundary layer end   -----------");
+    }
 
     return 0;
 }

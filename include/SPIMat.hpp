@@ -65,6 +65,7 @@ namespace SPI{
         PetscInt H(SPIMat &A); // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
         SPIMat& H(); // Hermitian Transpose the current mat
         SPIMat& conj(); // elemenwise conjugate current matrix
+        SPIMat& real(); // take the real part of the matrix (alters current matrix)
         SPIVec diag(); // get diagonal of matrix
         SPIMat& zero_row(const PetscInt row); // zero a row
         SPIMat& zero_row_full(const PetscInt row); // zero a row
@@ -82,7 +83,7 @@ namespace SPI{
     SPIMat diag(const SPIVec &diag,const PetscInt k=0); // set diagonal of matrix
     SPIMat kron(const SPIMat &A, const SPIMat &B); // set kronecker inner product of two matrices
     std::tuple<PetscScalar,SPIVec,SPIVec> eig(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
-    std::tuple<PetscScalar,SPIVec, SPIVec> eig_init(const SPIMat &A, const SPIMat &B, const PetscScalar target,const SPIVec &ql, const SPIVec &qr, const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
+    std::tuple<PetscScalar,SPIVec, SPIVec> eig_init(const SPIMat &A, const SPIMat &B, const PetscScalar target,const SPIVec &ql, const SPIVec &qr, PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
     std::tuple<PetscScalar,SPIVec> polyeig(const std::vector<SPIMat> &As, const PetscScalar target,const PetscReal tol=-1.,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
     std::tuple<PetscScalar,SPIVec> polyeig_init(const std::vector<SPIMat> &As, const PetscScalar target, const SPIVec &qr,  const PetscReal tol=-1.,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
     //SPIMat block(const SPIMat Blocks[], const PetscInt rows,const PetscInt cols); // set block matrices using an input array of size rows*cols.  Fills rows first

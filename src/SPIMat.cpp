@@ -110,7 +110,7 @@ namespace SPI{
             const double v      ///< [in] scalar to set in matrix
             ){
         //ierr = (*this)(m,n,(PetscScalar)v);CHKERRXX(ierr);
-        return (*this)(m,n,(PetscScalar)v);
+        return (*this)(m,n,(PetscScalar)(v+0.0*PETSC_i));
     }
     /** \brief set operator the same as set function \return current matrix after setting value */
     SPIMat& SPIMat::operator()(
@@ -119,7 +119,7 @@ namespace SPI{
             const int v         ///< [in] scalar to set in matrix
             ){
         //ierr = (*this)(m,n,(PetscScalar)v);CHKERRXX(ierr);
-        return (*this)(m,n,(PetscScalar)v);
+        return (*this)(m,n,(PetscScalar)((double)v+0.0*PETSC_i));
     }
 
     // overloaded operator, set
@@ -330,6 +330,11 @@ namespace SPI{
     /** \brief elemenwise conjugate current matrix \return current matrix after conjugate of each element */
     SPIMat& SPIMat::conj(){
         ierr = MatConjugate(mat);CHKERRXX(ierr);
+        return (*this);
+    }
+    /** \brief take the real part of the vector \returns the vector after taking the real part of it */
+    SPIMat& SPIMat::real(){
+        ierr = MatRealPart(mat); CHKERRXX(ierr);
         return (*this);
     }
     /** \brief get diagonal of matrix \return vector of current diagonal */
@@ -737,7 +742,7 @@ namespace SPI{
             const PetscScalar target,   ///< [in] target eigenvalue to solve for
             const SPIVec &ql,        ///< [in] initial subspace vector for EPS solver (left eigenvector)
             const SPIVec &qr,        ///< [in] initial subspace vector for EPS solver (right eigenvector)
-            const PetscReal tol,    ///< [in] tolerance of eigenvalue solver
+            PetscReal tol,    ///< [in] tolerance of eigenvalue solver
             const PetscInt max_iter ///< [in] maximum number of iterations
             ){
         //std::cout<<"target = "<<target<<std::endl;
@@ -747,7 +752,7 @@ namespace SPI{
         //EPSType         type;
         //KSP             ksp;        /* linear solver context petsc */
         PetscErrorCode  ierr;
-        PetscScalar ki,alpha;
+        PetscScalar alpha;
         SPIVec eigl_vec(rows),eigr_vec(rows);
 
         PetscScalar kr_temp, ki_temp;
@@ -810,7 +815,7 @@ namespace SPI{
         //std::cout<<"After KSPSolve"<<std::endl;
 
         // output iterations
-        //PetscInt its, maxit, i, nconv;
+        //PetscInt its, maxit;
         PetscInt nconv;
         //PetscReal error, tol, re, im;
         /*
@@ -838,30 +843,30 @@ namespace SPI{
             /*
                Display eigenvalues and relative errors
                */
-             // ierr = PetscPrintf(PETSC_COMM_WORLD,
-             //         "      k                ||Ax-kx||/||kx||\n"
-             //         "   ----------------- ------------------\n");CHKERRXX(ierr);
+              // ierr = PetscPrintf(PETSC_COMM_WORLD,
+              //         "      k                ||Ax-kx||/||kx||\n"
+              //         "   ----------------- ------------------\n");CHKERRXX(ierr);
 
-             // for (PetscInt i=0;i<nconv;i++) {
-             //     /*
-             //        Get converged eigenpairs: i-th eigenvalue is stored in kr (real part) and
-             //        ki (imaginary part)
-             //        */
-             //     ierr = EPSGetEigenpair(eps,i,&alpha,&ki,eig_vec.vec,xi.vec);CHKERRXX(ierr);
-             //     /*
-             //        Compute the relative error associated to each eigenpair
-             //        */
-             //     PetscReal error, re, im;
-             //     ierr = EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);CHKERRXX(ierr);
-             //     re = PetscRealPart(alpha);
-             //     im = PetscImaginaryPart(alpha);
-             //     if (im!=0.0) {
-             //         ierr = PetscPrintf(PETSC_COMM_WORLD," (%9e+%9ei)  %12g\n",(double)re,(double)im,(double)error);CHKERRXX(ierr);
-             //     } else {
-             //         ierr = PetscPrintf(PETSC_COMM_WORLD,"   %12e       %12g\n",(double)re,(double)error);CHKERRXX(ierr);
-             //     }
-             // }
-             // ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
+              // for (PetscInt i=0;i<nconv;i++) {
+              //     /*
+              //        Get converged eigenpairs: i-th eigenvalue is stored in kr (real part) and
+              //        ki (imaginary part)
+              //        */
+              //     ierr = EPSGetEigenpair(eps,i,&alpha,&ki,eigr_vec.vec,eigl_vec.vec);CHKERRXX(ierr);
+              //     /*
+              //        Compute the relative error associated to each eigenpair
+              //        */
+              //     PetscReal error, re, im;
+              //     ierr = EPSComputeError(eps,i,EPS_ERROR_RELATIVE,&error);CHKERRXX(ierr);
+              //     re = PetscRealPart(alpha);
+              //     im = PetscImaginaryPart(alpha);
+              //     if (im!=0.0) {
+              //         ierr = PetscPrintf(PETSC_COMM_WORLD," (%9e+%9ei)  %12g\n",(double)re,(double)im,(double)error);CHKERRXX(ierr);
+              //     } else {
+              //         ierr = PetscPrintf(PETSC_COMM_WORLD,"   %12e       %12g\n",(double)re,(double)error);CHKERRXX(ierr);
+              //     }
+              // }
+              // ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
 
             ierr = EPSGetEigenpair(eps,0,&alpha,PETSC_NULL,eigr_vec.vec,PETSC_NULL);CHKERRXX(ierr);
             ierr = EPSGetLeftEigenvector(eps,0,eigl_vec.vec,PETSC_NULL);CHKERRXX(ierr);

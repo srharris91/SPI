@@ -74,5 +74,159 @@ namespace SPI{
             this->P.~SPIVec();
         }
     }
+    /* \brief set Blasius boundary layer flow \return SPIbaseflow at the current conditions */
+    SPIbaseflow blasius(
+            SPIparams &params,  ///< [in] parameters such as x and nu (freestream Uinf=1)
+            SPIgrid &grid        ///< [in] grid containing wall-normal points
+            ){ // if base flow is Blasius Flat-Plate
+                PetscInt multiply_nypts = 8; //data.multiply_nypts_for_bblf;
+                PetscScalar dy,jfloat;
+                PetscScalar multiply_nypts_float=multiply_nypts;
+                PetscScalar eta[multiply_nypts*grid.ny];
+                PetscScalar deta[multiply_nypts*grid.ny-1];
+                // TODO: fairly inefficient way to calculate on all cores, then save it in parallel
+                for(int i=0; i<grid.ny; ++i){ 
+                    dy = grid.y(i+1,PETSC_TRUE)-grid.y(i,PETSC_TRUE);
+                    //std::cout<<"y["<<i<<"] = "<<data.y[i]<<std::endl;
+                    for(int j=0; j<multiply_nypts; j++){
+                        PetscInt ij = i*multiply_nypts+j;
+                        jfloat=(PetscScalar)j;
+                        eta[ij] = (grid.y(i,PETSC_TRUE)+dy*jfloat/multiply_nypts_float)*PetscSqrtScalar(1./(2.*params.nu*params.x)); // asume U_inf = 1
+                    }
+                }
+                for(int i=0; i<grid.ny*multiply_nypts-1; ++i){ // set spacing of eta
+                    deta[i] = eta[i+1] - eta[i];
+                }
+                // initialize variable
+                PetscScalar **fs = new PetscScalar*[grid.ny*multiply_nypts];// ny pts to solve
+                for(int i=0; i<grid.ny*multiply_nypts; ++i) fs[i] = new PetscScalar[3]; // 3 variables
+                PetscScalar k1[3],k2[3],k3[3],k4[3];// RK4 intermediate variables
+                PetscScalar temp[3],temp2[3];// temporary array to hold values
+                // set initial conditions (ICs)
+                //fs[0][0] = 0.469600;    // f''[0] = 0.469600
+                //fs[0][0] = 0.33205733621519630*sqrt(2.);    // f''[0] = 0.469600
+                fs[0][0] = 0.332057336215195*sqrt(2.);
+                fs[0][1] = 0.;          // f'[0] = 0
+                fs[0][2] = 0.;          // f[0] = 0
+                
+                // march through each eta value using _bblf function evaluation
+                for(int i=0; i<grid.ny*multiply_nypts-1; ++i){ // for each eta value
+                    _bblf(fs[i],temp); // calculate f(i)
+                    for(int j=0; j<3; ++j){ 
+                        k1[j] = deta[i]*temp[j];
+                        temp2[j] = fs[i][j] + k1[j]/2.;
+                    }
+                    _bblf(temp2,temp); // calculate f(i+k1/2);
+                    for(int j=0; j<3; ++j){ 
+                        k2[j] = deta[i]*temp[j];
+                        temp2[j] = fs[i][j] + k2[j]/2.;
+                    }
+                    _bblf(temp2,temp); // calculate f(i+k2/2);
+                    for(int j=0; j<3; ++j){ 
+                        k3[j] = deta[i]*temp[j];
+                        temp2[j] = fs[i][j] + k3[j];
+                    }
+                    _bblf(temp2,temp); // calculate f(i+k3);
+                    for(int j=0; j<3; ++j){ 
+                        k4[j] = deta[i]*temp[j];
+                    }
+                    for(int j=0; j<3; ++j){ // f[i+1] = f[i] + (k1+2k2 + 2k3 + k4)/6
+                        fs[i+1][j] = fs[i][j] + (k1[j] + (k2[j]*2.) + (k3[j]*2.) + k4[j])/6.;
+                        //std::cout<<"fs["<<i+1<<"]["<<j<<"] = "<<fs[i+1][j]<<std::endl;
+                        //std::cout<<"  k1,k2,k3,k4 = "<<k1[j]<<", "<<k2[j]<<", "<<k3[j]<<", "<<k4[j]<<std::endl;
+                    }
+                }
+                // print eta and fp, fpp to compare to textbook values
+                //for(int i=0; i<grid.ny; ++i){ 
+                    //PetscInt j=0;
+                    //PetscInt ij = i*multiply_nypts+j;
+                    //printf("eta = %g and f = %g and f' = %g and f'' = %g",PetscRealPart(eta[ij]),PetscRealPart(fs[ij][2]),PetscRealPart(fs[ij][1]),PetscRealPart(fs[ij][0]));
+                //}
+
+                // save values
+                PetscScalar *fpp = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *fp  = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *f   = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *Utmp   = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *Uxtmp  = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *Uytmp  = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *Vtmp   = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *Vxtmp  = new PetscScalar[grid.ny*multiply_nypts];
+                PetscScalar *Vytmp  = new PetscScalar[grid.ny*multiply_nypts];
+                for (int i=0; i<grid.ny*multiply_nypts; ++i){
+                    fpp[i] = fs[i][0];
+                    fp [i] = fs[i][1];
+                    f  [i] = fs[i][2];
+
+                    // save U
+                    Utmp[i] = fp[i];                                           // U  =f'  assuming Uinf=1
+                    Uxtmp[i]= fpp[i]*(-eta[i]/(2.*params.x));               // Ux =f''(-eta/(2x))
+                    Uytmp[i]= fpp[i]*PetscSqrtScalar(1./(2.*params.nu*params.x));  // Uy =f''sqrt(1./(2 nu x))
+                    // save V
+                    Vtmp[i] = PetscSqrtScalar(params.nu/(2.*params.x))*(eta[i]*fp[i] - f[i]); // V  = sqrt(nu/2x)(eta f' - f)
+                    Vxtmp[i]= PetscSqrtScalar(params.nu/(8.*PetscPowScalar(params.x,3)))*
+                        (
+                         - eta[i]*fp[i] 
+                         + f[i] 
+                         - PetscPowScalar(eta[i],2)*fpp[i]
+                        ); // Vx = sqrt(nu/8x^3)(-eta fp + f - eta^2 f'')
+                    Vytmp[i]= (1./(2.*params.x))*eta[i]*fpp[i];             // Vy = (1/2x) eta f''
+
+
+                }
+
+                // Checks
+                // Check divergence
+                PetscScalar *divergence = new PetscScalar[grid.ny*multiply_nypts];
+                for(int i=0; i<grid.ny*multiply_nypts; ++i) divergence[i] = Uxtmp[i] + Vytmp[i];
+                PetscScalar sum_divergence = 0.;
+                for(int i=0; i<grid.ny*multiply_nypts; ++i) sum_divergence += PetscAbsScalar(divergence[i]);
+                printfc("the sum of the divergence of Blasius boundary flow is %g+%gi",sum_divergence);
+
+                // save values for SPE in grid structure
+                SPIVec U(grid.ny), Uy(grid.ny), Ux(grid.ny);
+                SPIVec V(grid.ny), Vy(grid.ny), Vx(grid.ny);
+                SPIVec O(zeros(grid.ny));;
+                for(int i=0; i<grid.ny; i++){
+                    U(i,Utmp[i*multiply_nypts]);
+                    Uy(i,Uytmp[i*multiply_nypts]);
+                    Ux(i,Uxtmp[i*multiply_nypts]);
+                    V(i,Vtmp[i*multiply_nypts]);
+                    Vy(i,Vytmp[i*multiply_nypts]);
+                    Vx(i,Vxtmp[i*multiply_nypts]);
+                    // set freestream velocities
+                }
+                U();
+                Ux();
+                Uy();
+                V();
+                Vx();
+                Vy();
+
+                SPIbaseflow baseflow(U, V, Ux, Uy, grid.Dy*Ux, Vy, O, O, O, O, O);
+
+                // clear memory
+                for(int i=0; i<grid.ny*multiply_nypts; ++i) delete[] fs[i];
+                delete[] fs;
+                delete[] fpp;
+                delete[] fp;
+                delete[] f;
+                delete[] Utmp;
+                delete[] Uxtmp;
+                delete[] Uytmp;
+                delete[] Vtmp;
+                delete[] Vxtmp;
+                delete[] Vytmp;
+
+                return baseflow;
+    }
+    int _bblf(
+        const PetscScalar input[3], 
+        PetscScalar output[3]){
+      output[0] = -input[2]*input[0]; // f''= \int -f*f'' deta
+      output[1] = input[0];           // f' = \int f'' deta
+      output[2] = input[1];           // f  = \int f' deta
+      return 0;
+    }
 
 }

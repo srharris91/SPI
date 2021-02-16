@@ -7,6 +7,8 @@
 #include <slepcpep.h>
 #include <string>
 #include <tuple>
+#include "SPIgrid.hpp"
+#include "SPIparams.hpp"
 #include "SPIMat.hpp"
 #include "SPIVec.hpp"
 #include "SPIprint.hpp"
@@ -44,5 +46,7 @@ namespace SPI{
                P;       //  pressure baseflow
         ~SPIbaseflow(); // destructor to delete memory
     };
+    SPIbaseflow blasius(SPIparams &params, SPIgrid &grid);
+    int _bblf( const PetscScalar input[3], PetscScalar output[3]); // Blasius boundary layer flow ODE
 }
 #endif // SPIBASEFLOW_H
