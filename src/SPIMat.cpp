@@ -261,6 +261,12 @@ namespace SPI{
         ierr = MatScale(this->mat,1./a);CHKERRXX(ierr);
         return *this;
     }
+    /** \brief Z = Y/a operation \return Z after operation */
+    SPIMat SPIMat::operator/(
+            const PetscScalar a     ///< [in] scalar in Y*a operation
+            ){
+        return (1./a)*(*this);
+    }
     // overload operator, matrix multiply
     /** \brief Y*A operation \return new matrix after matrix matrix multiply */
     SPIMat SPIMat::operator*(
@@ -350,6 +356,13 @@ namespace SPI{
         ierr = MatZeroRows(mat,1,&row,0.,0,0); CHKERRXX(ierr);
         return (*this);
     }
+    /** \brief set a row to zero and set 1 in diagonal entry \return matrix after setting the row to zero and setting 1 in diagonal */
+    SPIMat& SPIMat::eye_row(
+        const PetscInt row ///< [in] which row to zero out of the matrix
+            ){
+        ierr = MatZeroRows(mat,1,&row,1.,0,0); CHKERRXX(ierr);
+        return (*this);
+    }
     /** \brief set a row to zero using dense format \return matrix after setting the row to zero */
     SPIMat& SPIMat::zero_row_full(
         const PetscInt row ///< [in] which row to zero out of the matrix
@@ -365,6 +378,13 @@ namespace SPI{
         std::vector<PetscInt> rows ///< [in] which rows to zero out of the matrix
             ){
         ierr = MatZeroRows(mat,rows.size(),rows.data(),0.,0,0); CHKERRXX(ierr);
+        return (*this);
+    }
+    /** \brief set rows to zero and set main diagonal to 1 \return matrix after setting the rows to zero and main diagonals to 1 */
+    SPIMat& SPIMat::eye_rows(
+        std::vector<PetscInt> rows ///< [in] which rows to zero out of the matrix
+            ){
+        ierr = MatZeroRows(mat,rows.size(),rows.data(),1.,0,0); CHKERRXX(ierr);
         return (*this);
     }
     // print matrix to screen
@@ -444,6 +464,13 @@ namespace SPI{
         // are no longer needed.
         ierr = KSPDestroy(&ksp);CHKERRXX(ierr);
         return x;
+    }
+    /** \brief Solve linear system, Ax=b using solve(A,b) notation \return x vector in Ax=b solved linear system */
+    SPIVec solve(
+            const SPIVec &b,    ///< [in] b in Ax=b
+            const SPIMat &A     ///< [in] A in Ax=b
+            ){
+        return b/A;
     }
     // identity matrix formation
     /** \brief create, form, and return identity matrix of size n \return identity matrix of size nxn */

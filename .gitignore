@@ -40,3 +40,5 @@
 *dat
 *dat.info
 
+# VIM tmp files
+*.swp

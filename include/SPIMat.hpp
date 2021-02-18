@@ -53,6 +53,7 @@ namespace SPI{
         SPIVec operator*(const SPIVec &x); // A*x operation to return a vector
         SPIMat& operator*=(const PetscScalar a); // Y = Y*a operation
         SPIMat& operator/=(const PetscScalar a); // Y = Y/a operation
+        SPIMat operator/(const PetscScalar a); // Z = Y/a operation
         SPIMat operator*(const SPIMat &A); // Y*A operation
         // = operator
         SPIMat& operator=(const SPIMat &A); // Y=X with initialization of Y using MatConvert
@@ -68,8 +69,10 @@ namespace SPI{
         SPIMat& real(); // take the real part of the matrix (alters current matrix)
         SPIVec diag(); // get diagonal of matrix
         SPIMat& zero_row(const PetscInt row); // zero a row
+        SPIMat& eye_row(const PetscInt row); // zero a row and put 1 in the diagonal entry
         SPIMat& zero_row_full(const PetscInt row); // zero a row
         SPIMat& zero_rows(std::vector<PetscInt> rows); // zero every row
+        SPIMat& eye_rows(std::vector<PetscInt> rows); // zero every row
         PetscInt print(); // print mat to screen using PETSC_VIEWER_STDOUT_WORLD
 
         ~SPIMat(); // destructor to delete memory
@@ -78,6 +81,7 @@ namespace SPI{
     SPIMat operator*(const PetscScalar a, const SPIMat A); // a*A operation to be equivalent to A*a
     SPIMat operator*(const SPIMat A, const PetscScalar a); // A*a operation to be equivalent to A*a
     SPIVec operator/(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using b/A notation
+    SPIVec solve(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using solve(A,b) notation
     SPIMat eye(const PetscInt n); // create, form, and return identity matrix of size n
     SPIMat zeros(const PetscInt m,const PetscInt n); // create, form, and return zero matrix of size mxn
     SPIMat diag(const SPIVec &diag,const PetscInt k=0); // set diagonal of matrix

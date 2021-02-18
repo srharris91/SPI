@@ -174,6 +174,8 @@ namespace SPI{
             PetscInt ny,            ///< [in] number of points to use in the domain
             PetscScalar delta       ///< [in] stretching parameter, near zero is no stretching, (default 2.0001)
             ){
+        //SPI::SPIVec y((y_max*(1.+(SPI::tanh(delta*((linspace(0.,y_max,ny)/y_max) - 1.))/tanh(delta)))));
+        //return y;
         return y_max*(1.+(SPI::tanh(delta*((linspace(0.,y_max,ny)/y_max) - 1.))/tanh(delta)));
     }
 
@@ -309,7 +311,11 @@ namespace SPI{
     /** \brief saves grid to internal grid */
     void SPIgrid::print(){
     SPI::printf("---------------- "+this->name+" start --------------------------");
-        if(this->flag_set_grid) this->y.print();
+        if(this->flag_set_grid) {
+            //PetscInt ny2 = this->ny;
+            //SPI::printf("ny = %D",ny2);
+            this->y.print();
+        }
         if(this->flag_set_derivatives){
             this->Dy.print();
             this->Dyy.print();
@@ -340,6 +346,8 @@ namespace SPI{
             this->Dy.name=std::string("Dy");
             this->Dyy=set_D(this->y,2); // default of fourth order nonuniform grid
             this->Dyy.name=std::string("Dyy");
+            this->Dy.real(); // just take only real part
+            this->Dyy.real(); // just take only real part
             this->flag_set_derivatives=PETSC_TRUE;
         }
         else if(this->ytype==Chebyshev){
@@ -347,6 +355,8 @@ namespace SPI{
             this->Dy.name=std::string("Dy");
             this->Dyy=set_D_Chebyshev(this->y,2,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
             this->Dyy.name=std::string("Dyy");
+            this->Dy.real(); // just take only real part
+            this->Dyy.real(); // just take only real part
             this->flag_set_derivatives=PETSC_TRUE;
         }
     }

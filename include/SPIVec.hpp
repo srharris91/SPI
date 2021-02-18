@@ -7,12 +7,12 @@
 
 namespace SPI{
     struct SPIVec{
-        PetscInt rows;              ///< number of rows in vec
+        PetscInt rows=0;              ///< number of rows in vec
 
         // Constructors
         SPIVec( std::string _name="SPIVec" );// constructor with no arguments (no initialization)
         SPIVec( const SPIVec& A, std::string _name="SPIVec"); // constructor using another SPIVec
-        SPIVec( PetscInt rows,   std::string _name="SPIVec" );  // constructor with one arguement to make vector of length rows
+        SPIVec( const PetscInt _rows,   const std::string _name="SPIVec" );  // constructor with one arguement to make vector of length rows
 
         Vec vec;                ///< petsc Vec data
         PetscErrorCode ierr;    ///< ierr for various routines and operators
@@ -21,7 +21,7 @@ namespace SPI{
         PetscBool flag_init=PETSC_FALSE;    ///< flag if it has been initialized
         std::string name;            ///< Vec name (important for hdf5 i/o)
         
-        PetscInt Init( PetscInt _rows, std::string name="SPIVec"); // initialize the vector of size _rows
+        PetscInt Init( const PetscInt _rows, const std::string name="SPIVec"); // initialize the vector of size _rows
         PetscInt set(const PetscInt _row, const PetscScalar v); // set a scalar value at position row 
         PetscInt set(const PetscScalar v); // set a scalar value at all positions
         PetscInt add(PetscInt _row, const PetscScalar v); // add a scalar value at position row 
@@ -43,6 +43,7 @@ namespace SPI{
         SPIVec operator-(const PetscInt a); // Y - a operation
         SPIVec& operator-=(const SPIVec &X); // Y = -1.*X + Y operation
         SPIVec operator-(const SPIVec &X); // Y - X operation
+        SPIVec operator-() const; // -X operation
         // * operators
         SPIVec operator*(const PetscScalar a); // Y*a operation
         SPIVec operator*(const double a); // Y*a operation

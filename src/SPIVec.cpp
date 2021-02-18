@@ -20,20 +20,32 @@ namespace SPI{
     }
     /** \brief constructor with one arguement to make vector of length rows */
     SPIVec::SPIVec(
-            PetscInt _rows,  ///< [in] number of rows to initialize vector
-            std::string _name///< [in] name of SPIVec (important with hdf5 i/o)
+            const PetscInt _rows,  ///< [in] number of rows to initialize vector
+            const std::string _name///< [in] name of SPIVec (important with hdf5 i/o)
             ){
-        Init(_rows,_name);
+        //this->Init(_rows,_name);
+        this->name=_name;
+        this->rows=_rows;
+        //PetscInt _rows2 = this->rows;
+        //SPI::printf("_rows at initialization %D",_rows);
+        //SPI::printf(" rows at initialization %D",_rows2);
+        //std::cout<<" rows at initialization "<<this->rows<<std::endl;
+        ierr = VecCreate(PETSC_COMM_WORLD,&vec);CHKERRXX(ierr);
+        ierr = VecSetSizes(vec,PETSC_DECIDE,_rows);CHKERRXX(ierr);
+        ierr = VecSetType(vec,VECMPI);CHKERRXX(ierr);
+        flag_init=PETSC_TRUE;
     }
 
     // Initialize vector
     /** \brief initialize the vector of size _rows \return 0 if successful */
     PetscInt SPIVec::Init(
             PetscInt _rows,     ///< [in] number of rows to initialize vector
-            std::string _name   ///< [in] name of SPIVec (important with hdf5 i/o)
+            const std::string _name   ///< [in] name of SPIVec (important with hdf5 i/o)
             ){
-        name=_name;
+        this->name=_name;
         rows=_rows;
+        SPI::printf("_rows at initialization %D",_rows);
+        SPI::printf("rows at initialization %D",this->rows);
         ierr = VecCreate(PETSC_COMM_WORLD,&vec);CHKERRQ(ierr);
         ierr = VecSetSizes(vec,PETSC_DECIDE,_rows);CHKERRQ(ierr);
         ierr = VecSetType(vec,VECMPI);CHKERRQ(ierr);
@@ -112,6 +124,7 @@ namespace SPI{
         if ((low <= _row) && (_row < high)){
             ierr = VecSetValue(vec,_row,v,INSERT_VALUES);CHKERRQ(ierr);
         }
+        (*this)(); // assemble after every insertion
         return 0;
     }
     /** same as above */
@@ -213,6 +226,10 @@ namespace SPI{
         ierr = VecAXPY(A.vec,-1.,X.vec);CHKERRXX(ierr);
         ierr = VecSetType(A.vec,VECMPI);CHKERRXX(ierr);
         return A;
+    }
+    /** -X operation \return Z in Z=-X operation */
+    SPIVec SPIVec::operator-() const{
+        return -1.*(*this);
     }
     // overload operator, scale with scalar
     /** Y*a operation \return Z in Z=Y*a */
@@ -322,20 +339,23 @@ namespace SPI{
     /** Y=X with initialization of Y using VecCopy and VecDuplicate \return Y initialized and copied of X */
     SPIVec& SPIVec::operator=(const SPIVec &X){
         if(flag_init){
-            if(X.rows==rows){
+            if(X.rows==this->rows){
                 ierr = VecCopy(X.vec,vec);CHKERRXX(ierr); // use copy if size matches
             }
             else{
                 this->~SPIVec(); // destroy and recreate from scratch
+                this->rows=X.rows;
+                ierr = VecDuplicate(X.vec,&vec); CHKERRXX(ierr);
+                ierr = VecCopy(X.vec,vec); CHKERRXX(ierr);
             }
         }
-        //else{
-        rows=X.rows;
-        ierr = VecDuplicate(X.vec,&vec); CHKERRXX(ierr);
-        ierr = VecCopy(X.vec,vec); CHKERRXX(ierr);
+        else{
+            this->rows=X.rows;
+            ierr = VecDuplicate(X.vec,&vec); CHKERRXX(ierr);
+            ierr = VecCopy(X.vec,vec); CHKERRXX(ierr);
+            flag_init=PETSC_TRUE;
+        }
         //ierr = VecSetType(vec,VECMPI);CHKERRXX(ierr);
-        flag_init=PETSC_TRUE;
-        //}
         return (*this);
     }
     /** \brief == VecEqual test if this==x2 \returns PETSC_TRUE if this==x2 */
@@ -538,17 +558,22 @@ namespace SPI{
     SPIVec linspace(
             const PetscScalar begin,    ///< [in] beginning scalar of equally spaced points
             const PetscScalar end,      ///< [in] end scalar of equally spaced points
-            const PetscInt rows         ///< [in] how many points in array
+            const PetscInt _rows         ///< [in] how many points in array
             ){ // return linspace of number of rows equally spaced points between begin and end
-        SPIVec y(rows);
-        PetscScalar step = (end-begin)/((PetscScalar)(rows-1));
+        SPIVec y(_rows);
+        //PetscInt _rows2 = y.rows;
+        //SPI::printf("y.rows in linspace = %D",_rows2);
+        PetscScalar step = (end-begin)/((PetscScalar)(_rows-1));
         PetscScalar value=begin;
         //PetscInt i=0;
-        for (PetscInt i=0; i<rows; ++i){
+        for (PetscInt i=0; i<_rows; ++i){
             y(i,value);
             value += step;
         }
         y();
+        //_rows2 = y.rows;
+        //SPI::printf("y.rows in linspace = %D",_rows2);
+        //SPI::printf("_rows in linspace = %D",_rows);
         return y;
     }
     /** \brief return a range of number of equally spaced points between begin and end by step size step*/
@@ -557,12 +582,12 @@ namespace SPI{
             const PetscScalar end,      ///< [in] end scalar of equally spaced points
             const PetscScalar stepsize  ///< [in] step size for equally spaced points
             ){ // return linspace of number of rows equally spaced points between begin and end
-        PetscInt rows=ceil(PetscRealPart((end-begin)/stepsize));
-        SPIVec y(rows);
-        //PetscScalar step = (end-begin)/((PetscScalar)(rows-1));
+        PetscInt _rows=ceil(PetscRealPart((end-begin)/stepsize));
+        SPIVec y(_rows);
+        //PetscScalar step = (end-begin)/((PetscScalar)(_rows-1));
         PetscScalar value=begin;
         //PetscInt i=0;
-        for (PetscInt i=0; i<rows; ++i){
+        for (PetscInt i=0; i<_rows; ++i){
             y(i,value);
             value += stepsize;
         }
