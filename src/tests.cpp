@@ -18,7 +18,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 int tests(){
     PetscInt m=4, n=4;
     // Vec tests
-    if(0){
+    if(1){
         SPI::printf("------------ Vec tests start-------------");
         // initialize SPIVec and Init function
         SPI::SPIVec X1(4,"X1"),X2(4,"X2"),X3("X3");
@@ -69,7 +69,7 @@ int tests(){
         X9 = X1*X2;
         test_if_close(X9(2,PETSC_TRUE),2.,"SPIVec*SPIVec");
     }
-    if(0){
+    if(1){
         // Mat tests
         SPI::printf("------------ Mat tests start ---------------");
 
@@ -128,7 +128,7 @@ int tests(){
         test_if_close(D.diag()(1,PETSC_TRUE),1.,  "diag(SPIMat)");
         SPI::printf("------------ Mat tests end   ---------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ A*x tests start ---------------");
         SPI::SPIMat A(4,4,"A");
         SPI::SPIVec x(4,"x"),b;
@@ -145,7 +145,7 @@ int tests(){
         SPI::printf("------------ A*x tests end   ---------------");
     }
 
-    if(0){
+    if(1){
         SPI::printf("------------ A*x=b tests start ---------------");
         SPI::SPIMat A(4,4,"A");
         SPI::SPIVec b(4,"x"),x;
@@ -160,7 +160,7 @@ int tests(){
         test_if_close(x(3,PETSC_TRUE),0.5,"SPIVec/SPIMat");
         SPI::printf("------------ A*x=b tests end   ---------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ Mat func tests start-------------");
         SPI::SPIMat I(SPI::eye(4),"I-identity");
         test_if_close(I(1,1,PETSC_TRUE),1.,"eye(PetscInt)");
@@ -185,7 +185,7 @@ int tests(){
         test_if_close(SPI::kron(D,I)(5,1,PETSC_TRUE),3.,"kron(SPIMat,SPIMat) 2");
         SPI::printf("------------ Mat func tests end  -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ Mat eig tests start-------------");
         SPI::SPIMat A(2,"A");
         A(0,0,1.);
@@ -254,7 +254,7 @@ int tests(){
         SPI::printf("------------ Mat eig tests end  -------------");
     }
 
-    if(0){// I/O using hdf5
+    if(1){// I/O using hdf5
         SPI::printf("------------ I/O tests start  -------------");
         SPI::SPIVec A(2,"A_Vec");
         A(0,1.);
@@ -268,7 +268,7 @@ int tests(){
         SPI::save(B,"saved_data.hdf5");
         SPI::printf("------------ I/O tests end    -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ I/O tests2 start  -------------");
         SPI::SPIVec A_read(2,"A_Vec");
         SPI::load(A_read,"saved_data.hdf5");
@@ -280,7 +280,7 @@ int tests(){
         test_if_close(B_read(1,PETSC_TRUE),0.,"load(SPIVec,std::string) 4");
         SPI::printf("------------ I/O tests2 end    -------------");
     }
-    if(0){// I/O using binary for Mat
+    if(1){// I/O using binary for Mat
         SPI::printf("------------ I/O tests3 start  -------------");
         SPI::SPIMat A(2,2,"A");
         A(0,0,1.);
@@ -296,7 +296,7 @@ int tests(){
         SPI::save(B,"saved_data_mat.dat");
         SPI::printf("------------ I/O tests3 end    -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ I/O tests4 start  -------------");
         SPI::SPIMat A_read(2,2,"A_Mat");
         SPI::load(A_read,"saved_data_mat.dat");
@@ -319,7 +319,7 @@ int tests(){
 
         SPI::printf("------------ I/O tests4 end    -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ block test start  -------------");
         SPI::SPIMat A(2,"A");
         A(0,0,2.);
@@ -335,7 +335,7 @@ int tests(){
         test_if_close(block(3,3,PETSC_TRUE),1.,"block(std::vector<std::vector<SPIMat>>) 4");
         SPI::printf("------------ block test end    -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ LST_temporal test start  -------------");
         // create grid and derivatives using chebyshev polynomials
         PetscInt n=64;
@@ -372,7 +372,7 @@ int tests(){
         test_if_close(eigenvalue,0.3121002979-0.0197986590*PETSC_i,"LST_temporal 2",1e-9);
         SPI::printf("------------ LST_temporal test end    -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ LST_spatial test start   -------------");
         PetscInt n=64;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
@@ -411,7 +411,7 @@ int tests(){
         test_if_close(params.alpha,0.61167+0.140492*PETSC_i,"LST_spatial 3",1e-5);
         SPI::printf("------------ LST_spatial test end     -------------");
     }
-    if(0){
+    if(1){
         SPI::printf("------------ LSTNP_spatial test start   -------------");
         PetscInt n=64;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
@@ -435,22 +435,27 @@ int tests(){
         SPI::SPIVec o(U*0.0,"o");
         SPI::SPIbaseflow channel(U,o,o,Uy,o,o,o,o,o,o,o);
 
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel);
+        PetscScalar cg;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel);
+        SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 1",1e-5);
         test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 1",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         params.alpha = 0.978748+0.04439397*PETSC_i;
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,eigenfunction.conj(),eigenfunction); // with initial guess
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,eigenfunction.conj(),eigenfunction); // with initial guess
+        SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 2",1e-5);
         test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 2",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         params.alpha = 0.34305+0.0498376872*PETSC_i;
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
+        SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.34305+0.049837*PETSC_i,"LSTNP_spatial 3",1e-5);
         //test_if_close(params.alpha,0.34305+0.049837*PETSC_i,"LSTNP_spatial 2",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         params.alpha = 0.6116672+0.140493*PETSC_i;
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
+        SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.6116672+0.140493*PETSC_i,"LSTNP_spatial 4",1e-5);
         //test_if_close(params.alpha,0.635797+0.08405*PETSC_i,"LSTNP_spatial 3",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
@@ -504,21 +509,26 @@ int tests(){
         }
         //bl_flow.print();
 
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        PetscScalar cg;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        SPI::printfc("cg = %g+%gi",cg);
         //std::tie(eigenvalue,eig_vec) = SPI::LST_spatial(params,grid,bl_flow);
         test_if_close(eigenvalue,0.094966+0.004564*PETSC_i,"LSTNP_spatial 1",1e-5);
         test_if_close(params.alpha,0.094966+0.004564*PETSC_i,"LSTNP_spatial 1",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
 
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.094966+0.004564*PETSC_i,"LSTNP_spatial 2",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
 
         params.alpha = 0.1067+0.001898*PETSC_i;
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow); 
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow); 
+        SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial 3",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
-        std::tie(eigenvalue,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial 4",1e-5);
         SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
 

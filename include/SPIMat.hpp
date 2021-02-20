@@ -52,6 +52,7 @@ namespace SPI{
         SPIMat operator*(const double a); // Y*a operation
         SPIVec operator*(const SPIVec &x); // A*x operation to return a vector
         SPIMat& operator*=(const PetscScalar a); // Y = Y*a operation
+        SPIMat& operator*=(const double a); // Y = Y*a operation
         SPIMat& operator/=(const PetscScalar a); // Y = Y/a operation
         SPIMat operator/(const PetscScalar a); // Z = Y/a operation
         SPIMat operator*(const SPIMat &A); // Y*A operation
@@ -81,7 +82,8 @@ namespace SPI{
     SPIMat operator*(const PetscScalar a, const SPIMat A); // a*A operation to be equivalent to A*a
     SPIMat operator*(const SPIMat A, const PetscScalar a); // A*a operation to be equivalent to A*a
     SPIVec operator/(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using b/A notation
-    SPIVec solve(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using solve(A,b) notation
+    //SPIVec solve(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using solve(A,b) notation
+    SPIVec solve(const SPIMat &A, const SPIVec &b); // Solve linear system, Ax=b using solve(A,b) notation
     SPIMat eye(const PetscInt n); // create, form, and return identity matrix of size n
     SPIMat zeros(const PetscInt m,const PetscInt n); // create, form, and return zero matrix of size mxn
     SPIMat diag(const SPIVec &diag,const PetscInt k=0); // set diagonal of matrix

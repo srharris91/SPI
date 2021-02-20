@@ -84,7 +84,7 @@ namespace SPI{
         }
         return 0;
     }
-    // get size of matrix
+    // get size of vector
     /** get the global size of the vector */
     PetscInt SPIVec::size(){
         PetscInt n;
@@ -259,6 +259,13 @@ namespace SPI{
     }
     /** Y = Y*a operation \return Y in Y*=a */
     SPIVec& SPIVec::operator*=(
+            const double a ///< [in] scalar a in Y*=a operation
+            ){
+        ierr = VecScale(this->vec,(PetscScalar)(a+0.*PETSC_i));CHKERRXX(ierr);
+        return *this;
+    }
+    /** Y = Y*a operation \return Y in Y*=a */
+    SPIVec& SPIVec::operator*=(
             const SPIVec &a ///< [in] SPIVec a in Y*=a operation
             ){
         ierr = VecPointwiseMult(vec,a.vec,(*this).vec);CHKERRXX(ierr);
@@ -391,6 +398,18 @@ namespace SPI{
 
         return maxscalar;
     }
+    /** maximum index value of vector \return integer index of maximum value of the vector */
+    PetscInt SPIVec::argmax(){
+        PetscInt argmax;
+        PetscReal max=0.;
+        //PetscScalar maxscalar;
+        ierr = VecMax(this->vec,&argmax,&max);CHKERRXX(ierr);
+        //maxscalar = (*this)(argmax,PETSC_TRUE);
+        //PetscScalar maxscalar_global = 0.;
+        //MPIU_Allreduce(&maxscalar,&maxscalar_global,1,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
+
+        return argmax;
+    }
     /** \brief take the real part of the vector \returns the vector after taking the real part of it */
     SPIVec& SPIVec::real(){
         ierr = VecRealPart(vec); CHKERRXX(ierr);
@@ -497,6 +516,34 @@ namespace SPI{
         }
         ierr = VecView(A.vec,viewer); CHKERRQ(ierr);
         ierr = PetscViewerDestroy(&viewer); CHKERRQ(ierr);
+        return 0;
+    }
+    /** save A to hdf5 to filename as variable A.name (note: this will append if filename already exists) \return 0 if successful */
+    PetscInt save(
+            std::vector<PetscScalar> A, ///< [in] variable to save to hdf5 file
+            std::string variablename,   ///< [in] the name of the variable to save in the file
+            std::string filename        ///< [in] hdf5 filename
+            ){
+        PetscInt n=A.size();
+        SPIVec Avec(n,variablename);
+        for(PetscInt i=0; i<n; i++){
+            Avec(i,A[i]);
+        }
+        save(Avec,filename);
+        return 0;
+    }
+    /** save A to hdf5 to filename as variable A.name (note: this will append if filename already exists) \return 0 if successful */
+    PetscInt save(
+            std::vector<SPIVec> A,      ///< [in] variable to save to hdf5 file
+            std::string variablename,   ///< [in] the name of the variable to save in the file
+            std::string filename        ///< [in] hdf5 filename
+            ){
+        PetscInt n=A.size();
+        std::string sep="_";
+        for(PetscInt i=0; i<n; i++){
+            A[i].name = variablename+sep+std::to_string(i);
+            save(A[i],filename);
+        }
         return 0;
     }
 
@@ -650,6 +697,8 @@ namespace SPI{
     SPIVec acosh(const SPIVec &A){ return _Function_on_each_element(&std::acosh<PetscReal>, A); }
     /** \brief take the atanh of each element in a vector */
     SPIVec atanh(const SPIVec &A){ return _Function_on_each_element(&std::atanh<PetscReal>, A); }
+    /** \brief take the atanh of each element in a vector */
+    SPIVec sqrt(const SPIVec &A){ return _Function_on_each_element(&std::sqrt<PetscReal>, A); }
     /** \brief function to take element by element of two vectors e.g. (*f)(A(i),B(i)) for all i */
     template <class T>
         SPIVec _Function_on_each_element(

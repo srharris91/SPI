@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['re_307',['Re',['../structSPI_1_1SPIparams.html#a2bb6ab8cc4ab7624e0c8a61b785b019c',1,'SPI::SPIparams']]],
-  ['rows_308',['rows',['../structSPI_1_1SPIMat.html#a48536e4f21c35c09c9ade4450ef0f848',1,'SPI::SPIMat::rows()'],['../structSPI_1_1SPIVec.html#ad170878751ae7ad7ea2f0c16fa348be3',1,'SPI::SPIVec::rows()']]]
+  ['u_312',['U',['../structSPI_1_1SPIbaseflow.html#a0058bc33c9ea702e92472a933d126bb8',1,'SPI::SPIbaseflow']]],
+  ['ux_313',['Ux',['../structSPI_1_1SPIbaseflow.html#a35697083db6f6326bb74a0e332c7f4fb',1,'SPI::SPIbaseflow']]],
+  ['uxy_314',['Uxy',['../structSPI_1_1SPIbaseflow.html#a0349e357e34788d4c2b2285f9bae503e',1,'SPI::SPIbaseflow']]],
+  ['uy_315',['Uy',['../structSPI_1_1SPIbaseflow.html#a5c768b5c4c023882e69570a030e4b02a',1,'SPI::SPIbaseflow']]]
 ];

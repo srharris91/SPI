@@ -85,6 +85,7 @@ $(function() {
 <code>#include &lt;petscksp.h&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="SPIVec_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -110,6 +111,10 @@ Functions</h2></td></tr>
 <tr class="separator:a714af180d76a157341184e7ce751735c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d186d00e2ab905c91eeb08d46b26567"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a6d186d00e2ab905c91eeb08d46b26567">SPI::save</a> (const SPIVec &amp;A, std::string filename)</td></tr>
 <tr class="separator:a6d186d00e2ab905c91eeb08d46b26567"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1351d44ac5c137754f49bc590cd5b4d6"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a1351d44ac5c137754f49bc590cd5b4d6">SPI::save</a> (std::vector&lt; PetscScalar &gt; A, std::string variablename, std::string filename)</td></tr>
+<tr class="separator:a1351d44ac5c137754f49bc590cd5b4d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fc11ae732ca96818cc946de43772d49"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a4fc11ae732ca96818cc946de43772d49">SPI::save</a> (std::vector&lt; SPIVec &gt; A, std::string variablename, std::string filename)</td></tr>
+<tr class="separator:a4fc11ae732ca96818cc946de43772d49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae28ff518a25f23700e41fa40b4a13d84"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ae28ff518a25f23700e41fa40b4a13d84">SPI::load</a> (SPIVec &amp;A, const std::string filename)</td></tr>
 <tr class="separator:ae28ff518a25f23700e41fa40b4a13d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4d0849c9336b033585683a6ac7d6d07"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ae4d0849c9336b033585683a6ac7d6d07">SPI::ones</a> (const PetscInt rows)</td></tr>
@@ -181,6 +186,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ac7948017c5b11e55fffcf80496877557"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ac7948017c5b11e55fffcf80496877557">SPI::atanh</a> (const SPIVec &amp;A)</td></tr>
 <tr class="memdesc:ac7948017c5b11e55fffcf80496877557"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the atanh of each element in a vector  <a href="namespaceSPI.html#ac7948017c5b11e55fffcf80496877557">More...</a><br /></td></tr>
 <tr class="separator:ac7948017c5b11e55fffcf80496877557"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7259b828b57b8bf38028fc1ff0c6072"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ac7259b828b57b8bf38028fc1ff0c6072">SPI::sqrt</a> (const SPIVec &amp;A)</td></tr>
+<tr class="memdesc:ac7259b828b57b8bf38028fc1ff0c6072"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the atanh of each element in a vector  <a href="namespaceSPI.html#ac7259b828b57b8bf38028fc1ff0c6072">More...</a><br /></td></tr>
+<tr class="separator:ac7259b828b57b8bf38028fc1ff0c6072"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6756e0fcbbb1b72a5fb1dbc03fca847c"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a6756e0fcbbb1b72a5fb1dbc03fca847c"><td class="memTemplItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a6756e0fcbbb1b72a5fb1dbc03fca847c">SPI::_Function_on_each_element</a> (T(*f)(T const  &amp;, T const  &amp;), const SPIVec &amp;A, SPIVec &amp;B)</td></tr>
 <tr class="memdesc:a6756e0fcbbb1b72a5fb1dbc03fca847c"><td class="mdescLeft">&#160;</td><td class="mdescRight">function to take element by element of two vectors e.g. (*f)(A(i),B(i)) for all i  <a href="namespaceSPI.html#a6756e0fcbbb1b72a5fb1dbc03fca847c">More...</a><br /></td></tr>

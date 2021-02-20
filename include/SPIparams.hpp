@@ -16,7 +16,6 @@ namespace SPI{
                     x_start,///< streamwise starting location
                     x,      ///< current streamwise position
                     x_prev, ///< previous streamwise position
-                    h,      ///< streamwise step size h=(x-x_prev)
                     nu;     ///< kinematic viscosity (typically 1/Re)
                     
     };

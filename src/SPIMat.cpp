@@ -249,6 +249,13 @@ namespace SPI{
     // overload operator, scale with scalar
     /** \brief Y = Y*a operation \return Y after operation */
     SPIMat& SPIMat::operator*=(
+            const double a     ///< [in] scalar in Y*a operation
+            ){
+        ierr = MatScale(this->mat,(PetscScalar)(a+0.*PETSC_i));CHKERRXX(ierr);
+        return *this;
+    }
+    /** \brief Y = Y*a operation \return Y after operation */
+    SPIMat& SPIMat::operator*=(
             const PetscScalar a     ///< [in] scalar in Y*a operation
             ){
         ierr = MatScale(this->mat,a);CHKERRXX(ierr);
@@ -292,7 +299,7 @@ namespace SPI{
             rows=A.rows;
             cols=A.cols;
             ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
-            //ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
+            ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
             flag_init=PETSC_TRUE;
         //}
         return *this;
@@ -467,8 +474,8 @@ namespace SPI{
     }
     /** \brief Solve linear system, Ax=b using solve(A,b) notation \return x vector in Ax=b solved linear system */
     SPIVec solve(
-            const SPIVec &b,    ///< [in] b in Ax=b
-            const SPIMat &A     ///< [in] A in Ax=b
+            const SPIMat &A,    ///< [in] A in Ax=b
+            const SPIVec &b     ///< [in] b in Ax=b
             ){
         return b/A;
     }
@@ -492,6 +499,14 @@ namespace SPI{
         SPIMat O(m,n,"zero");
         O();
         O.ierr = MatZeroEntries(O.mat); CHKERRXX(O.ierr);
+        // set main diagonal to zero... but these didn't quite work.  
+        //SPIVec zero(m);
+        //O.ierr = VecSet(zero.vec,1.);CHKERRXX(O.ierr);
+        //zero *= 0.;
+        //O.ierr = MatDiagonalSet(O.mat,zero.vec,INSERT_VALUES);CHKERRXX(O.ierr);
+        //for(PetscInt i=0; i<m; i++){
+            //O(i,i,1.0);
+        //}
         return O;
     }
     // diagonal matrix

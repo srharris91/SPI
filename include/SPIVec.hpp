@@ -4,6 +4,7 @@
 #include <petscksp.h>
 #include <string>
 #include <fstream>
+#include <vector>
 
 namespace SPI{
     struct SPIVec{
@@ -48,6 +49,7 @@ namespace SPI{
         SPIVec operator*(const PetscScalar a); // Y*a operation
         SPIVec operator*(const double a); // Y*a operation
         SPIVec& operator*=(const PetscScalar a); // Y = Y*a operation
+        SPIVec& operator*=(const double a); // Y = Y*a operation
         SPIVec& operator*=(const SPIVec &a); // Y = Y*a operation
         SPIVec operator*(const SPIVec &X); // Y*X operation
         // / operators
@@ -70,6 +72,7 @@ namespace SPI{
         // conjugate
         SPIVec& conj(); // elemenwise conjugate current vector
         PetscScalar max(); // return maximum value of vector
+        PetscInt argmax(); // return maximum value of vector
         SPIVec& real(); // real part of current vector
         SPIVec& imag(); // real part of current vector
         PetscScalar dot(SPIVec y); // take inner dot product (this,y) or y^H this, where H is the complex conjugate transpose
@@ -83,6 +86,8 @@ namespace SPI{
     SPIVec operator+(const PetscScalar a, const SPIVec &A); // a+A operation to be equivalent to A+a
     SPIVec operator-(const PetscScalar a, const SPIVec &A); // a-A operation to be equivalent to A-a
     PetscInt save(const SPIVec &A, std::string filename); // save A to hdf5 to filename as variable A.name
+    PetscInt save(std::vector<PetscScalar> A, std::string variablename, std::string filename); // save A to hdf5 to filename as variable
+    PetscInt save(std::vector<SPIVec> A, std::string variablename, std::string filename); // save A vectors to hdf5 to filename as variable indexed 0 to A.size()-1
     PetscInt load( SPIVec &A, const std::string filename); // load A from hdf5 filename using variable A.name, be sure it has the right size first before loading
     SPIVec ones(const PetscInt rows); // return a vector of size rows full of ones
     SPIVec zeros(const PetscInt rows); // return a vector of size rows full of zeros
@@ -109,6 +114,7 @@ namespace SPI{
     SPIVec asinh(const SPIVec &A); // take the asinh of element
     SPIVec acosh(const SPIVec &A); // take the acosh of element
     SPIVec atanh(const SPIVec &A); // take the atanh of element
+    SPIVec sqrt(const SPIVec &A); // take the atanh of element
     // template for scalar function on each element
     template <class T>
     SPIVec _Function_on_each_element(T (*f)(T const&,T const&), const SPIVec &A, SPIVec &B); // take the function of elements in vectors e.g. (*f)(A(i),B(i))

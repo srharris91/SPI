@@ -214,7 +214,7 @@ namespace SPI{
         }
     }
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_temporal(params,grid,baseflow).  Will solve for closest eigenvalue to params.omega */
-    std::tuple<PetscScalar, SPIVec, SPIVec> LSTNP_spatial(
+    std::tuple<PetscScalar, PetscScalar, SPIVec, SPIVec> LSTNP_spatial(
             SPIparams &params,          ///< [inout] contains parameters including Re, alpha, and omega.  Will overwrite omega with true omega value once solved
             SPIgrid &grid,              ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow,      ///< [in] baseflow for parallel flow
@@ -287,23 +287,31 @@ namespace SPI{
                         }),"dA0");
             // set BCs
             //PetscInt rowBCs[] = {0,n-1,n,2*n-1,2*n,3*n-1,4*n,5*n-1,5*n,6*n-1,6*n,7*n-1}; // u,v,w at wall and freestream
-            PetscInt rowBCs[] = {0*ny,1*ny-1,1*ny,2*ny-1,2*ny,3*ny-1}; // u,v,w at wall and freestream
-            for(PetscInt rowi : rowBCs){
-                //SPI::printf(std::to_string(rowi));
-                ABC2.zero_row(rowi);
-                ABC1.zero_row(rowi);
-                dA1.zero_row(rowi);
-                ABC0.zero_row(rowi);
-                D0.zero_row(rowi);
-                dA0.zero_row(rowi);
+            //PetscInt rowBCs[] = {0*ny,1*ny-1,1*ny,2*ny-1,2*ny,3*ny-1}; // u,v,w at wall and freestream
+            //for(PetscInt rowi : rowBCs){
+            //    //SPI::printf(std::to_string(rowi));
+            //    ABC2.zero_row(rowi);
+            //    ABC1.zero_row(rowi);
+            //    dA1.zero_row(rowi);
+            //    ABC0.zero_row(rowi);
+            //    D0.zero_row(rowi);
+            //    dA0.zero_row(rowi);
 
-                ABC2(rowi,rowi,1.0);
-                ABC1(rowi,rowi,1.0);
-                dA1(rowi,rowi,1.0);
-                ABC0(rowi,rowi,1.0);
-                D0(rowi,rowi,1.0);
-                dA0(rowi,rowi,1.0);
-            }
+            //    ABC2(rowi,rowi,1.0);
+            //    ABC1(rowi,rowi,1.0);
+            //    dA1(rowi,rowi,1.0);
+            //    ABC0(rowi,rowi,1.0);
+            //    D0(rowi,rowi,1.0);
+            //    dA0(rowi,rowi,1.0);
+            //}
+            // alternative way to set the BCs
+            std::vector<PetscInt> rowBCs = {0*ny,1*ny-1,1*ny,2*ny-1,2*ny,3*ny-1}; // u,v,w at wall and freestream
+            ABC2.eye_rows(rowBCs);
+            ABC1.eye_rows(rowBCs);
+            dA1.eye_rows(rowBCs);
+            ABC0.eye_rows(rowBCs);
+            D0.eye_rows(rowBCs);
+            dA0.eye_rows(rowBCs);
 
             // inflate for derivatives in streamwise direction
             SPIMat L0(block({
@@ -352,10 +360,27 @@ namespace SPI{
             }else{
                 std::tie(alpha,eigl_vec,eig_vec) = SPI::eig(L,M,alpha);
             }
-            alpha = alpha; // invert
+            //alpha = alpha; // invert
             params.alpha = alpha;
             //SPI::printfc("α is: %g+%gi",alpha);
-            return std::make_tuple(alpha,eigl_vec,eig_vec);
+            SPIMat dLdomega4(block({
+                        {-i*I,  O,      O,      O},
+                        {O,     -i*I,   O,      O},
+                        {O,     O,      -i*I,   O},
+                        {O,     O,      O,      O},
+                        }),"dLdomega 4nx4n");
+            // inflate for non-parallel
+            SPIMat dLdomega8(block({
+                        {dLdomega4, O4},
+                        {O4,        O4}
+                        }),"dLdomega 8nx8n");
+            // inflate for polynomial eigenvalue problem
+            SPIMat dLdomega(block({
+                        {O8,        O8},
+                        {dLdomega8, O8}
+                        }),"dLdomega 16nx16n");
+            PetscScalar cg = ((M*eig_vec).dot(eigl_vec)) / ((dLdomega*eig_vec).dot(eigl_vec));
+            return std::make_tuple(alpha,cg,eigl_vec,eig_vec);
         }
     }
 

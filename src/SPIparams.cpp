@@ -18,7 +18,7 @@ namespace SPI{
         SPI::printfc("x_start = %g+%gi",x_start);
         SPI::printfc("x       = %g+%gi",x);
         SPI::printfc("x_prev  = %g+%gi",x_prev);
-        SPI::printfc("h       = %g+%gi",h);
+        //SPI::printfc("h       = %g+%gi",h);
         PetscPrintf(PETSC_COMM_WORLD,("---------------- "+name+"---done-------\n\n").c_str());
         return 0;
     }
