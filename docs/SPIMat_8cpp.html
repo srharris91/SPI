@@ -102,6 +102,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a40585a63f5927afe7a8b683c391fb3d8"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a40585a63f5927afe7a8b683c391fb3d8">SPI::operator/</a> (const SPIVec &amp;b, const SPIMat &amp;A)</td></tr>
 <tr class="memdesc:a40585a63f5927afe7a8b683c391fb3d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve linear system, Ax=b using b/A notation.  <a href="namespaceSPI.html#a40585a63f5927afe7a8b683c391fb3d8">More...</a><br /></td></tr>
 <tr class="separator:a40585a63f5927afe7a8b683c391fb3d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c86bf2af78f74712c85a7b99afd071a"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a7c86bf2af78f74712c85a7b99afd071a">SPI::operator^</a> (const PetscScalar a, const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a7c86bf2af78f74712c85a7b99afd071a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Y=a^A operation.  <a href="namespaceSPI.html#a7c86bf2af78f74712c85a7b99afd071a">More...</a><br /></td></tr>
+<tr class="separator:a7c86bf2af78f74712c85a7b99afd071a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace4b794d30ff295d38fb6f6e2490716d"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ace4b794d30ff295d38fb6f6e2490716d">SPI::solve</a> (const SPIMat &amp;A, const SPIVec &amp;b)</td></tr>
 <tr class="memdesc:ace4b794d30ff295d38fb6f6e2490716d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve linear system, Ax=b using solve(A,b) notation.  <a href="namespaceSPI.html#ace4b794d30ff295d38fb6f6e2490716d">More...</a><br /></td></tr>
 <tr class="separator:ace4b794d30ff295d38fb6f6e2490716d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,6 +135,8 @@ Functions</h2></td></tr>
 <tr class="memitem:aac6a904dcbca5e5b1fb816d27a552301"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aac6a904dcbca5e5b1fb816d27a552301">SPI::block</a> ( const Block2D&lt; SPIMat &gt; Blocks)</td></tr>
 <tr class="memdesc:aac6a904dcbca5e5b1fb816d27a552301"><td class="mdescLeft">&#160;</td><td class="mdescRight">set block matrices using an input array of size rows*cols. Fills rows first  <a href="namespaceSPI.html#aac6a904dcbca5e5b1fb816d27a552301">More...</a><br /></td></tr>
 <tr class="separator:aac6a904dcbca5e5b1fb816d27a552301"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a018ca80f89122b25b935eeb5ca4ec6e7"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; SPIMat, SPIMat &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a018ca80f89122b25b935eeb5ca4ec6e7">SPI::meshgrid</a> (SPIVec &amp;x, SPIVec &amp;y)</td></tr>
+<tr class="separator:a018ca80f89122b25b935eeb5ca4ec6e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d69f6509631ee5a016f6648874a8db7"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a3d69f6509631ee5a016f6648874a8db7">SPI::save</a> (const SPIMat &amp;A, const std::string filename)</td></tr>
 <tr class="memdesc:a3d69f6509631ee5a016f6648874a8db7"><td class="mdescLeft">&#160;</td><td class="mdescRight">save matrix to filename in binary format (see Petsc documentation for format ) Format is (from Petsc documentation): int MAT_FILE_CLASSID int number of rows int number of columns int total number of nonzeros int *number nonzeros in each row int *column indices of all nonzeros (starting index is zero) PetscScalar *values of all nonzeros  <a href="namespaceSPI.html#a3d69f6509631ee5a016f6648874a8db7">More...</a><br /></td></tr>
 <tr class="separator:a3d69f6509631ee5a016f6648874a8db7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,6 +152,19 @@ Functions</h2></td></tr>
 <tr class="memitem:ab2330a199d5c446ee9d4efb3ea4dff5f"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ab2330a199d5c446ee9d4efb3ea4dff5f">SPI::draw</a> (const SPIMat &amp;A)</td></tr>
 <tr class="memdesc:ab2330a199d5c446ee9d4efb3ea4dff5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw nonzero structure of matrix  <a href="namespaceSPI.html#ab2330a199d5c446ee9d4efb3ea4dff5f">More...</a><br /></td></tr>
 <tr class="separator:ab2330a199d5c446ee9d4efb3ea4dff5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e98a9a7504c261e9a68c1329a027c22"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a1e98a9a7504c261e9a68c1329a027c22"><td class="memTemplItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a1e98a9a7504c261e9a68c1329a027c22">SPI::_Function_on_each_element</a> (T(*f)(T const  &amp;), const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a1e98a9a7504c261e9a68c1329a027c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the function of each element in a matrix, e.g. (*f)(A(i,j)) for each i,j  <a href="namespaceSPI.html#a1e98a9a7504c261e9a68c1329a027c22">More...</a><br /></td></tr>
+<tr class="separator:a1e98a9a7504c261e9a68c1329a027c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab326e3783bd741aaeaa5f60fe52eeffc"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ab326e3783bd741aaeaa5f60fe52eeffc">SPI::sin</a> (SPIMat &amp;A)</td></tr>
+<tr class="memdesc:ab326e3783bd741aaeaa5f60fe52eeffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the sin of each element in a matrix  <a href="namespaceSPI.html#ab326e3783bd741aaeaa5f60fe52eeffc">More...</a><br /></td></tr>
+<tr class="separator:ab326e3783bd741aaeaa5f60fe52eeffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6c06915267aec3a95e617f7792bea86"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aa6c06915267aec3a95e617f7792bea86">SPI::cos</a> (SPIMat &amp;A)</td></tr>
+<tr class="memdesc:aa6c06915267aec3a95e617f7792bea86"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the cos of each element in a matrix  <a href="namespaceSPI.html#aa6c06915267aec3a95e617f7792bea86">More...</a><br /></td></tr>
+<tr class="separator:aa6c06915267aec3a95e617f7792bea86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe4eb6d73a3de759b51163b21d8bd71e"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#afe4eb6d73a3de759b51163b21d8bd71e">SPI::tan</a> (const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:afe4eb6d73a3de759b51163b21d8bd71e"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the tan of each element in a matrix  <a href="namespaceSPI.html#afe4eb6d73a3de759b51163b21d8bd71e">More...</a><br /></td></tr>
+<tr class="separator:afe4eb6d73a3de759b51163b21d8bd71e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

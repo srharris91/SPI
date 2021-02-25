@@ -38,7 +38,7 @@ namespace SPI{
         SPIMat& operator()(PetscInt m, PetscInt n,const PetscScalar v);  // set operator the same as set function
         SPIMat& operator()(PetscInt m, PetscInt n,const double v);  // set operator the same as set function
         SPIMat& operator()(PetscInt m, PetscInt n,const int v);     // set operator the same as set function
-        SPIMat& operator()(PetscInt m, PetscInt n,const SPIMat &Asub, InsertMode addv=ADD_VALUES);   // set submatrix into matrix at row m, col n
+        SPIMat& operator()(PetscInt m, PetscInt n,const SPIMat &Asub, InsertMode addv=INSERT_VALUES);   // set submatrix into matrix at row m, col n
         SPIMat& operator()();                                       // assemble the matrix
         // +- operators
         SPIMat& operator+=(const SPIMat &X); // MatAXPY,  Y = 1.*X + Y operation
@@ -55,6 +55,7 @@ namespace SPI{
         SPIMat& operator*=(const double a); // Y = Y*a operation
         SPIMat& operator/=(const PetscScalar a); // Y = Y/a operation
         SPIMat operator/(const PetscScalar a); // Z = Y/a operation
+        SPIMat operator/(const SPIMat &A); // Z = Y/A elementwise operation
         SPIMat operator*(const SPIMat &A); // Y*A operation
         // = operator
         SPIMat& operator=(const SPIMat &A); // Y=X with initialization of Y using MatConvert
@@ -82,6 +83,7 @@ namespace SPI{
     SPIMat operator*(const PetscScalar a, const SPIMat A); // a*A operation to be equivalent to A*a
     SPIMat operator*(const SPIMat A, const PetscScalar a); // A*a operation to be equivalent to A*a
     SPIVec operator/(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using b/A notation
+    SPIMat operator^(const PetscScalar a, const SPIMat &A); // Y = a^A operation
     //SPIVec solve(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using solve(A,b) notation
     SPIVec solve(const SPIMat &A, const SPIVec &b); // Solve linear system, Ax=b using solve(A,b) notation
     SPIMat eye(const PetscInt n); // create, form, and return identity matrix of size n
@@ -95,11 +97,16 @@ namespace SPI{
     //SPIMat block(const SPIMat Blocks[], const PetscInt rows,const PetscInt cols); // set block matrices using an input array of size rows*cols.  Fills rows first
     //SPIMat block(const std::vector<std::vector<SPIMat>> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first
     SPIMat block(const Block2D<SPIMat> Blocks); // set block matrices using an input array of size rows*cols.  Fills rows first
+    std::tuple<SPIMat,SPIMat> meshgrid(SPIVec &x, SPIVec &y); // create meshgrid from two grids using ij indexing.  i.e. X(i,j) = x(i) and Y(i,j) = y(j)
     PetscInt save(const SPIMat &A, const std::string filename); // save matrix to filename to binary format
     PetscInt save(const std::vector<SPIMat> &A, const std::string filename); // save matrix to filename to binary format
     PetscInt load(SPIMat &A, const std::string filename); // load matrix to filename from binary format
     PetscInt load(std::vector<SPIMat> &A, const std::string filename); // load matrix to filename from binary format
     PetscInt draw(const SPIMat &A); // draw nonzero structure and wait at command line input
+    template <class T> SPIMat _Function_on_each_element( T (*f)(T const&), const SPIMat &A); // function handle template for operations
+    SPIMat sin(const SPIMat &A); // sin ot matrix
+    SPIMat cos(const SPIMat &A); // cos ot matrix
+    SPIMat tan(const SPIMat &A); // tan ot matrix
 }
 
 

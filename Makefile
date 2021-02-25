@@ -1,8 +1,8 @@
 export PETSC_DIR=$(PWD)/petsc
 export SLEPC_DIR=$(PWD)/slepc
 # export PETSC_ARCH=arch-linux2-c-opt
-export PETSC_ARCH=arch-linux2-cxx-opt
-#export PETSC_ARCH=arch-linux-cxx-opt
+#export PETSC_ARCH=arch-linux2-cxx-opt
+export PETSC_ARCH=arch-linux-cxx-opt
 
 SRCFILES = $(wildcard ./src/*cpp)
 INCLUDE_DIR = ./include
@@ -36,3 +36,6 @@ clean:
 
 .cpp.o:
 	$(CPP) $(CPPFLAGS) $< -o $@
+
+ctags:
+	ctags --languages="C++" -h ".hpp" $(shell find -name "*pp" ! -path "./doc*")

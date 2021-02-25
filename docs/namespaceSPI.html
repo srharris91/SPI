@@ -102,6 +102,7 @@ Typedefs</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a244b3ed6e0ff8b709a951c4f15c88f67"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67">gridtype</a> { <a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67adca873fcb664fbb265f2b18222fc1119">FD</a>, 
+<a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a7eac3f9b01d3c03555a540437bcb45b0">FT</a>, 
 <a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a5178d3e41b993b3276b1c039afadcc63">Chebyshev</a>
  }</td></tr>
 <tr class="memdesc:a244b3ed6e0ff8b709a951c4f15c88f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumeration of grid types  <a href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67">More...</a><br /></td></tr>
@@ -143,6 +144,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a45701bae7836fe8365e26c13b19880bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a45701bae7836fe8365e26c13b19880bc">set_Cheby_y</a> (PetscInt ny)</td></tr>
 <tr class="memdesc:a45701bae7836fe8365e26c13b19880bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">create a Chebyshev grid from [-1,1]  <a href="namespaceSPI.html#a45701bae7836fe8365e26c13b19880bc">More...</a><br /></td></tr>
 <tr class="separator:a45701bae7836fe8365e26c13b19880bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2037a03bb1935e942545dc516bd17e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#af2037a03bb1935e942545dc516bd17e0">set_Fourier_t</a> (PetscScalar T, PetscInt nt)</td></tr>
+<tr class="memdesc:af2037a03bb1935e942545dc516bd17e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">create a Fourier grid from [0,T]  <a href="namespaceSPI.html#af2037a03bb1935e942545dc516bd17e0">More...</a><br /></td></tr>
+<tr class="separator:af2037a03bb1935e942545dc516bd17e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96802b6baae9d5c12f2ed06e9417f7c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a96802b6baae9d5c12f2ed06e9417f7c7">set_D_Fourier</a> (<a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> t, PetscInt d)</td></tr>
+<tr class="memdesc:a96802b6baae9d5c12f2ed06e9417f7c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">create a Fourier derivative operator acting on grid t  <a href="namespaceSPI.html#a96802b6baae9d5c12f2ed06e9417f7c7">More...</a><br /></td></tr>
+<tr class="separator:a96802b6baae9d5c12f2ed06e9417f7c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5badde1c6447cbb9ca4610f7d6935a9"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aa5badde1c6447cbb9ca4610f7d6935a9">LST_temporal</a> (<a class="el" href="structSPI_1_1SPIparams.html">SPIparams</a> &amp;params, <a class="el" href="structSPI_1_1SPIgrid.html">SPIgrid</a> &amp;grid, <a class="el" href="structSPI_1_1SPIbaseflow.html">SPIbaseflow</a> &amp;baseflow, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> q)</td></tr>
 <tr class="memdesc:aa5badde1c6447cbb9ca4610f7d6935a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with alpha being pure real, and omega the eigenvalue  <a href="namespaceSPI.html#aa5badde1c6447cbb9ca4610f7d6935a9">More...</a><br /></td></tr>
 <tr class="separator:aa5badde1c6447cbb9ca4610f7d6935a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,6 +168,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a40585a63f5927afe7a8b683c391fb3d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a40585a63f5927afe7a8b683c391fb3d8">operator/</a> (const <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;b, const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
 <tr class="memdesc:a40585a63f5927afe7a8b683c391fb3d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve linear system, Ax=b using b/A notation.  <a href="namespaceSPI.html#a40585a63f5927afe7a8b683c391fb3d8">More...</a><br /></td></tr>
 <tr class="separator:a40585a63f5927afe7a8b683c391fb3d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c86bf2af78f74712c85a7b99afd071a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a7c86bf2af78f74712c85a7b99afd071a">operator^</a> (const PetscScalar a, const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
+<tr class="memdesc:a7c86bf2af78f74712c85a7b99afd071a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Y=a^A operation.  <a href="namespaceSPI.html#a7c86bf2af78f74712c85a7b99afd071a">More...</a><br /></td></tr>
+<tr class="separator:a7c86bf2af78f74712c85a7b99afd071a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace4b794d30ff295d38fb6f6e2490716d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ace4b794d30ff295d38fb6f6e2490716d">solve</a> (const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A, const <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;b)</td></tr>
 <tr class="memdesc:ace4b794d30ff295d38fb6f6e2490716d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve linear system, Ax=b using solve(A,b) notation.  <a href="namespaceSPI.html#ace4b794d30ff295d38fb6f6e2490716d">More...</a><br /></td></tr>
 <tr class="separator:ace4b794d30ff295d38fb6f6e2490716d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,6 +201,8 @@ Functions</h2></td></tr>
 <tr class="memitem:aac6a904dcbca5e5b1fb816d27a552301"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aac6a904dcbca5e5b1fb816d27a552301">block</a> ( const <a class="el" href="namespaceSPI.html#a6e9b3f6fa48593edf11e1dd6dc75ca36">Block2D</a>&lt; <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &gt; Blocks)</td></tr>
 <tr class="memdesc:aac6a904dcbca5e5b1fb816d27a552301"><td class="mdescLeft">&#160;</td><td class="mdescRight">set block matrices using an input array of size rows*cols. Fills rows first  <a href="namespaceSPI.html#aac6a904dcbca5e5b1fb816d27a552301">More...</a><br /></td></tr>
 <tr class="separator:aac6a904dcbca5e5b1fb816d27a552301"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a018ca80f89122b25b935eeb5ca4ec6e7"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a018ca80f89122b25b935eeb5ca4ec6e7">meshgrid</a> (<a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;x, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;y)</td></tr>
+<tr class="separator:a018ca80f89122b25b935eeb5ca4ec6e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d69f6509631ee5a016f6648874a8db7"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a3d69f6509631ee5a016f6648874a8db7">save</a> (const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A, const std::string filename)</td></tr>
 <tr class="memdesc:a3d69f6509631ee5a016f6648874a8db7"><td class="mdescLeft">&#160;</td><td class="mdescRight">save matrix to filename in binary format (see Petsc documentation for format ) Format is (from Petsc documentation): int MAT_FILE_CLASSID int number of rows int number of columns int total number of nonzeros int *number nonzeros in each row int *column indices of all nonzeros (starting index is zero) PetscScalar *values of all nonzeros  <a href="namespaceSPI.html#a3d69f6509631ee5a016f6648874a8db7">More...</a><br /></td></tr>
 <tr class="separator:a3d69f6509631ee5a016f6648874a8db7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,6 +218,17 @@ Functions</h2></td></tr>
 <tr class="memitem:ab2330a199d5c446ee9d4efb3ea4dff5f"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ab2330a199d5c446ee9d4efb3ea4dff5f">draw</a> (const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
 <tr class="memdesc:ab2330a199d5c446ee9d4efb3ea4dff5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw nonzero structure of matrix  <a href="namespaceSPI.html#ab2330a199d5c446ee9d4efb3ea4dff5f">More...</a><br /></td></tr>
 <tr class="separator:ab2330a199d5c446ee9d4efb3ea4dff5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e98a9a7504c261e9a68c1329a027c22"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a1e98a9a7504c261e9a68c1329a027c22"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a1e98a9a7504c261e9a68c1329a027c22">_Function_on_each_element</a> (T(*f)(T const  &amp;), const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
+<tr class="memdesc:a1e98a9a7504c261e9a68c1329a027c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the function of each element in a matrix, e.g. (*f)(A(i,j)) for each i,j  <a href="namespaceSPI.html#a1e98a9a7504c261e9a68c1329a027c22">More...</a><br /></td></tr>
+<tr class="separator:a1e98a9a7504c261e9a68c1329a027c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62c447401a43233e2b39e31cb19eb0bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a62c447401a43233e2b39e31cb19eb0bb">sin</a> (const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
+<tr class="separator:a62c447401a43233e2b39e31cb19eb0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ff4528f800c9956ea9ed2dd4788f6a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a3ff4528f800c9956ea9ed2dd4788f6a4">cos</a> (const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
+<tr class="separator:a3ff4528f800c9956ea9ed2dd4788f6a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe4eb6d73a3de759b51163b21d8bd71e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#afe4eb6d73a3de759b51163b21d8bd71e">tan</a> (const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
+<tr class="memdesc:afe4eb6d73a3de759b51163b21d8bd71e"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the tan of each element in a matrix  <a href="namespaceSPI.html#afe4eb6d73a3de759b51163b21d8bd71e">More...</a><br /></td></tr>
+<tr class="separator:afe4eb6d73a3de759b51163b21d8bd71e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5de3301bb631185b58f689053d52deb8"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">printf</a> (std::string msg,...)</td></tr>
 <tr class="separator:a5de3301bb631185b58f689053d52deb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef43aa7dc5635e7f07ad112e0963a0bb"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aef43aa7dc5635e7f07ad112e0963a0bb">printfc</a> (std::string msg, const PetscScalar val)</td></tr>
@@ -335,6 +358,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a97adfa700c65abf5dd7c60b1b4799272"><td class="memItemLeft" align="right" valign="top">PetscInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a97adfa700c65abf5dd7c60b1b4799272">draw</a> (const <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;x)</td></tr>
 <tr class="memdesc:a97adfa700c65abf5dd7c60b1b4799272"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw nonzero structure and wait at command line input  <a href="namespaceSPI.html#a97adfa700c65abf5dd7c60b1b4799272">More...</a><br /></td></tr>
 <tr class="separator:a97adfa700c65abf5dd7c60b1b4799272"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab326e3783bd741aaeaa5f60fe52eeffc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ab326e3783bd741aaeaa5f60fe52eeffc">sin</a> (<a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
+<tr class="memdesc:ab326e3783bd741aaeaa5f60fe52eeffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the sin of each element in a matrix  <a href="namespaceSPI.html#ab326e3783bd741aaeaa5f60fe52eeffc">More...</a><br /></td></tr>
+<tr class="separator:ab326e3783bd741aaeaa5f60fe52eeffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6c06915267aec3a95e617f7792bea86"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aa6c06915267aec3a95e617f7792bea86">cos</a> (<a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A)</td></tr>
+<tr class="memdesc:aa6c06915267aec3a95e617f7792bea86"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the cos of each element in a matrix  <a href="namespaceSPI.html#aa6c06915267aec3a95e617f7792bea86">More...</a><br /></td></tr>
+<tr class="separator:aa6c06915267aec3a95e617f7792bea86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="a6e9b3f6fa48593edf11e1dd6dc75ca36"></a>
@@ -372,11 +401,13 @@ template&lt;class T &gt; </div>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a244b3ed6e0ff8b709a951c4f15c88f67adca873fcb664fbb265f2b18222fc1119"></a>FD&#160;</td><td class="fielddoc"><p>finite difference grid </p>
 </td></tr>
+<tr><td class="fieldname"><a id="a244b3ed6e0ff8b709a951c4f15c88f67a7eac3f9b01d3c03555a540437bcb45b0"></a>FT&#160;</td><td class="fielddoc"><p>Fourier transform collocated grid. </p>
+</td></tr>
 <tr><td class="fieldname"><a id="a244b3ed6e0ff8b709a951c4f15c88f67a5178d3e41b993b3276b1c039afadcc63"></a>Chebyshev&#160;</td><td class="fielddoc"><p>Chebyshev collocated grid. </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00020">20</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8hpp_source.html#l00022">22</a> of file <a class="el" href="SPIgrid_8hpp_source.html">SPIgrid.hpp</a>.</p>
 
 </div>
 </div>
@@ -411,8 +442,49 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="a1e98a9a7504c261e9a68c1329a027c22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e98a9a7504c261e9a68c1329a027c22">&#9670;&nbsp;</a></span>_Function_on_each_element() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::_Function_on_each_element </td>
+          <td>(</td>
+          <td class="paramtype">T(*)(T const &amp;)&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>take the function of each element in a matrix, e.g. (*f)(A(i,j)) for each i,j </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">f</td><td>[in] function handle to pass in e.g. std::sin&lt;PetscReal&gt; </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">A</td><td>[in] matrix to perform function on each element </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01287">1287</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+
+</div>
+</div>
 <a id="ae92a031e3bec1b11e18ae5f62c8fd425"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae92a031e3bec1b11e18ae5f62c8fd425">&#9670;&nbsp;</a></span>_Function_on_each_element() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae92a031e3bec1b11e18ae5f62c8fd425">&#9670;&nbsp;</a></span>_Function_on_each_element() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -453,7 +525,7 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <a id="a6756e0fcbbb1b72a5fb1dbc03fca847c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6756e0fcbbb1b72a5fb1dbc03fca847c">&#9670;&nbsp;</a></span>_Function_on_each_element() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6756e0fcbbb1b72a5fb1dbc03fca847c">&#9670;&nbsp;</a></span>_Function_on_each_element() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -788,7 +860,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01104">1104</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01133">1133</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -820,8 +892,26 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="a3ff4528f800c9956ea9ed2dd4788f6a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ff4528f800c9956ea9ed2dd4788f6a4">&#9670;&nbsp;</a></span>cos() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::cos </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a825313ca488cd0b92b6934333c985be4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a825313ca488cd0b92b6934333c985be4">&#9670;&nbsp;</a></span>cos()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a825313ca488cd0b92b6934333c985be4">&#9670;&nbsp;</a></span>cos() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -839,6 +929,28 @@ template&lt;class T &gt; </div>
 <p>take the cos of each element in a vector </p>
 
 <p class="definition">Definition at line <a class="el" href="SPIVec_8cpp_source.html#l00668">668</a> of file <a class="el" href="SPIVec_8cpp_source.html">SPIVec.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aa6c06915267aec3a95e617f7792bea86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6c06915267aec3a95e617f7792bea86">&#9670;&nbsp;</a></span>cos() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::cos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>take the cos of each element in a matrix </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01304">1304</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -900,7 +1012,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00514">514</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00543">543</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -997,7 +1109,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01221">1221</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01270">1270</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1086,7 +1198,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00635">635</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00664">664</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1161,7 +1273,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00781">781</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00810">810</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1212,7 +1324,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00484">484</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00512">512</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1349,7 +1461,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00564">564</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00593">593</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1522,7 +1634,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01193">1193</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01242">1242</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1600,7 +1712,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01205">1205</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01254">1254</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1687,7 +1799,7 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue </p>
-<dl class="section return"><dt>Returns</dt><dd>tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_temporal(params,grid,baseflow). Will solve for closest eigenvalue to params.omega </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_spatial(params,grid,baseflow). Will solve for closest eigenvalue to params.omega </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">params</td><td>[inout] contains parameters including Re, alpha, and omega. Will overwrite omega with true omega value once solved </td></tr>
@@ -1698,7 +1810,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPILST_8cpp_source.html#l00060">60</a> of file <a class="el" href="SPILST_8cpp_source.html">SPILST.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPILST_8cpp_source.html#l00084">84</a> of file <a class="el" href="SPILST_8cpp_source.html">SPILST.cpp</a>.</p>
 
 </div>
 </div>
@@ -1801,7 +1913,7 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue </p>
-<dl class="section return"><dt>Returns</dt><dd>tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_temporal(params,grid,baseflow). Will solve for closest eigenvalue to params.omega </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_spatial(params,grid,baseflow). Will solve for closest eigenvalue to params.omega </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">params</td><td>[inout] contains parameters including Re, alpha, and omega. Will overwrite omega with true omega value once solved </td></tr>
@@ -1813,7 +1925,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPILST_8cpp_source.html#l00217">217</a> of file <a class="el" href="SPILST_8cpp_source.html">SPILST.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPILST_8cpp_source.html#l00241">241</a> of file <a class="el" href="SPILST_8cpp_source.html">SPILST.cpp</a>.</p>
 
 </div>
 </div>
@@ -1907,7 +2019,44 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00234">234</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00235">235</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a018ca80f89122b25b935eeb5ca4ec6e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a018ca80f89122b25b935eeb5ca4ec6e7">&#9670;&nbsp;</a></span>meshgrid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::tuple&lt; <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &gt; SPI::meshgrid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td>[in] x input array </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">y</td><td>[in] y input array </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01170">1170</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1974,7 +2123,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00416">416</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00429">429</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -2045,7 +2194,7 @@ template&lt;class T &gt; </div>
 <p>A*a operation to be equivalent to A*a. </p>
 <dl class="section return"><dt>Returns</dt><dd>new matrix of A*a operation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00426">426</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00439">439</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -2199,7 +2348,47 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00434">434</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00447">447</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a7c86bf2af78f74712c85a7b99afd071a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c86bf2af78f74712c85a7b99afd071a">&#9670;&nbsp;</a></span>operator^()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::operator^ </td>
+          <td>(</td>
+          <td class="paramtype">const PetscScalar&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Y=a^A operation. </p>
+<dl class="section return"><dt>Returns</dt><dd>Y matrix in Y=a^A </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">a</td><td>[in] a in Y=a^A </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">A</td><td>[in] A in Y=a^A </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00489">489</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -2253,7 +2442,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00934">934</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00963">963</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -2314,7 +2503,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01001">1001</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01030">1030</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -2530,7 +2719,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01151">1151</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01200">1200</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -2608,7 +2797,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01171">1171</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01220">1220</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -2745,7 +2934,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00274">274</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00275">275</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
@@ -2792,7 +2981,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00261">261</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00262">262</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
@@ -2821,7 +3010,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00285">285</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00286">286</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
@@ -2926,6 +3115,46 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="a96802b6baae9d5c12f2ed06e9417f7c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96802b6baae9d5c12f2ed06e9417f7c7">&#9670;&nbsp;</a></span>set_D_Fourier()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::set_D_Fourier </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a>&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PetscInt&#160;</td>
+          <td class="paramname"><em>d</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>create a Fourier derivative operator acting on grid t </p>
+<dl class="section return"><dt>Returns</dt><dd>derivative operator using Fourier collocated points </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">t</td><td>[in] grid point created from set_Fourier_t </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">d</td><td>[in] order of derivatives </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00310">310</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a757b60ab83bb1aacd31faf88c1fcc630"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a757b60ab83bb1aacd31faf88c1fcc630">&#9670;&nbsp;</a></span>set_FD_stretched_y()</h2>
 
@@ -2973,8 +3202,66 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="af2037a03bb1935e942545dc516bd17e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2037a03bb1935e942545dc516bd17e0">&#9670;&nbsp;</a></span>set_Fourier_t()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> SPI::set_Fourier_t </td>
+          <td>(</td>
+          <td class="paramtype">PetscScalar&#160;</td>
+          <td class="paramname"><em>T</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PetscInt&#160;</td>
+          <td class="paramname"><em>nt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>create a Fourier grid from [0,T] </p>
+<dl class="section return"><dt>Returns</dt><dd>grid using Fourier collocated points without the last point of linspace(0,T,n+1)[:-1] </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">T</td><td>[in] period or end point for [0,T] domain </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">nt</td><td>[in] number of points </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l00295">295</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a62c447401a43233e2b39e31cb19eb0bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62c447401a43233e2b39e31cb19eb0bb">&#9670;&nbsp;</a></span>sin() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::sin </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a71c0b19be55e53d5ccbfc1175be7f22b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71c0b19be55e53d5ccbfc1175be7f22b">&#9670;&nbsp;</a></span>sin()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a71c0b19be55e53d5ccbfc1175be7f22b">&#9670;&nbsp;</a></span>sin() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2992,6 +3279,28 @@ template&lt;class T &gt; </div>
 <p>take the sin of each element in a vector </p>
 
 <p class="definition">Definition at line <a class="el" href="SPIVec_8cpp_source.html#l00666">666</a> of file <a class="el" href="SPIVec_8cpp_source.html">SPIVec.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ab326e3783bd741aaeaa5f60fe52eeffc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab326e3783bd741aaeaa5f60fe52eeffc">&#9670;&nbsp;</a></span>sin() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::sin </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>take the sin of each element in a matrix </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01302">1302</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -3053,7 +3362,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00476">476</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00504">504</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -3107,8 +3416,30 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="afe4eb6d73a3de759b51163b21d8bd71e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe4eb6d73a3de759b51163b21d8bd71e">&#9670;&nbsp;</a></span>tan() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::tan </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>A</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>take the tan of each element in a matrix </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l01306">1306</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a2d2c45f7e1d3d20aed98ce0a081d3093"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d2c45f7e1d3d20aed98ce0a081d3093">&#9670;&nbsp;</a></span>tan()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d2c45f7e1d3d20aed98ce0a081d3093">&#9670;&nbsp;</a></span>tan() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3256,7 +3587,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00495">495</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00523">523</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>

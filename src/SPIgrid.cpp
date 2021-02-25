@@ -221,6 +221,7 @@ namespace SPI{
                 }
 
             }
+            D();
             if(d==2){
                 SPIMat D2(D*D,"Dyy");
                 return D2;
@@ -288,6 +289,49 @@ namespace SPI{
         PetscScalar pi = 2.*std::acos(0.0);
         SPIVec y(cos(pi*arange((PetscScalar)ny-1.,-1.,-1.)/((PetscScalar)ny-1.)),"y");
         return y;
+    }
+
+    /** \brief create a Fourier grid from [0,T] \return grid using Fourier collocated points without the last point of linspace(0,T,n+1)[:-1] */
+    SPIVec set_Fourier_t(
+            PetscScalar T,          ///< [in] period or end point for [0,T] domain
+            PetscInt nt             ///< [in] number of points
+            ){
+        PetscScalar step = T/(PetscScalar)nt;
+        SPIVec t(nt);
+        PetscScalar value=0.;
+        for(PetscInt i=0; i<nt; ++i){
+            t(i,value);
+            value += step;
+        }
+        t();
+        return t;
+    }
+    /** \brief create a Fourier derivative operator acting on grid t \return derivative operator using Fourier collocated points */
+    SPIMat set_D_Fourier(
+            SPIVec t,               ///< [in] grid point created from set_Fourier_t
+            PetscInt d              ///< [in] order of derivatives 
+            ){
+        PetscScalar pi = M_PI;
+        PetscScalar dt = t(1,PETSC_TRUE)-t(0,PETSC_TRUE); // uniform grid spacing
+        PetscInt npts=t.rows;
+        if(npts%2==0){ // only works with even number of grid points
+            PetscScalar nptss = (PetscScalar)npts;
+            PetscScalar T = t(npts-1,PETSC_TRUE) + dt;
+            SPIMat D;
+            SPIMat N,J;
+            SPIVec n(arange(0,npts));
+            SPIVec j(arange(0,npts));
+            std::tie(N,J) = meshgrid(n,j);
+            SPIMat NmJ(N-J);
+            D = ((pi/T)*((-1.0)^(NmJ)))/tan((pi/nptss)*(NmJ));
+            D.ierr = MatDiagonalSet(D.mat,zeros(npts).vec,INSERT_VALUES);CHKERRXX(D.ierr);
+            D.real();
+            if(d==2) D = D*D; // then return Dyy
+            return D;
+        }
+        else{
+            exit(1);
+        }
     }
 
     /** \brief constructor with no arguments (set default values) */
@@ -384,6 +428,12 @@ namespace SPI{
             this->Dy.~SPIMat();
             this->Dyy.~SPIMat();
             this->flag_set_derivatives=PETSC_FALSE;
+        }
+        // destroy operators and reset flags
+        if (this->flag_set_operators){
+            this->O.~SPIMat();
+            this->I.~SPIMat();
+            this->flag_set_operators=PETSC_FALSE;
         }
     }
 

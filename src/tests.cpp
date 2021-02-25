@@ -141,6 +141,15 @@ int tests(){
         x();
         b=A*x;
         test_if_close(b(2,PETSC_TRUE),6.9,"SPIMat*SPIVec");
+        //A.print();
+        //x.print();
+        //b.print();
+        //Vec b2;
+        //VecCreate(PETSC_COMM_WORLD,&b2);
+        //VecSetSizes(b2,PETSC_DECIDE,4);
+        //VecSetType(b2,VECMPICUDA);
+        //MatMult(A.mat,x.vec,b2);
+        //VecView(b2,PETSC_VIEWER_STDOUT_WORLD);
 
         SPI::printf("------------ A*x tests end   ---------------");
     }
@@ -329,6 +338,7 @@ int tests(){
         SPI::SPIMat B(SPI::eye(2),"I-identity");
 
         SPI::SPIMat block(SPI::block({{A,B},{A,B}}));
+        block();
         test_if_close(block(0,0,PETSC_TRUE),2.,"block(std::vector<std::vector<SPIMat>>) 1");
         test_if_close(block(0,2,PETSC_TRUE),1.,"block(std::vector<std::vector<SPIMat>>) 2");
         test_if_close(block(3,1,PETSC_TRUE),4.,"block(std::vector<std::vector<SPIMat>>) 3");
@@ -366,6 +376,7 @@ int tests(){
         eigenfunction.name = "eigenfunction";
         std::tie(eigenvalue,eigenfunction) = SPI::LST_temporal(params,grid,channel);
         //SPI::printfc("eigenvalue is: %.10f+%.10fi",eigenvalue);
+        //eigenfunction.print();
         test_if_close(eigenvalue,0.3121002979-0.0197986590*PETSC_i,"LST_temporal 1",1e-9);
         std::tie(eigenvalue,eigenfunction) = SPI::LST_temporal(params,grid,channel,eigenfunction);
         //SPI::printfc(" eigenvalue is: %.10f+%.10fi",params.omega);
@@ -374,7 +385,7 @@ int tests(){
     }
     if(1){
         SPI::printf("------------ LST_spatial test start   -------------");
-        PetscInt n=64;
+        PetscInt n=128;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
         SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
         // channel flow Orr-Sommerfeld solution
@@ -404,6 +415,7 @@ int tests(){
         params.alpha = 0.34312+0.049677*PETSC_i;
         std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,channel,eigenfunction);
         test_if_close(eigenvalue,0.34312+0.049677*PETSC_i,"LST_spatial 2",1e-5);
+        std::cout<<"eigenvalue = "<<eigenvalue<<std::endl;
         test_if_close(params.alpha,0.34312+0.049677*PETSC_i,"LST_spatial 2",1e-5);
         params.alpha = 0.61+0.1*PETSC_i;
         std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,channel,eigenfunction);
@@ -533,6 +545,16 @@ int tests(){
         SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
 
         SPI::printf("------------ LSTNP Blasius boundary layer end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ Fourier Collocated derivative operator start -----------");
+        PetscInt n=8; // must be even number for Fourier derivatives
+        SPI::SPIVec t(SPI::set_Fourier_t(2.0*M_PI,n) ,"tFT");
+        SPI::SPIMat Dt(SPI::set_D_Fourier(t),"Dt");
+        SPI::SPIVec y(sin(t));
+        SPI::SPIVec yp(cos(t));
+        test_if_close((Dt*y)(2,PETSC_TRUE),yp(2,PETSC_TRUE),"set_D_Fourier",1e-12);
+        SPI::printf("------------ Fourier Collocated derivative operator end   -----------");
     }
 
     return 0;

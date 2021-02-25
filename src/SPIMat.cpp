@@ -100,7 +100,7 @@ namespace SPI{
             const PetscScalar v ///< [in] scalar to set in matrix
             ){
         ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRXX(ierr);
-        (*this)(); // assemble after every insertion
+        //(*this)(); // assemble after every insertion
         return (*this);
     }
     /** \brief set operator the same as set function \return current matrix after setting value */
@@ -157,7 +157,7 @@ namespace SPI{
             
             MatRestoreRow(Asub.mat,i,&ncols,&cols,&vals);
         }
-        (*this)();//assemble
+        //(*this)();//assemble
         return (*this);
     }
     // overloaded operator, assemble
@@ -274,6 +274,19 @@ namespace SPI{
             ){
         return (1./a)*(*this);
     }
+    /** \brief Z = Y/A operation \return Z after operation */
+    SPIMat SPIMat::operator/(
+            const SPIMat &A     ///< [in] A in Y/A operation
+            ){
+        SPIMat Z(A);
+        for(PetscInt i=0; i<Z.rows; ++i){
+            for(PetscInt j=0; j<Z.cols; ++j){
+                Z(i,j,(*this)(i,j)/Z(i,j));
+                Z();
+            }
+        }
+        return Z;
+    }
     // overload operator, matrix multiply
     /** \brief Y*A operation \return new matrix after matrix matrix multiply */
     SPIMat SPIMat::operator*(
@@ -296,11 +309,11 @@ namespace SPI{
             //ierr = MatCopy(A.mat,mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
         }
         //else{
-            rows=A.rows;
-            cols=A.cols;
-            ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
-            ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
-            flag_init=PETSC_TRUE;
+        rows=A.rows;
+        cols=A.cols;
+        ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
+        ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
+        flag_init=PETSC_TRUE;
         //}
         return *this;
     }
@@ -472,6 +485,21 @@ namespace SPI{
         ierr = KSPDestroy(&ksp);CHKERRXX(ierr);
         return x;
     }
+    /** \brief Y=a^A operation \return Y matrix in Y=a^A */
+    SPIMat operator^(
+            const PetscScalar a,   ///< [in] a in Y=a^A
+            const SPIMat &A         ///< [in] A in Y=a^A
+            ){
+        SPIMat Y(A);
+        Y();
+        for(PetscInt i=0; i<Y.rows; ++i){
+            for(PetscInt j=0; j<Y.cols; ++j){
+                Y(i,j,std::pow<PetscReal>(a,Y(i,j)));
+                Y();
+            }
+        }
+        return Y;
+    }
     /** \brief Solve linear system, Ax=b using solve(A,b) notation \return x vector in Ax=b solved linear system */
     SPIVec solve(
             const SPIMat &A,    ///< [in] A in Ax=b
@@ -498,12 +526,13 @@ namespace SPI{
             ){
         SPIMat O(m,n,"zero");
         O();
-        O.ierr = MatZeroEntries(O.mat); CHKERRXX(O.ierr);
+        //O.ierr = MatZeroEntries(O.mat); CHKERRXX(O.ierr);
         // set main diagonal to zero... but these didn't quite work.  
         //SPIVec zero(m);
         //O.ierr = VecSet(zero.vec,1.);CHKERRXX(O.ierr);
         //zero *= 0.;
         //O.ierr = MatDiagonalSet(O.mat,zero.vec,INSERT_VALUES);CHKERRXX(O.ierr);
+        //O();
         //for(PetscInt i=0; i<m; i++){
             //O(i,i,1.0);
         //}
@@ -1133,8 +1162,28 @@ namespace SPI{
                 A(m[i],n[j],Blocks[i][j]);
             }
         }
+        //A();
 
         return A;
+    }
+    /* brief create meshgrid with ij indexing \brief tuple of X and Y matrices */
+    std::tuple<SPIMat,SPIMat> meshgrid(
+            SPIVec &x,    ///< [in] x input array
+            SPIVec &y     ///< [in] y input array
+            ){
+        PetscInt m=x.rows;
+        PetscInt n=y.rows;
+        SPIMat X(m,n);
+        SPIMat Y(m,n);
+        for(PetscInt i=0; i<m; ++i){
+            for(PetscInt j=0; j<n; ++j){
+                X(i,j,x(i));
+                Y(i,j,y(j));
+            }
+        }
+        X();
+        Y();
+        return std::make_tuple(X,Y);
     }
 
     /** \brief save matrix to filename in binary format (see Petsc documentation for format )
@@ -1233,6 +1282,28 @@ namespace SPI{
         ierr = PetscViewerDestroy(&viewer);CHKERRXX(ierr);
         return 0;
     }
+    /** \brief take the function of each element in a matrix, e.g. (*f)(A(i,j)) for each i,j */
+    template <class T>
+        SPIMat _Function_on_each_element(
+                T (*f)(T const&),   ///< [in] function handle to pass in e.g. std::sin<PetscReal>
+                const SPIMat &A           ///< [in] matrix to perform function on each element
+                ){
+            SPIMat out(A);
+            for (PetscInt i=0; i<out.rows; ++i){
+                for (PetscInt j=0; j<out.cols; ++j){
+                    out(i,j,(*f)(out(i,j)));                // TODO speed up by getting all values at once on local processor and looping through those
+                    out();
+                }
+            }
+            out();
+            return out;
+        }
+    /** \brief take the sin of each element in a matrix */
+    SPIMat sin(SPIMat &A){ return _Function_on_each_element(&std::sin<PetscReal>, A); }
+    /** \brief take the cos of each element in a matrix */
+    SPIMat cos(SPIMat &A){ return _Function_on_each_element(&std::cos<PetscReal>, A); }
+    /** \brief take the tan of each element in a matrix */
+    SPIMat tan(const SPIMat &A){ return _Function_on_each_element(&std::tan<PetscReal>, A); }
 }
 
 

@@ -16,9 +16,12 @@ namespace SPI{
     SPIVec set_Cheby_stretched_y(PetscScalar y_max, PetscInt ny, PetscScalar yi=10.); // create chebyshev stretched grid from [0, y_max]
     SPIVec set_Cheby_mapped_y(PetscScalar a, PetscScalar b, PetscInt ny);   // create a mapped Chebyshev grid on domain from [a,b]
     SPIVec set_Cheby_y(PetscInt ny); // create Chebyshev collocated grid on [-1,1]
+    SPIVec set_Fourier_t(PetscScalar T, PetscInt ny); // create Fourier collocated grid on [0,T]
+    SPIMat set_D_Fourier(SPIVec t, PetscInt d=1); // create Fourier collocated grid derivative operator acting on t
     /** \brief enumeration of grid types */
     enum gridtype {
         FD,         ///< finite difference grid
+        FT,         ///< Fourier transform collocated grid
         Chebyshev   ///< Chebyshev collocated grid
     };
     /** 

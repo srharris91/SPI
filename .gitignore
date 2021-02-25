@@ -42,3 +42,6 @@
 
 # VIM tmp files
 *.swp
+
+# ctags
+tags

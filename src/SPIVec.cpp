@@ -124,7 +124,7 @@ namespace SPI{
         if ((low <= _row) && (_row < high)){
             ierr = VecSetValue(vec,_row,v,INSERT_VALUES);CHKERRQ(ierr);
         }
-        (*this)(); // assemble after every insertion
+        //(*this)(); // assemble after every insertion
         return 0;
     }
     /** same as above */
