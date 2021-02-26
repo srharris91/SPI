@@ -17,8 +17,9 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
+    PetscBool alltests=PETSC_FALSE;
     // Vec tests
-    if(1){
+    if(alltests){
         SPI::printf("------------ Vec tests start-------------");
         // initialize SPIVec and Init function
         SPI::SPIVec X1(4,"X1"),X2(4,"X2"),X3("X3");
@@ -69,7 +70,7 @@ int tests(){
         X9 = X1*X2;
         test_if_close(X9(2,PETSC_TRUE),2.,"SPIVec*SPIVec");
     }
-    if(1){
+    if(alltests){
         // Mat tests
         SPI::printf("------------ Mat tests start ---------------");
 
@@ -128,7 +129,7 @@ int tests(){
         test_if_close(D.diag()(1,PETSC_TRUE),1.,  "diag(SPIMat)");
         SPI::printf("------------ Mat tests end   ---------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ A*x tests start ---------------");
         SPI::SPIMat A(4,4,"A");
         SPI::SPIVec x(4,"x"),b;
@@ -154,7 +155,7 @@ int tests(){
         SPI::printf("------------ A*x tests end   ---------------");
     }
 
-    if(1){
+    if(alltests){
         SPI::printf("------------ A*x=b tests start ---------------");
         SPI::SPIMat A(4,4,"A");
         SPI::SPIVec b(4,"x"),x;
@@ -169,7 +170,7 @@ int tests(){
         test_if_close(x(3,PETSC_TRUE),0.5,"SPIVec/SPIMat");
         SPI::printf("------------ A*x=b tests end   ---------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ Mat func tests start-------------");
         SPI::SPIMat I(SPI::eye(4),"I-identity");
         test_if_close(I(1,1,PETSC_TRUE),1.,"eye(PetscInt)");
@@ -194,7 +195,7 @@ int tests(){
         test_if_close(SPI::kron(D,I)(5,1,PETSC_TRUE),3.,"kron(SPIMat,SPIMat) 2");
         SPI::printf("------------ Mat func tests end  -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ Mat eig tests start-------------");
         SPI::SPIMat A(2,"A");
         A(0,0,1.);
@@ -263,7 +264,7 @@ int tests(){
         SPI::printf("------------ Mat eig tests end  -------------");
     }
 
-    if(1){// I/O using hdf5
+    if(alltests){// I/O using hdf5
         SPI::printf("------------ I/O tests start  -------------");
         SPI::SPIVec A(2,"A_Vec");
         A(0,1.);
@@ -277,7 +278,7 @@ int tests(){
         SPI::save(B,"saved_data.hdf5");
         SPI::printf("------------ I/O tests end    -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ I/O tests2 start  -------------");
         SPI::SPIVec A_read(2,"A_Vec");
         SPI::load(A_read,"saved_data.hdf5");
@@ -289,7 +290,7 @@ int tests(){
         test_if_close(B_read(1,PETSC_TRUE),0.,"load(SPIVec,std::string) 4");
         SPI::printf("------------ I/O tests2 end    -------------");
     }
-    if(1){// I/O using binary for Mat
+    if(alltests){// I/O using binary for Mat
         SPI::printf("------------ I/O tests3 start  -------------");
         SPI::SPIMat A(2,2,"A");
         A(0,0,1.);
@@ -305,7 +306,7 @@ int tests(){
         SPI::save(B,"saved_data_mat.dat");
         SPI::printf("------------ I/O tests3 end    -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ I/O tests4 start  -------------");
         SPI::SPIMat A_read(2,2,"A_Mat");
         SPI::load(A_read,"saved_data_mat.dat");
@@ -328,7 +329,7 @@ int tests(){
 
         SPI::printf("------------ I/O tests4 end    -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ block test start  -------------");
         SPI::SPIMat A(2,"A");
         A(0,0,2.);
@@ -345,7 +346,7 @@ int tests(){
         test_if_close(block(3,3,PETSC_TRUE),1.,"block(std::vector<std::vector<SPIMat>>) 4");
         SPI::printf("------------ block test end    -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ LST_temporal test start  -------------");
         // create grid and derivatives using chebyshev polynomials
         PetscInt n=64;
@@ -383,7 +384,7 @@ int tests(){
         test_if_close(eigenvalue,0.3121002979-0.0197986590*PETSC_i,"LST_temporal 2",1e-9);
         SPI::printf("------------ LST_temporal test end    -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ LST_spatial test start   -------------");
         PetscInt n=128;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
@@ -423,7 +424,7 @@ int tests(){
         test_if_close(params.alpha,0.61167+0.140492*PETSC_i,"LST_spatial 3",1e-5);
         SPI::printf("------------ LST_spatial test end     -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ LSTNP_spatial test start   -------------");
         PetscInt n=64;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
@@ -473,7 +474,7 @@ int tests(){
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         SPI::printf("------------ LSTNP_spatial test end     -------------");
     }
-    if(0){
+    if(alltests){
         SPI::printf("------------ Chebyshev derivatives start -----------");
         PetscInt n=16;
         //SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
@@ -482,7 +483,7 @@ int tests(){
         grid.Dyy.print();
         SPI::printf("------------ Chebyshev derivatives end   -----------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ LSTNP Blasius boundary layer start -----------");
         PetscInt n=168;
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
@@ -546,7 +547,7 @@ int tests(){
 
         SPI::printf("------------ LSTNP Blasius boundary layer end   -----------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ Fourier Collocated derivative operator start -----------");
         PetscInt n=8; // must be even number for Fourier derivatives
         SPI::SPIVec t(SPI::set_Fourier_t(2.0*M_PI,n) ,"tFT");
@@ -555,6 +556,46 @@ int tests(){
         SPI::SPIVec yp(cos(t));
         test_if_close((Dt*y)(2,PETSC_TRUE),yp(2,PETSC_TRUE),"set_D_Fourier",1e-12);
         SPI::printf("------------ Fourier Collocated derivative operator end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ BV Orthogonalize start -----------");
+        SPI::SPIMat A(2,2,"A");
+        A(0,0,1.);
+        A(0,1,1.);
+        A(1,0,2.);
+        A(1,1,1.);
+        A();
+        A.print();
+        SPI::SPIVec A1(2,"A1"),A2(2,"A2");
+        A1(0,1.0+0.5*PETSC_i); A2(0,1.);
+        A1(1,2.0+0.5*PETSC_i); A2(1,1.);
+        A1();A2();
+        Vec As[]={A1.vec,A2.vec};
+        // orthogonalize
+        PetscErrorCode ierr;
+        BV bv;
+        ierr = BVCreate(PETSC_COMM_WORLD,&bv); CHKERRXX(ierr);
+        PetscInt m=2;
+        BVSetSizesFromVec(bv,A1.vec,m);
+        ierr = BVSetFromOptions(bv);CHKERRXX(ierr);
+        ierr = BVInsertVecs(bv,0,&m,As,PETSC_TRUE);
+        SPI::SPIMat AorthH("AorthH");
+        ierr = BVCreateMat(bv,&AorthH.mat); CHKERRXX(ierr);
+        AorthH.rows=A1.rows;
+        AorthH.cols=m;
+        AorthH.print();
+        SPI::SPIMat AorthH2(SPI::orthogonalize({A1,A2}));
+        AorthH2.print();
+        //ierr = MatSetType(AorthH.mat,MATMPIAIJ);CHKERRXX(ierr);
+        //AorthH.print();
+        //SPI::SPIMat Aorth(AorthH,"Aorth");
+        //AorthH.H();
+        //AorthH.print();
+        //(AorthH*A1).print();
+        //(AorthH*AorthH).print();
+        ierr = BVDestroy(&bv); CHKERRXX(ierr);
+
+        SPI::printf("------------ BV Orthogonalize end   -----------");
     }
 
     return 0;

@@ -107,6 +107,7 @@ namespace SPI{
     SPIMat sin(const SPIMat &A); // sin ot matrix
     SPIMat cos(const SPIMat &A); // cos ot matrix
     SPIMat tan(const SPIMat &A); // tan ot matrix
+    SPIMat orthogonalize(const std::vector<SPIVec> &x); // create orthonormal basis from array of vectors 
 }
 
 

@@ -325,6 +325,7 @@ namespace SPI{
             SPIMat NmJ(N-J);
             D = ((pi/T)*((-1.0)^(NmJ)))/tan((pi/nptss)*(NmJ));
             D.ierr = MatDiagonalSet(D.mat,zeros(npts).vec,INSERT_VALUES);CHKERRXX(D.ierr);
+            D();
             D.real();
             if(d==2) D = D*D; // then return Dyy
             return D;

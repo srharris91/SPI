@@ -296,7 +296,7 @@ namespace SPI{
         C.rows=rows;
         C.cols=cols;
         ierr = MatMatMult(mat,A.mat,MAT_INITIAL_MATRIX,PETSC_DEFAULT,&C.mat); CHKERRXX(ierr);
-        ierr = MatSetType(C.mat,MATMPIAIJ);CHKERRXX(ierr);
+        //ierr = MatSetType(C.mat,MATMPIAIJ);CHKERRXX(ierr);
         return C;
     }
     // overload operator, copy and initialize
@@ -1295,7 +1295,7 @@ namespace SPI{
                     out();
                 }
             }
-            out();
+            //out();
             return out;
         }
     /** \brief take the sin of each element in a matrix */
@@ -1304,6 +1304,28 @@ namespace SPI{
     SPIMat cos(SPIMat &A){ return _Function_on_each_element(&std::cos<PetscReal>, A); }
     /** \brief take the tan of each element in a matrix */
     SPIMat tan(const SPIMat &A){ return _Function_on_each_element(&std::tan<PetscReal>, A); }
+    /* \brief orthogonalize a basis dense matrix from an array of vec using SLEPc BV */
+    SPIMat orthogonalize(
+            const std::vector<SPIVec> &x  ///< [in] array of vectors to orthogonalize 
+            ){
+        PetscInt m=x[0].rows;   // number of rows
+        PetscInt n=x.size();    // number of columns
+        Vec xvec[n];
+        for(PetscInt i=0; i<n; ++i) xvec[i]=x[i].vec;
+        SPIMat E("E");
+        // create and initialize BV
+        BV bv;
+        E.ierr = BVCreate(PETSC_COMM_WORLD,&bv); CHKERRXX(E.ierr);
+        E.ierr = BVSetSizesFromVec(bv,x[0].vec,n); CHKERRXX(E.ierr);
+        E.ierr = BVSetFromOptions(bv);CHKERRXX(E.ierr);
+        E.ierr = BVInsertVecs(bv,0,&n,xvec,PETSC_TRUE);
+        //SPI::SPIMat AorthH("AorthH");
+        E.ierr = BVCreateMat(bv,&E.mat); CHKERRXX(E.ierr);
+        E.rows=m;
+        E.cols=n;
+        return E;
+
+    }
 }
 
 
