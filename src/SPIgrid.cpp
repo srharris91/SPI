@@ -322,7 +322,7 @@ namespace SPI{
             SPIVec n(arange(0,npts));
             SPIVec j(arange(0,npts));
             std::tie(N,J) = meshgrid(n,j);
-            SPIMat NmJ(N-J);
+            SPIMat NmJ(N-J,"NmJ");
             D = ((pi/T)*((-1.0)^(NmJ)))/tan((pi/nptss)*(NmJ));
             D.ierr = MatDiagonalSet(D.mat,zeros(npts).vec,INSERT_VALUES);CHKERRXX(D.ierr);
             D();

@@ -35,6 +35,7 @@ namespace SPI{
         SPIMat& add(PetscInt m, PetscInt n,const PetscScalar v); // add a scalar value at position row m and column n
         // () operators
         PetscScalar operator()(PetscInt m, PetscInt n, PetscBool global=PETSC_FALSE);             // get local value at row m, column n
+        PetscScalar operator()(PetscInt m, PetscInt n, PetscBool global=PETSC_FALSE) const;             // get local value at row m, column n
         SPIMat& operator()(PetscInt m, PetscInt n,const PetscScalar v);  // set operator the same as set function
         SPIMat& operator()(PetscInt m, PetscInt n,const double v);  // set operator the same as set function
         SPIMat& operator()(PetscInt m, PetscInt n,const int v);     // set operator the same as set function

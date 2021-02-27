@@ -1,5 +1,5 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef SPIMAIN_H
+#define SPIMAIN_H
 #include "SPI.hpp"
 /** \mainpage SPI (SLEPc PETSc Interface)
  *
@@ -21,4 +21,4 @@ python2 './configure' '--with-scalar-type=complex' '--with-precision=double' 'wi
 \endcode
  */
 
-#endif // MAIN_H
+#endif // SPIMAIN_H

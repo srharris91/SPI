@@ -70,6 +70,27 @@ namespace SPI{
         ierr = MatSetValue(mat,m,n,v,ADD_VALUES);CHKERRXX(ierr);
         return (*this);
     }
+    /** \brief get local value at row m, column n \return scalar at specified location */
+    PetscScalar SPIMat::operator()(
+            PetscInt m,         ///< [in] row to get scalar
+            PetscInt n,         ///< [in] column to get scalar
+            PetscBool global    ///< [in] whether to broadcast value to all processors or not (default is false)
+            )const{
+        PetscErrorCode ierr2;
+        PetscScalar v,v_global=0.;
+        PetscInt low,high;
+        ierr2 = MatGetOwnershipRange(mat,&low, &high);CHKERRXX(ierr2);
+        if ((low<=m) && (m<high)){
+            ierr2 = MatGetValues(mat,1,&m, 1,&n, &v);
+        }
+        if (global){ // if broadcast to all processors
+            MPIU_Allreduce(&v,&v_global,1,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
+        }
+        else{
+            v_global=v; // return local value
+        }
+        return v_global;
+    }
 
     // overloaded operators, get
     /** \brief get local value at row m, column n \return scalar at specified location */
@@ -278,13 +299,13 @@ namespace SPI{
     SPIMat SPIMat::operator/(
             const SPIMat &A     ///< [in] A in Y/A operation
             ){
-        SPIMat Z(A);
+        SPIMat Z(A.rows,A.cols);
         for(PetscInt i=0; i<Z.rows; ++i){
             for(PetscInt j=0; j<Z.cols; ++j){
-                Z(i,j,(*this)(i,j)/Z(i,j));
-                Z();
+                Z(i,j,(*this)(i,j)/A(i,j,PETSC_TRUE));
             }
         }
+        Z();
         return Z;
     }
     // overload operator, matrix multiply
@@ -490,14 +511,17 @@ namespace SPI{
             const PetscScalar a,   ///< [in] a in Y=a^A
             const SPIMat &A         ///< [in] A in Y=a^A
             ){
-        SPIMat Y(A);
-        Y();
+        SPIMat Y(A.rows,A.cols);
         for(PetscInt i=0; i<Y.rows; ++i){
             for(PetscInt j=0; j<Y.cols; ++j){
-                Y(i,j,std::pow<PetscReal>(a,Y(i,j)));
-                Y();
+                Y(i,j,std::pow<PetscReal>(a,A(i,j,PETSC_TRUE)));
+                //std::cout<<"A("<<i<<","<<j<<") = "<<A(i,j,PETSC_TRUE)<<std::endl;
+                //std::cout<<"Y("<<i<<","<<j<<") = "<<Y(i,j,PETSC_TRUE)<<std::endl;
+                //Y();
             }
         }
+        Y();
+        //Y.real();
         return Y;
     }
     /** \brief Solve linear system, Ax=b using solve(A,b) notation \return x vector in Ax=b solved linear system */
@@ -1177,8 +1201,8 @@ namespace SPI{
         SPIMat Y(m,n);
         for(PetscInt i=0; i<m; ++i){
             for(PetscInt j=0; j<n; ++j){
-                X(i,j,x(i));
-                Y(i,j,y(j));
+                X(i,j,x(i,PETSC_TRUE));
+                Y(i,j,y(j,PETSC_TRUE));
             }
         }
         X();
@@ -1288,14 +1312,13 @@ namespace SPI{
                 T (*f)(T const&),   ///< [in] function handle to pass in e.g. std::sin<PetscReal>
                 const SPIMat &A           ///< [in] matrix to perform function on each element
                 ){
-            SPIMat out(A);
+            SPIMat out(A.rows,A.cols);
             for (PetscInt i=0; i<out.rows; ++i){
                 for (PetscInt j=0; j<out.cols; ++j){
-                    out(i,j,(*f)(out(i,j)));                // TODO speed up by getting all values at once on local processor and looping through those
-                    out();
+                    out(i,j,(*f)(A(i,j,PETSC_TRUE)));                // TODO speed up by getting all values at once on local processor and looping through those
                 }
             }
-            //out();
+            out();
             return out;
         }
     /** \brief take the sin of each element in a matrix */

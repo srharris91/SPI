@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "SPImain.hpp"
 // include tests.hpp if running the tests function that tests all the functionality of the SPI classes
 #include "tests.hpp"
 

@@ -7,7 +7,8 @@ namespace SPI{
 
     struct SPIparams{
         SPIparams(std::string _name="parameters"); // constructor with no arguments
-        PetscInt print();// print all parameters
+        PetscInt printSPI();// print SPI parameters
+        virtual PetscInt print();// print all parameters
         std::string name;   ///< name of parameter class
         PetscScalar Re,     ///< Reynolds number
                     beta,   ///< beta spanwise wavenumber

@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "SPImain.hpp"
 #include "tests.hpp"
 
 void test_if_true(PetscBool test,std::string name){
@@ -17,7 +17,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_FALSE;
+    PetscBool alltests=PETSC_TRUE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
@@ -474,7 +474,7 @@ int tests(){
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         SPI::printf("------------ LSTNP_spatial test end     -------------");
     }
-    if(alltests){
+    if(0){
         SPI::printf("------------ Chebyshev derivatives start -----------");
         PetscInt n=16;
         //SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
@@ -548,6 +548,52 @@ int tests(){
         SPI::printf("------------ LSTNP Blasius boundary layer end   -----------");
     }
     if(alltests){
+        SPI::printf("------------ LST Blasius boundary layer start -----------");
+        PetscInt n=168;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //SPI::SPIVec y(SPI::set_FD_stretched_y(61.,n) ,"yFD");
+        //SPI::SPIgrid grid(y,"grid",SPI::FD);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        params.Re = 1000.0/1.7208;
+        params.omega = 0.26/1.7208;
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.74155+0.345132*PETSC_i)/1.7208;
+        params.beta = 0.0;
+
+        SPI::SPIVec eigenfunction(grid.y.rows*8,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        if(0){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+
+        std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(eigenvalue*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial 1",1e-5);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial 1",1e-5);
+        SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue*1.7208);
+
+        //params.alpha = 0.1067+0.001898*PETSC_i;
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow); 
+        //test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial 3",1e-5);
+
+        SPI::printf("------------ LST Blasius boundary layer end   -----------");
+    }
+    if(alltests){
         SPI::printf("------------ Fourier Collocated derivative operator start -----------");
         PetscInt n=8; // must be even number for Fourier derivatives
         SPI::SPIVec t(SPI::set_Fourier_t(2.0*M_PI,n) ,"tFT");
@@ -557,35 +603,39 @@ int tests(){
         test_if_close((Dt*y)(2,PETSC_TRUE),yp(2,PETSC_TRUE),"set_D_Fourier",1e-12);
         SPI::printf("------------ Fourier Collocated derivative operator end   -----------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ BV Orthogonalize start -----------");
-        SPI::SPIMat A(2,2,"A");
-        A(0,0,1.);
-        A(0,1,1.);
-        A(1,0,2.);
-        A(1,1,1.);
-        A();
-        A.print();
+        //SPI::SPIMat A(2,2,"A");
+        //A(0,0,1.);
+        //A(0,1,1.);
+        //A(1,0,2.);
+        //A(1,1,1.);
+        //A();
+        //A.print();
         SPI::SPIVec A1(2,"A1"),A2(2,"A2");
         A1(0,1.0+0.5*PETSC_i); A2(0,1.);
         A1(1,2.0+0.5*PETSC_i); A2(1,1.);
         A1();A2();
         Vec As[]={A1.vec,A2.vec};
         // orthogonalize
-        PetscErrorCode ierr;
-        BV bv;
-        ierr = BVCreate(PETSC_COMM_WORLD,&bv); CHKERRXX(ierr);
-        PetscInt m=2;
-        BVSetSizesFromVec(bv,A1.vec,m);
-        ierr = BVSetFromOptions(bv);CHKERRXX(ierr);
-        ierr = BVInsertVecs(bv,0,&m,As,PETSC_TRUE);
-        SPI::SPIMat AorthH("AorthH");
-        ierr = BVCreateMat(bv,&AorthH.mat); CHKERRXX(ierr);
-        AorthH.rows=A1.rows;
-        AorthH.cols=m;
-        AorthH.print();
-        SPI::SPIMat AorthH2(SPI::orthogonalize({A1,A2}));
-        AorthH2.print();
+        if(0){
+            PetscErrorCode ierr;
+            BV bv;
+            ierr = BVCreate(PETSC_COMM_WORLD,&bv); CHKERRXX(ierr);
+            PetscInt m=2;
+            BVSetSizesFromVec(bv,A1.vec,m);
+            ierr = BVSetFromOptions(bv);CHKERRXX(ierr);
+            ierr = BVInsertVecs(bv,0,&m,As,PETSC_TRUE);
+            SPI::SPIMat AorthH("AorthH");
+            ierr = BVCreateMat(bv,&AorthH.mat); CHKERRXX(ierr);
+            AorthH.rows=A1.rows;
+            AorthH.cols=m;
+            AorthH.print();
+            ierr = BVDestroy(&bv); CHKERRXX(ierr);
+        }
+        SPI::SPIMat Aorth(SPI::orthogonalize({A1,A2}));
+        //Aorth.print();
+        test_if_close(Aorth(1,0,PETSC_TRUE),0.85280286542244166,"orthogonalize",1e-12);
         //ierr = MatSetType(AorthH.mat,MATMPIAIJ);CHKERRXX(ierr);
         //AorthH.print();
         //SPI::SPIMat Aorth(AorthH,"Aorth");
@@ -593,7 +643,6 @@ int tests(){
         //AorthH.print();
         //(AorthH*A1).print();
         //(AorthH*AorthH).print();
-        ierr = BVDestroy(&bv); CHKERRXX(ierr);
 
         SPI::printf("------------ BV Orthogonalize end   -----------");
     }

@@ -9,8 +9,7 @@ namespace SPI{
         this->name = _name;
     }
     /** \brief print all variables in SPIparams */
-    PetscInt SPIparams::print(){
-        PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
+    PetscInt SPIparams::printSPI(){
         SPI::printfc("Re      = %g+%gi",Re);
         SPI::printfc("β       = %g+%gi",beta);
         SPI::printfc("α       = %g+%gi",alpha);
@@ -18,6 +17,12 @@ namespace SPI{
         SPI::printfc("x_start = %g+%gi",x_start);
         SPI::printfc("x       = %g+%gi",x);
         SPI::printfc("x_prev  = %g+%gi",x_prev);
+        return 0;
+    }
+    /** \brief print all variables in SPIparams */
+    PetscInt SPIparams::print(){
+        PetscPrintf(PETSC_COMM_WORLD,("\n---------------- "+name+"---start------\n").c_str());
+        printSPI();
         //SPI::printfc("h       = %g+%gi",h);
         PetscPrintf(PETSC_COMM_WORLD,("---------------- "+name+"---done-------\n\n").c_str());
         return 0;
