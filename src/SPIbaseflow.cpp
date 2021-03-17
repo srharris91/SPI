@@ -203,7 +203,13 @@ namespace SPI{
                 Vx();
                 Vy();
 
-                SPIbaseflow baseflow(U, V, Ux, Uy, grid.Dy*Ux, Vy, O, O, O, O, O);
+                //SPIbaseflow baseflow(U, V, Ux, Uy, grid.Dy*Ux, Vy, O, O, O, O, O); // doesn't project correctly
+                SPIbaseflow baseflow(U, V, Ux, grid.Dy*U, grid.Dy*Ux, grid.Dy*V, O, O, O, O, O); // bad for UltraS grid
+                if(grid.ytype==SPI::UltraS){ // fix for UltraS grid
+                    SPIgrid gridCheby(grid.y,"gridCheby",SPI::Chebyshev);
+                    baseflow.Uy = gridCheby.Dy*U;
+                    baseflow.Vy = gridCheby.Dy*V;
+                }
 
                 // clear memory
                 for(int i=0; i<grid.ny*multiply_nypts; ++i) delete[] fs[i];
@@ -227,6 +233,18 @@ namespace SPI{
       output[1] = input[0];           // f' = \int f'' deta
       output[2] = input[1];           // f  = \int f' deta
       return 0;
+    }
+    
+    /* \brief calculate baseflow for Plane Poiseuille flow \return SPIbaseflow of the Plane Poiseuille flow */
+    SPIbaseflow channel(
+            SPIparams &params,  ///< [in] parameters such as x and nu (freestream Uinf=1)
+            SPIgrid &grid        ///< [in] grid containing wall-normal points
+            ){ 
+        SPI::SPIVec U((1.0-((grid.y)^2)),"U");
+        SPI::SPIVec Uy((-2.*grid.y),"Uy");
+        SPI::SPIVec o(U*0.0,"o"); // zero vector
+        SPI::SPIbaseflow channel_flow(U,o,o,Uy,o,o,o,o,o,o,o);
+        return channel_flow;
     }
 
 }

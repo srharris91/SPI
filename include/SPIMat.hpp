@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <petscksp.h>
+#include <petscmath.h>
 #include <slepceps.h>
 #include <slepcpep.h>
 #include <string>
@@ -68,6 +69,7 @@ namespace SPI{
         // conjugate
         PetscInt H(SPIMat &A); // A = Hermitian Transpose(*this.mat) operation with initialization of A (tranpose and complex conjugate)
         SPIMat& H(); // Hermitian Transpose the current mat
+        SPIVec H(const SPIVec &q); // Hermitian Transpose and multiply by vector
         SPIMat& conj(); // elemenwise conjugate current matrix
         SPIMat& real(); // take the real part of the matrix (alters current matrix)
         SPIVec diag(); // get diagonal of matrix
@@ -76,6 +78,7 @@ namespace SPI{
         SPIMat& zero_row_full(const PetscInt row); // zero a row
         SPIMat& zero_rows(std::vector<PetscInt> rows); // zero every row
         SPIMat& eye_rows(std::vector<PetscInt> rows); // zero every row
+        SPIVec col(const PetscInt i); // get column vector using MatGetColumnVector(mat,vec,i);
         PetscInt print(); // print mat to screen using PETSC_VIEWER_STDOUT_WORLD
 
         ~SPIMat(); // destructor to delete memory
@@ -88,11 +91,14 @@ namespace SPI{
     //SPIVec solve(const SPIVec &b, const SPIMat &A); // Solve linear system, Ax=b using solve(A,b) notation
     SPIVec solve(const SPIMat &A, const SPIVec &b); // Solve linear system, Ax=b using solve(A,b) notation
     SPIMat eye(const PetscInt n); // create, form, and return identity matrix of size n
+    SPIMat inv(const SPIMat &A); // get inverse of matrix by solving A*Ainv = B using MatMatSolve
     SPIMat zeros(const PetscInt m,const PetscInt n); // create, form, and return zero matrix of size mxn
     SPIMat diag(const SPIVec &diag,const PetscInt k=0); // set diagonal of matrix
     SPIMat kron(const SPIMat &A, const SPIMat &B); // set kronecker inner product of two matrices
     std::tuple<PetscScalar,SPIVec,SPIVec> eig(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
+    std::tuple<PetscScalar,SPIVec> eig_right(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
     std::tuple<PetscScalar,SPIVec, SPIVec> eig_init(const SPIMat &A, const SPIMat &B, const PetscScalar target,const SPIVec &ql, const SPIVec &qr, PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
+    std::tuple<PetscScalar, SPIVec> eig_init_right(const SPIMat &A, const SPIMat &B, const PetscScalar target, const SPIVec &qr, PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
     std::tuple<PetscScalar,SPIVec> polyeig(const std::vector<SPIMat> &As, const PetscScalar target,const PetscReal tol=-1.,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
     std::tuple<PetscScalar,SPIVec> polyeig_init(const std::vector<SPIMat> &As, const PetscScalar target, const SPIVec &qr,  const PetscReal tol=-1.,const PetscInt max_iter=-1); // solve general polynomial eigenvalue problem of (A0 + A1x + A2x^2 ...) = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q
     //SPIMat block(const SPIMat Blocks[], const PetscInt rows,const PetscInt cols); // set block matrices using an input array of size rows*cols.  Fills rows first
@@ -105,9 +111,12 @@ namespace SPI{
     PetscInt load(std::vector<SPIMat> &A, const std::string filename); // load matrix to filename from binary format
     PetscInt draw(const SPIMat &A); // draw nonzero structure and wait at command line input
     template <class T> SPIMat _Function_on_each_element( T (*f)(T const&), const SPIMat &A); // function handle template for operations
-    SPIMat sin(const SPIMat &A); // sin ot matrix
-    SPIMat cos(const SPIMat &A); // cos ot matrix
-    SPIMat tan(const SPIMat &A); // tan ot matrix
+    SPIMat sin(const SPIMat &A); // sin of matrix
+    SPIMat cos(const SPIMat &A); // cos of matrix
+    SPIMat acos(const SPIMat &A); // cos of matrix
+    SPIMat tan(const SPIMat &A); // tan of matrix
+    SPIMat abs(const SPIMat &A); // abs of matrix
+    SPIMat operator%(const SPIMat &A,const SPIMat &B); // A*B pointwise operation
     SPIMat orthogonalize(const std::vector<SPIVec> &x); // create orthonormal basis from array of vectors 
 }
 

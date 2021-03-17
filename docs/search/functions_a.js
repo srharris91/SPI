@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['kron_228',['kron',['../namespaceSPI.html#aa44a3f1d413e162c8caadb4b3e55bbe1',1,'SPI']]]
+  ['kron_247',['kron',['../namespaceSPI.html#aa44a3f1d413e162c8caadb4b3e55bbe1',1,'SPI']]]
 ];

@@ -104,7 +104,8 @@ Namespaces</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:a244b3ed6e0ff8b709a951c4f15c88f67"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67">SPI::gridtype</a> { <a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67adca873fcb664fbb265f2b18222fc1119">SPI::FD</a>, 
 <a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a7eac3f9b01d3c03555a540437bcb45b0">SPI::FT</a>, 
-<a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a5178d3e41b993b3276b1c039afadcc63">SPI::Chebyshev</a>
+<a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a5178d3e41b993b3276b1c039afadcc63">SPI::Chebyshev</a>, 
+<a class="el" href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a57242a08b47c4d475836c3e0e9fd2ab4">SPI::UltraS</a>
  }</td></tr>
 <tr class="memdesc:a244b3ed6e0ff8b709a951c4f15c88f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumeration of grid types  <a href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67">More...</a><br /></td></tr>
 <tr class="separator:a244b3ed6e0ff8b709a951c4f15c88f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,6 +148,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a96802b6baae9d5c12f2ed06e9417f7c7"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a96802b6baae9d5c12f2ed06e9417f7c7">SPI::set_D_Fourier</a> (SPIVec t, PetscInt d)</td></tr>
 <tr class="memdesc:a96802b6baae9d5c12f2ed06e9417f7c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">create a Fourier derivative operator acting on grid t  <a href="namespaceSPI.html#a96802b6baae9d5c12f2ed06e9417f7c7">More...</a><br /></td></tr>
 <tr class="separator:a96802b6baae9d5c12f2ed06e9417f7c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc49523cf4ebd2bc8932907f2cfbbf29"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; SPIMat, SPIMat &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#afc49523cf4ebd2bc8932907f2cfbbf29">SPI::set_D_UltraS</a> (SPIVec &amp;x, PetscInt d)</td></tr>
+<tr class="memdesc:afc49523cf4ebd2bc8932907f2cfbbf29"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a UltraSpherical operator acting with respect to the collocated grid (keeps everything in UltraSpherical space), take in Chebyshev coefficients and outputs coefficients in C(d) coefficient space  <a href="namespaceSPI.html#afc49523cf4ebd2bc8932907f2cfbbf29">More...</a><br /></td></tr>
+<tr class="separator:afc49523cf4ebd2bc8932907f2cfbbf29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a589507595fdb80791ff5250c6e9180a5"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; SPIMat, SPIMat &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a589507595fdb80791ff5250c6e9180a5">SPI::set_T_That</a> (PetscInt n)</td></tr>
+<tr class="memdesc:a589507595fdb80791ff5250c6e9180a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a T and That operators acting with respect to the Chebyshev collocated grid, That: physical -&gt; Chebyshev coefficient, T: Chebyshev coefficient -&gt; physical  <a href="namespaceSPI.html#a589507595fdb80791ff5250c6e9180a5">More...</a><br /></td></tr>
+<tr class="separator:a589507595fdb80791ff5250c6e9180a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -18,11 +18,14 @@ namespace SPI{
     SPIVec set_Cheby_y(PetscInt ny); // create Chebyshev collocated grid on [-1,1]
     SPIVec set_Fourier_t(PetscScalar T, PetscInt ny); // create Fourier collocated grid on [0,T]
     SPIMat set_D_Fourier(SPIVec t, PetscInt d=1); // create Fourier collocated grid derivative operator acting on t
+    std::tuple<SPIMat,SPIMat> set_D_UltraS(SPIVec &x, PetscInt d=1); // set a UltraSpherical operators S_(d-1) and D_d
+    std::tuple<SPIMat,SPIMat> set_T_That(PetscInt n); // set a Chebyshev operators T and That
     /** \brief enumeration of grid types */
     enum gridtype {
         FD,         ///< finite difference grid
         FT,         ///< Fourier transform collocated grid
-        Chebyshev   ///< Chebyshev collocated grid
+        Chebyshev,  ///< Chebyshev collocated grid
+        UltraS      ///< UltraSpherical grid and derivatives
     };
     /** 
      * \brief Class to contain various grid parameters
@@ -44,6 +47,12 @@ namespace SPI{
         // derivatives
         SPIMat Dy,      ///< 1st derivative operator with respect to y
                Dyy;     ///< 2nd derivative operator with respect to y
+        SPIMat S0,      ///< UltraSpherical helper matrix S_0 takes chebyshev coefficients and outputs C^(1) coefficients
+               S1,      ///< UltraSpherical helper matrices S_1 takes C^(1) coefficients and outputs C^(2) coefficients
+               S1S0That;///< UltraSpherical helper matrix S1*S0*That for baseflow
+        SPIMat P;       ///< row permutation matrix for UltraSpherical operators to shift rows from bottom to top to reduce LU factorization pivoting
+        SPIMat T,       ///< Chebyshev operator taking it from Chebyshev coefficients to physical space
+               That;    ///< Chebyshev operator taking it from physical space to Chebyshev coefficients
         SPIMat O,       ///< zero matrix same size as derivative operators
                I;       ///< identity matrix same size as derivative operators
         // flags

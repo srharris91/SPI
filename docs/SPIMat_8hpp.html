@@ -85,6 +85,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;petscksp.h&gt;</code><br />
+<code>#include &lt;petscmath.h&gt;</code><br />
 <code>#include &lt;slepceps.h&gt;</code><br />
 <code>#include &lt;slepcpep.h&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -129,6 +130,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3ed4e349e74511095cd6d6a08ea2beb9"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a3ed4e349e74511095cd6d6a08ea2beb9">SPI::eye</a> (const PetscInt n)</td></tr>
 <tr class="memdesc:a3ed4e349e74511095cd6d6a08ea2beb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">create, form, and return identity matrix of size n  <a href="namespaceSPI.html#a3ed4e349e74511095cd6d6a08ea2beb9">More...</a><br /></td></tr>
 <tr class="separator:a3ed4e349e74511095cd6d6a08ea2beb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88ac4e809110906a13779fc994405e8a"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a88ac4e809110906a13779fc994405e8a">SPI::inv</a> (const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a88ac4e809110906a13779fc994405e8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve linear system A*Ainv=B using MatMatSolve.  <a href="namespaceSPI.html#a88ac4e809110906a13779fc994405e8a">More...</a><br /></td></tr>
+<tr class="separator:a88ac4e809110906a13779fc994405e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a616eee4109721614603a992beb99e006"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a616eee4109721614603a992beb99e006">SPI::zeros</a> (const PetscInt m, const PetscInt n)</td></tr>
 <tr class="memdesc:a616eee4109721614603a992beb99e006"><td class="mdescLeft">&#160;</td><td class="mdescRight">create, form, and return zeros matrix of size mxn  <a href="namespaceSPI.html#a616eee4109721614603a992beb99e006">More...</a><br /></td></tr>
 <tr class="separator:a616eee4109721614603a992beb99e006"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,9 +145,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a31e97930c72d0cc86f8d9826dbcfff85"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, SPIVec, SPIVec &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a31e97930c72d0cc86f8d9826dbcfff85">SPI::eig</a> (const SPIMat &amp;A, const SPIMat &amp;B, const PetscScalar target, const PetscReal tol, const PetscInt max_iter)</td></tr>
 <tr class="memdesc:a31e97930c72d0cc86f8d9826dbcfff85"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)  <a href="namespaceSPI.html#a31e97930c72d0cc86f8d9826dbcfff85">More...</a><br /></td></tr>
 <tr class="separator:a31e97930c72d0cc86f8d9826dbcfff85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dda88c6e82dbf927d0cb16b383f72bf"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, SPIVec &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a1dda88c6e82dbf927d0cb16b383f72bf">SPI::eig_right</a> (const SPIMat &amp;A, const SPIMat &amp;B, const PetscScalar target, const PetscReal tol, const PetscInt max_iter)</td></tr>
+<tr class="memdesc:a1dda88c6e82dbf927d0cb16b383f72bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)  <a href="namespaceSPI.html#a1dda88c6e82dbf927d0cb16b383f72bf">More...</a><br /></td></tr>
+<tr class="separator:a1dda88c6e82dbf927d0cb16b383f72bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6da7e0c8e561c0fe26467e6cffb3ae4e"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, SPIVec, SPIVec &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a6da7e0c8e561c0fe26467e6cffb3ae4e">SPI::eig_init</a> (const SPIMat &amp;A, const SPIMat &amp;B, const PetscScalar target, const SPIVec &amp;ql, const SPIVec &amp;qr, PetscReal tol, const PetscInt max_iter)</td></tr>
 <tr class="memdesc:a6da7e0c8e561c0fe26467e6cffb3ae4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)  <a href="namespaceSPI.html#a6da7e0c8e561c0fe26467e6cffb3ae4e">More...</a><br /></td></tr>
 <tr class="separator:a6da7e0c8e561c0fe26467e6cffb3ae4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada6dbe202e0b068534ec64539d99170e"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, SPIVec &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ada6dbe202e0b068534ec64539d99170e">SPI::eig_init_right</a> (const SPIMat &amp;A, const SPIMat &amp;B, const PetscScalar target, const SPIVec &amp;qr, PetscReal tol, const PetscInt max_iter)</td></tr>
+<tr class="memdesc:ada6dbe202e0b068534ec64539d99170e"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)  <a href="namespaceSPI.html#ada6dbe202e0b068534ec64539d99170e">More...</a><br /></td></tr>
+<tr class="separator:ada6dbe202e0b068534ec64539d99170e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0911ebdeacbc175720357a5cea83a606"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, SPIVec &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a0911ebdeacbc175720357a5cea83a606">SPI::polyeig</a> (const std::vector&lt; SPIMat &gt; &amp;As, const PetscScalar target, const PetscReal tol, const PetscInt max_iter)</td></tr>
 <tr class="memdesc:a0911ebdeacbc175720357a5cea83a606"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general polynomial eigenvalue problem of (A0 + A1*alpha + A2*alpha^2 + ...)*x = 0 and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)  <a href="namespaceSPI.html#a0911ebdeacbc175720357a5cea83a606">More...</a><br /></td></tr>
 <tr class="separator:a0911ebdeacbc175720357a5cea83a606"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,12 +185,23 @@ Functions</h2></td></tr>
 <tr class="memdesc:a1e98a9a7504c261e9a68c1329a027c22"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the function of each element in a matrix, e.g. (*f)(A(i,j)) for each i,j  <a href="namespaceSPI.html#a1e98a9a7504c261e9a68c1329a027c22">More...</a><br /></td></tr>
 <tr class="separator:a1e98a9a7504c261e9a68c1329a027c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62c447401a43233e2b39e31cb19eb0bb"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a62c447401a43233e2b39e31cb19eb0bb">SPI::sin</a> (const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a62c447401a43233e2b39e31cb19eb0bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the sin of each element in a matrix  <a href="namespaceSPI.html#a62c447401a43233e2b39e31cb19eb0bb">More...</a><br /></td></tr>
 <tr class="separator:a62c447401a43233e2b39e31cb19eb0bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ff4528f800c9956ea9ed2dd4788f6a4"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a3ff4528f800c9956ea9ed2dd4788f6a4">SPI::cos</a> (const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a3ff4528f800c9956ea9ed2dd4788f6a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the cos of each element in a matrix  <a href="namespaceSPI.html#a3ff4528f800c9956ea9ed2dd4788f6a4">More...</a><br /></td></tr>
 <tr class="separator:a3ff4528f800c9956ea9ed2dd4788f6a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46d1a4c7a9ddc5f5a11a3843e4ca0474"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a46d1a4c7a9ddc5f5a11a3843e4ca0474">SPI::acos</a> (const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a46d1a4c7a9ddc5f5a11a3843e4ca0474"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the arccos of each element in a matrix  <a href="namespaceSPI.html#a46d1a4c7a9ddc5f5a11a3843e4ca0474">More...</a><br /></td></tr>
+<tr class="separator:a46d1a4c7a9ddc5f5a11a3843e4ca0474"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe4eb6d73a3de759b51163b21d8bd71e"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#afe4eb6d73a3de759b51163b21d8bd71e">SPI::tan</a> (const SPIMat &amp;A)</td></tr>
 <tr class="memdesc:afe4eb6d73a3de759b51163b21d8bd71e"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the tan of each element in a matrix  <a href="namespaceSPI.html#afe4eb6d73a3de759b51163b21d8bd71e">More...</a><br /></td></tr>
 <tr class="separator:afe4eb6d73a3de759b51163b21d8bd71e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cd453e0b3cb1e598c29ef7ba422f01e"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a2cd453e0b3cb1e598c29ef7ba422f01e">SPI::abs</a> (const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a2cd453e0b3cb1e598c29ef7ba422f01e"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the abs of each element in a matrix  <a href="namespaceSPI.html#a2cd453e0b3cb1e598c29ef7ba422f01e">More...</a><br /></td></tr>
+<tr class="separator:a2cd453e0b3cb1e598c29ef7ba422f01e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a760f4ef93f30010b43c99fa889444c60"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a760f4ef93f30010b43c99fa889444c60">SPI::operator%</a> (const SPIMat &amp;A, const SPIMat &amp;B)</td></tr>
+<tr class="memdesc:a760f4ef93f30010b43c99fa889444c60"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the tan of each element in a matrix  <a href="namespaceSPI.html#a760f4ef93f30010b43c99fa889444c60">More...</a><br /></td></tr>
+<tr class="separator:a760f4ef93f30010b43c99fa889444c60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af51eff7441424201c77f34c27389ba13"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#af51eff7441424201c77f34c27389ba13">SPI::orthogonalize</a> (const std::vector&lt; SPIVec &gt; &amp;x)</td></tr>
 <tr class="separator:af51eff7441424201c77f34c27389ba13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

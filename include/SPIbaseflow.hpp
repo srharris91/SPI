@@ -48,5 +48,6 @@ namespace SPI{
     };
     SPIbaseflow blasius(SPIparams &params, SPIgrid &grid);
     int _bblf( const PetscScalar input[3], PetscScalar output[3]); // Blasius boundary layer flow ODE
+    SPIbaseflow channel(SPIparams &params, SPIgrid &grid);
 }
 #endif // SPIBASEFLOW_H

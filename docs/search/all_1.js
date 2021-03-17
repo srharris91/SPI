@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['abs_2',['abs',['../namespaceSPI.html#a4dc7e443a5d0994436c1a28269550284',1,'SPI']]],
-  ['acos_3',['acos',['../namespaceSPI.html#a24c88dc870d0d40a3bd85439cb20bad3',1,'SPI']]],
+  ['abs_2',['abs',['../namespaceSPI.html#a2cd453e0b3cb1e598c29ef7ba422f01e',1,'SPI::abs(const SPIMat &amp;A)'],['../namespaceSPI.html#a4dc7e443a5d0994436c1a28269550284',1,'SPI::abs(const SPIVec &amp;A)']]],
+  ['acos_3',['acos',['../namespaceSPI.html#a46d1a4c7a9ddc5f5a11a3843e4ca0474',1,'SPI::acos(const SPIMat &amp;A)'],['../namespaceSPI.html#a24c88dc870d0d40a3bd85439cb20bad3',1,'SPI::acos(const SPIVec &amp;A)']]],
   ['acosh_4',['acosh',['../namespaceSPI.html#a64dd4c846499276ff78052628f087f98',1,'SPI']]],
   ['add_5',['add',['../structSPI_1_1SPIMat.html#a99e48a9d19f80141205522d6ba07e32f',1,'SPI::SPIMat::add()'],['../structSPI_1_1SPIVec.html#a9a2d5b65f85aad78d1390a8949040595',1,'SPI::SPIVec::add()']]],
   ['alpha_6',['alpha',['../structSPI_1_1SPIparams.html#a82cb781342cbf9d90e1a11cc5ed4e31e',1,'SPI::SPIparams']]],

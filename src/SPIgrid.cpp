@@ -231,6 +231,7 @@ namespace SPI{
         }
     }
 
+
     /** \brief map a Chebyshev collocated operator acting with respect to the stretched collocated grid \return Chebyshev collocated derivative operator */
     SPIMat map_D_Chebyshev(
             SPIVec &x,          ///< [in] grid (created from set_Cheby_stretched_y or set_Cheby_y or similar example)
@@ -286,9 +287,63 @@ namespace SPI{
     SPIVec set_Cheby_y(
             PetscInt ny             ///< [in] number of points
             ){
-        PetscScalar pi = 2.*std::acos(0.0);
-        SPIVec y(cos(pi*arange((PetscScalar)ny-1.,-1.,-1.)/((PetscScalar)ny-1.)),"y");
+        //PetscScalar pi = 2.*std::acos(0.0);
+        SPIVec y(cos(PETSC_PI*arange((PetscScalar)ny-1.,-1.,-1.)/((PetscScalar)ny-1.)),"y");
         return y;
+    }
+
+    /** \brief set a UltraSpherical operator acting with respect to the collocated grid (keeps everything in UltraSpherical space), take in Chebyshev coefficients and outputs coefficients in C(d) coefficient space \return UltraSpherical derivative operator */
+    std::tuple<SPIMat,SPIMat> set_D_UltraS(
+            SPIVec &x,         ///< [in] grid (must be created from set_Cheby_y or set_Cheby_mapped_y)
+            PetscInt d         ///< [in] order of the derivative (default 1)
+            ){
+        PetscInt n=x.rows;
+        PetscScalar a=x(0,PETSC_TRUE);
+        PetscScalar b=x(n-1,PETSC_TRUE);
+        SPIMat dxidx(diag(ones(n)*(2.0/(b-a))),"dxi/dx"); // assuming it is made from set_Cheby_mapped_y (identity matrix if created from set_Cheby_y)
+        //SPIVec xi(cos(PETSC_PI*arange((PetscScalar)n-1.,-1.,-1.)/((PetscScalar)n-1.)),"y");
+        if(d==1){
+            SPIMat S0(diag(ones(n)*0.5) + diag(ones(n-2)*-0.5,2),"S0");
+            S0(0,0,1.0);
+            S0();
+            //std::cout<<"in set_D_UltraS"<<std::endl;
+            //S0.print();
+            SPIMat D1((diag(arange(1,n),1))*dxidx,"D1");
+            return std::make_tuple(S0,D1);
+        }
+        else if(d==2){
+            SPIMat S1(diag(1.0/(arange(n)+1)) + diag(-1.0/(arange(2,n)+1),2),"S1");
+            SPIMat D2((2.0*diag(arange(2,n),2))*(dxidx*dxidx),"D2");
+            return std::make_tuple(S1,D2);
+        }
+        else{
+            SPI::printf("Warning: d>2 not implemented in set_D_UltraS function");
+            exit(1);
+        }
+    }
+    /** \brief set a T and That operators acting with respect to the Chebyshev collocated grid, That: physical -> Chebyshev coefficient, T: Chebyshev coefficient -> physical \return UltraSpherical derivative operator */
+    std::tuple<SPIMat,SPIMat> set_T_That(
+            PetscInt n           ///< [in] number of discretized points in Chebyshev grid
+            ){
+        PetscInt N=n-1;
+        SPIVec xi(cos(PETSC_PI*arange((PetscScalar)n-1.,-1.,-1.)/((PetscScalar)n-1.)),"y");
+        SPIMat X;
+        SPIMat Ns; // X and Ns meshgrid for T and That creation
+        SPIVec ns(arange(n));
+        std::tie(X,Ns) = meshgrid(xi,ns);
+        SPIMat T(cos(Ns%acos(X)),"T");
+        SPIMat That;
+        T.T(That);
+        SPIMat Thatcopy(That);
+        for(PetscInt i=0; i<n; ++i) That(i,0,Thatcopy(i,0,PETSC_TRUE)/2.0);
+        for(PetscInt i=0; i<n; ++i) That(i,n-1,Thatcopy(i,n-1,PETSC_TRUE)/2.0);
+        That();
+        Thatcopy=That;
+        for(PetscInt i=0; i<n; ++i) That(0,i,Thatcopy(0,i,PETSC_TRUE)/2.0);
+        for(PetscInt i=0; i<n; ++i) That(n-1,i,Thatcopy(n-1,i,PETSC_TRUE)/2.0);
+        That();
+        That *= (2.0/((PetscScalar)N));
+        return std::make_tuple(T,That);
     }
 
     /** \brief create a Fourier grid from [0,T] \return grid using Fourier collocated points without the last point of linspace(0,T,n+1)[:-1] */
@@ -311,7 +366,7 @@ namespace SPI{
             SPIVec t,               ///< [in] grid point created from set_Fourier_t
             PetscInt d              ///< [in] order of derivatives 
             ){
-        PetscScalar pi = M_PI;
+        //PetscScalar pi = PETSC_PI;
         PetscScalar dt = t(1,PETSC_TRUE)-t(0,PETSC_TRUE); // uniform grid spacing
         PetscInt npts=t.rows;
         if(npts%2==0){ // only works with even number of grid points
@@ -323,7 +378,7 @@ namespace SPI{
             SPIVec j(arange(0,npts));
             std::tie(N,J) = meshgrid(n,j);
             SPIMat NmJ(N-J,"NmJ");
-            D = ((pi/T)*((-1.0)^(NmJ)))/tan((pi/nptss)*(NmJ));
+            D = ((PETSC_PI/T)*((-1.0)^(NmJ)))/tan((PETSC_PI/nptss)*(NmJ));
             D.ierr = MatDiagonalSet(D.mat,zeros(npts).vec,INSERT_VALUES);CHKERRXX(D.ierr);
             D();
             D.real();
@@ -364,6 +419,12 @@ namespace SPI{
         if(this->flag_set_derivatives){
             this->Dy.print();
             this->Dyy.print();
+            if(this->ytype==UltraS){
+                this->S0.print();
+                this->S1.print();
+                this->T.print();
+                this->That.print();
+            }
         }
         if(this->flag_set_operators){
             this->O.print();
@@ -404,15 +465,57 @@ namespace SPI{
             this->Dyy.real(); // just take only real part
             this->flag_set_derivatives=PETSC_TRUE;
         }
+        else if(this->ytype==UltraS){
+            std::tie(T,That) = set_T_That(y.rows);      // get Chebyshev operators to take back and forth from physical space
+            std::tie(S0,Dy) = set_D_UltraS(this->y,1);   // default UltraSpherical operators on non-uniform grid
+            std::tie(S1,Dyy) = set_D_UltraS(this->y,2);   // default UltraSpherical operators on non-uniform grid
+            this->Dy.real(); // just take only real part
+            this->Dyy.real(); // just take only real part
+            this->Dy = S1*Dy; // make it output C^(2) coefficient space
+            this->S0.real(); // just take only real part 
+            this->S1.real(); // just take only real part
+            this->T.real(); // just take only real part
+            this->That.real(); // just take only real part
+            S1S0That = S1*S0*That;
+
+            this->Dy.name=std::string("Dy");
+            this->S0.name=std::string("S0");
+            this->S1.name=std::string("S1");
+            this->Dyy.name=std::string("Dyy");
+            this->T.name=std::string("T");
+            this->That.name=std::string("That");
+            //this->PS1S0That.name=std::string("PS1S0That");
+            this->flag_set_derivatives=PETSC_TRUE;
+        }
+        else{
+            SPI::printf("Warning this type of ytype grid is not implemented in SPIgrid.set_derivatives");
+        }
     }
 
     /** \brief sets zero and identity operators for grid */
     void SPIgrid::set_operators(){
         PetscInt m = Dy.rows;
         PetscInt n = Dy.cols;
-        this->O=zeros(m,n);;   // default Chebyshev operator on non-uniform grid
-        this->O.name="zero";
-        this->I=eye(m);   // default Chebyshev operator on non-uniform grid
+        this->O = zeros(m,n);;   // default Chebyshev operator on non-uniform grid
+        this->O.name = "zero";
+        if(this->ytype==UltraS){
+            this->P = block({
+                    {zeros(2,ny-2),zeros(2,2)},
+                    {eye(ny-2),zeros(ny-2,2)}
+                    })();
+            P(0,ny-2,1.0);
+            P(1,ny-1,1.0);
+            P();
+            this->I = S1*S0;    // get it up to second order coefficients (C^(2))
+            // permute such that the bottom two rows are now the top two rows (good for LU factorization and pivoting)
+            //PS1S0That = P*S1*S0*That;
+            //Dy = P*Dy;
+            //Dyy = P*Dyy;
+            //S0 = P*S0;
+            //S1 = P*S1;
+        }else{
+            this->I = eye(m);   // default Chebyshev operator on non-uniform grid
+        }
         this->I.name="eye";
         this->flag_set_operators=PETSC_TRUE;
     }
@@ -428,6 +531,10 @@ namespace SPI{
         if (this->flag_set_derivatives){
             this->Dy.~SPIMat();
             this->Dyy.~SPIMat();
+            this->S0.~SPIMat();
+            this->S1.~SPIMat();
+            this->T.~SPIMat();
+            this->That.~SPIMat();
             this->flag_set_derivatives=PETSC_FALSE;
         }
         // destroy operators and reset flags
