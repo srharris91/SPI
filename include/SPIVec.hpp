@@ -5,6 +5,9 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <petscviewerhdf5.h>
+#include <math.h>
+#include "SPIprint.hpp"
 
 namespace SPI{
     struct SPIVec{
@@ -30,6 +33,7 @@ namespace SPI{
         PetscInt size(); // get the size of the vector using VecGetSize
         // () operators
         PetscScalar operator()(PetscInt _row, PetscBool global=PETSC_FALSE);     // get value at row
+        PetscScalar operator()(PetscInt _row, PetscBool global=PETSC_FALSE) const;     // get value at row
         PetscInt operator()(PetscInt _row, const PetscScalar v);  // set operator the same as set function
         PetscInt operator()(PetscInt _row, const double v);  // set operator the same as set function
         PetscInt operator()(PetscInt _row, const int v);  // set operator the same as set function
@@ -115,6 +119,8 @@ namespace SPI{
     SPIVec acosh(const SPIVec &A); // take the acosh of element
     SPIVec atanh(const SPIVec &A); // take the atanh of element
     SPIVec sqrt(const SPIVec &A); // take the atanh of element
+    SPIVec erf(const SPIVec &A); // take the erf of element
+    SPIVec erfc(const SPIVec &A); // take the erf of element
     // template for scalar function on each element
     template <class T>
     SPIVec _Function_on_each_element(T (*f)(T const&,T const&), const SPIVec &A, SPIVec &B); // take the function of elements in vectors e.g. (*f)(A(i),B(i))
@@ -122,6 +128,8 @@ namespace SPI{
     SPIVec pow(const SPIVec &A, PetscScalar b); // take the pow(A(i),b) of element
     SPIVec abs(const SPIVec &A); // take absolute value of vector
     PetscScalar sum(SPIVec x); // sum of vector
+    PetscScalar integrate_coeffs(const SPIVec &a); // integrate a vector of Chebyshev Coefficients on grid from -1 to 1
+    PetscScalar integrate_coeffs(const SPIVec &a, const SPIVec &y); // integrate a vector of Chebyshev Coefficients on stretched grid y
     PetscScalar dot(SPIVec x, SPIVec y); // inner dot product of the two vectors (i.e. y^H x)
     PetscReal L2(SPIVec x1, const SPIVec x2, NormType type=NORM_2);
     PetscReal L2(const SPIVec x1, NormType type=NORM_2);

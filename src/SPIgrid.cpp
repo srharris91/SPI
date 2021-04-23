@@ -327,13 +327,13 @@ namespace SPI{
             ){
         PetscInt N=n-1;
         SPIVec xi(cos(PETSC_PI*arange((PetscScalar)n-1.,-1.,-1.)/((PetscScalar)n-1.)),"y");
-        SPIMat X;
-        SPIMat Ns; // X and Ns meshgrid for T and That creation
+        SPIMat X(n,n);
+        SPIMat Ns(n,n); // X and Ns meshgrid for T and That creation
         SPIVec ns(arange(n));
         std::tie(X,Ns) = meshgrid(xi,ns);
         SPIMat T(cos(Ns%acos(X)),"T");
-        SPIMat That;
-        T.T(That);
+        SPIMat That; // initialized in next line
+        T.T(That);  // initialize That and set it to be T.T()
         SPIMat Thatcopy(That);
         for(PetscInt i=0; i<n; ++i) That(i,0,Thatcopy(i,0,PETSC_TRUE)/2.0);
         for(PetscInt i=0; i<n; ++i) That(i,n-1,Thatcopy(i,n-1,PETSC_TRUE)/2.0);
@@ -457,6 +457,7 @@ namespace SPI{
             this->flag_set_derivatives=PETSC_TRUE;
         }
         else if(this->ytype==Chebyshev){
+            std::tie(T,That) = set_T_That(y.rows);      // get Chebyshev operators to take back and forth from physical space
             this->Dy=set_D_Chebyshev(this->y,1,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
             this->Dy.name=std::string("Dy");
             this->Dyy=set_D_Chebyshev(this->y,2,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
@@ -476,7 +477,8 @@ namespace SPI{
             this->S1.real(); // just take only real part
             this->T.real(); // just take only real part
             this->That.real(); // just take only real part
-            S1S0That = S1*S0*That;
+            this->S1S0That = this->S1*this->S0*this->That;
+            this->S0invS1inv = inv(this->S1*this->S0);
 
             this->Dy.name=std::string("Dy");
             this->S0.name=std::string("S0");
@@ -484,6 +486,8 @@ namespace SPI{
             this->Dyy.name=std::string("Dyy");
             this->T.name=std::string("T");
             this->That.name=std::string("That");
+            this->S1S0That.name=std::string("S1*S0*That");
+            this->S0invS1inv.name=std::string("inv(S0)*inv(S1)");
             //this->PS1S0That.name=std::string("PS1S0That");
             this->flag_set_derivatives=PETSC_TRUE;
         }
@@ -535,14 +539,209 @@ namespace SPI{
             this->S1.~SPIMat();
             this->T.~SPIMat();
             this->That.~SPIMat();
+            this->S1S0That.~SPIMat();
+            this->S0invS1inv.~SPIMat();
             this->flag_set_derivatives=PETSC_FALSE;
         }
         // destroy operators and reset flags
         if (this->flag_set_operators){
             this->O.~SPIMat();
             this->I.~SPIMat();
+            this->P.~SPIMat();
             this->flag_set_operators=PETSC_FALSE;
         }
+    }
+
+    /** \brief integrate a vector of chebyshev Coefficients on a physical grid */
+    PetscScalar integrate(
+            const SPIVec &a,          ///< [in] vector to integrate over grid (Chebyshev coefficients or physical values)
+            SPIgrid &grid       ///< [in] respective grid
+            ){
+        if(grid.ytype==UltraS){ // if using UltraSpherical, then it is in Chebyshev coefficients
+            PetscInt ny=grid.y.rows;
+            PetscInt nyx=a.rows;
+            PetscInt ni=nyx/ny;
+            PetscScalar val=0.0;
+            SPIVec atmp(ny,"atmp");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<ny; ++j){
+                    atmp(j,a(ny*i + j,PETSC_TRUE));
+                }
+                atmp();
+                val += integrate_coeffs(atmp,grid.y);
+            }
+            return val;
+        }
+        else if(grid.ytype==Chebyshev){ // if using UltraSpherical, then it is in Chebyshev coefficients
+            PetscInt ny=grid.y.rows;
+            PetscInt nyx=a.rows;
+            PetscInt ni=nyx/ny;
+            PetscScalar val=0.0;
+            SPIVec atmp(ny,"atmp");
+            SPIVec atmp2(ny,"atmp");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<ny; ++j){
+                    atmp(j,a(ny*i + j,PETSC_TRUE));
+                }
+                atmp();
+                //((grid.That)*atmp).print();
+                atmp2 = ((grid.That)*atmp);
+                val += integrate_coeffs(atmp2,grid.y);
+            }
+            return val;
+        }
+        else{ // otherwise they are physical values, let's integrate using trapezoidal rule
+            PetscInt ny=grid.y.rows;
+            PetscInt nyx=a.rows;
+            PetscInt ni=nyx/ny;
+            PetscScalar val=0.0;
+            SPIVec atmp(ny,"atmp");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<ny; ++j){
+                    atmp(j,a(ny*i + j,PETSC_TRUE));
+                }
+                atmp();
+                val += trapz(atmp,grid.y);
+            }
+            return val;
+        }
+    }
+    /* \brief project using inner product for Gram-Schmidt process */
+    SPIVec proj(
+            SPIVec &u,      ///< [in] first vector to project
+            SPIVec &v,      ///< [in] second vector to project
+            SPIgrid &grid   ///< [in] respective grid
+            ){
+        if(grid.ytype==UltraS){
+            PetscInt n = u.rows/grid.y.rows;
+            SPIVec utmp, vtmp;
+            SPIMat T, That;
+            if(n==1){
+                T = grid.T;
+                That = grid.That;
+                utmp=T*u;
+                vtmp=T*v;
+            }else if(n==2){
+                T = block({
+                        {grid.T,grid.O},
+                        {grid.O,grid.T},
+                        })();
+                That = block({
+                        {grid.That,grid.O},
+                        {grid.O,grid.That},
+                        })();
+                utmp=T*u;
+                vtmp=T*v;
+            }else if(n==4){
+                T = block({
+                        {grid.T,grid.O,grid.O,grid.O},
+                        {grid.O,grid.T,grid.O,grid.O},
+                        {grid.O,grid.O,grid.T,grid.O},
+                        {grid.O,grid.O,grid.O,grid.T},
+                        })();
+                That = block({
+                        {grid.That,grid.O,grid.O,grid.O},
+                        {grid.O,grid.That,grid.O,grid.O},
+                        {grid.O,grid.O,grid.That,grid.O},
+                        {grid.O,grid.O,grid.O,grid.That},
+                        })();
+                utmp=T*u;
+                vtmp=T*v;
+            }
+            return (integrate(That*(conj(utmp)*vtmp),grid)/integrate(That*(conj(utmp)*utmp),grid)) * u;
+        }else{
+            return (integrate(conj(u)*v,grid)/integrate(conj(u)*u,grid)) * u;
+        }
+    }
+    /* \brief orthogonalize a basis dense matrix from an array of vec using SLEPc BV */
+    std::vector<SPIVec> orthogonalize(
+            std::vector<SPIVec> &x,  ///< [in] array of vectors to orthogonalize 
+            SPIgrid &grid             ///< [in] respective grid for integration using Gram-Schmidt
+            ){
+        //PetscInt m=x[0].rows;   // number of rows
+        PetscInt n=x.size();    // number of columns
+        //SPIMat Q(m,n,"Q");
+        std::vector<SPIVec> qi(n);
+        // copy x[i]
+        for(PetscInt i=0; i<n; ++i){
+            qi[i] = x[i];
+        }
+        // project
+        for(PetscInt i=0; i<n; ++i){
+            if(i>0){
+                for(PetscInt j=1; j<=i; ++j){
+                    qi[i] -= proj(qi[j-1],x[i],grid);
+                    //std::cout<<" projecting i,j = "<<i<<","<<j<<std::endl;
+                }
+            }
+        }
+        // normalize
+        if(grid.ytype==UltraS){
+            SPIVec qtmp;
+            PetscInt ni = qi[0].rows/grid.y.rows;
+            if(ni==1){
+                for(PetscInt i=0; i<n; ++i){
+                    //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
+                    qtmp = SPI::abs(grid.T*qi[i]);
+                    qtmp = grid.That*(qtmp*qtmp);
+                    qi[i] /= sqrt(integrate(qtmp,grid));
+                }
+            }
+            else if(ni==2){
+                SPIMat T(block({
+                            {grid.T,grid.O},
+                            {grid.O,grid.T},
+                            })(),"T");
+                SPIMat That(block({
+                            {grid.That,grid.O},
+                            {grid.O,grid.That},
+                            })(),"That");
+                for(PetscInt i=0; i<n; ++i){
+                    //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
+                    qtmp = SPI::abs(T*qi[i]);
+                    qtmp = That*(qtmp*qtmp);
+                    qi[i] /= sqrt(integrate(qtmp,grid));
+                }
+            }
+            else if(ni==4){
+                SPIMat T(block({
+                            {grid.T,grid.O,grid.O,grid.O},
+                            {grid.O,grid.T,grid.O,grid.O},
+                            {grid.O,grid.O,grid.T,grid.O},
+                            {grid.O,grid.O,grid.O,grid.T},
+                            })(),"T");
+                SPIMat That(block({
+                            {grid.That,grid.O,grid.O,grid.O},
+                            {grid.O,grid.That,grid.O,grid.O},
+                            {grid.O,grid.O,grid.That,grid.O},
+                            {grid.O,grid.O,grid.O,grid.That},
+                            })(),"That");
+                for(PetscInt i=0; i<n; ++i){
+                    //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
+                    qtmp = SPI::abs(T*qi[i]);
+                    qtmp = That*(qtmp*qtmp);
+                    qi[i] /= sqrt(integrate(qtmp,grid));
+                }
+            }
+            else{
+                SPI::printf("orthogonalize not implemented yet");
+                exit(1);
+            }
+        }
+        else{
+            for(PetscInt i=0; i<n; ++i){
+                qi[i] /= sqrt(integrate(SPI::abs(qi[i])^2,grid));
+            }
+        }
+        return qi;
+        //// set into Q
+        //for(PetscInt i=0; i<m; ++i){
+        //for(PetscInt j=0; j<n; ++j){
+        //Q(i,j,qi[j](i,PETSC_TRUE));
+        //}
+        //}
+        //Q();
+        //return Q;
     }
 
 

@@ -86,6 +86,9 @@ $(function() {
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;petscviewerhdf5.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="SPIprint_8hpp_source.html">SPIprint.hpp</a>&quot;</code><br />
 </div>
 <p><a href="SPIVec_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -189,6 +192,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ac7259b828b57b8bf38028fc1ff0c6072"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ac7259b828b57b8bf38028fc1ff0c6072">SPI::sqrt</a> (const SPIVec &amp;A)</td></tr>
 <tr class="memdesc:ac7259b828b57b8bf38028fc1ff0c6072"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the atanh of each element in a vector  <a href="namespaceSPI.html#ac7259b828b57b8bf38028fc1ff0c6072">More...</a><br /></td></tr>
 <tr class="separator:ac7259b828b57b8bf38028fc1ff0c6072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a753c08a96304b5e572def3cb6827557f"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a753c08a96304b5e572def3cb6827557f">SPI::erf</a> (const SPIVec &amp;A)</td></tr>
+<tr class="memdesc:a753c08a96304b5e572def3cb6827557f"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the erf of each element in a vector  <a href="namespaceSPI.html#a753c08a96304b5e572def3cb6827557f">More...</a><br /></td></tr>
+<tr class="separator:a753c08a96304b5e572def3cb6827557f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafd95c3ed626c9a309279f4bcf324cc4"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aafd95c3ed626c9a309279f4bcf324cc4">SPI::erfc</a> (const SPIVec &amp;A)</td></tr>
+<tr class="memdesc:aafd95c3ed626c9a309279f4bcf324cc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the erfc(z) = 1-erf(z) of each element in a vector  <a href="namespaceSPI.html#aafd95c3ed626c9a309279f4bcf324cc4">More...</a><br /></td></tr>
+<tr class="separator:aafd95c3ed626c9a309279f4bcf324cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6756e0fcbbb1b72a5fb1dbc03fca847c"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a6756e0fcbbb1b72a5fb1dbc03fca847c"><td class="memTemplItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a6756e0fcbbb1b72a5fb1dbc03fca847c">SPI::_Function_on_each_element</a> (T(*f)(T const  &amp;, T const  &amp;), const SPIVec &amp;A, SPIVec &amp;B)</td></tr>
 <tr class="memdesc:a6756e0fcbbb1b72a5fb1dbc03fca847c"><td class="mdescLeft">&#160;</td><td class="mdescRight">function to take element by element of two vectors e.g. (*f)(A(i),B(i)) for all i  <a href="namespaceSPI.html#a6756e0fcbbb1b72a5fb1dbc03fca847c">More...</a><br /></td></tr>
@@ -205,6 +214,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a16a9d8de2cd233a150468930a0ad0421"><td class="memItemLeft" align="right" valign="top">PetscScalar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a16a9d8de2cd233a150468930a0ad0421">SPI::sum</a> (SPIVec x1)</td></tr>
 <tr class="memdesc:a16a9d8de2cd233a150468930a0ad0421"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the sum of a vector  <a href="namespaceSPI.html#a16a9d8de2cd233a150468930a0ad0421">More...</a><br /></td></tr>
 <tr class="separator:a16a9d8de2cd233a150468930a0ad0421"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af82a864cb92d6ce1faa6ff4568d8df68"><td class="memItemLeft" align="right" valign="top">PetscScalar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#af82a864cb92d6ce1faa6ff4568d8df68">SPI::integrate_coeffs</a> (const SPIVec &amp;a)</td></tr>
+<tr class="memdesc:af82a864cb92d6ce1faa6ff4568d8df68"><td class="mdescLeft">&#160;</td><td class="mdescRight">integrate a vector of chebyshev Coefficients on a grid  <a href="namespaceSPI.html#af82a864cb92d6ce1faa6ff4568d8df68">More...</a><br /></td></tr>
+<tr class="separator:af82a864cb92d6ce1faa6ff4568d8df68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52c530dc0a04712da53b928f75f743a5"><td class="memItemLeft" align="right" valign="top">PetscScalar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a52c530dc0a04712da53b928f75f743a5">SPI::integrate_coeffs</a> (const SPIVec &amp;a, const SPIVec &amp;y)</td></tr>
+<tr class="memdesc:a52c530dc0a04712da53b928f75f743a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">integrate a vector of chebyshev Coefficients on a stretched grid  <a href="namespaceSPI.html#a52c530dc0a04712da53b928f75f743a5">More...</a><br /></td></tr>
+<tr class="separator:a52c530dc0a04712da53b928f75f743a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfb4ed75b0463e2f854990341200c1a9"><td class="memItemLeft" align="right" valign="top">PetscScalar&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#acfb4ed75b0463e2f854990341200c1a9">SPI::dot</a> (SPIVec x, SPIVec y)</td></tr>
 <tr class="memdesc:acfb4ed75b0463e2f854990341200c1a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">take the inner product of the two vectors (i.e. y^H x) where ^H is the complex conjugate transpose  <a href="namespaceSPI.html#acfb4ed75b0463e2f854990341200c1a9">More...</a><br /></td></tr>
 <tr class="separator:acfb4ed75b0463e2f854990341200c1a9"><td class="memSeparator" colspan="2">&#160;</td></tr>

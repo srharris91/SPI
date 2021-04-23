@@ -50,6 +50,7 @@ namespace SPI{
         SPIMat S0,      ///< UltraSpherical helper matrix S_0 takes chebyshev coefficients and outputs C^(1) coefficients
                S1,      ///< UltraSpherical helper matrices S_1 takes C^(1) coefficients and outputs C^(2) coefficients
                S1S0That;///< UltraSpherical helper matrix S1*S0*That for baseflow
+        SPIMat S0invS1inv;  ///< [in] inverse of S0^-1 * S1^-1
         SPIMat P;       ///< row permutation matrix for UltraSpherical operators to shift rows from bottom to top to reduce LU factorization pivoting
         SPIMat T,       ///< Chebyshev operator taking it from Chebyshev coefficients to physical space
                That;    ///< Chebyshev operator taking it from physical space to Chebyshev coefficients
@@ -61,6 +62,9 @@ namespace SPI{
                   flag_set_operators=PETSC_FALSE; ///< flag if set_operators has been executed
 
     };
+    PetscScalar integrate(const SPIVec &a, SPIgrid &grid); // integrate a vector of Chebyshev Coefficients on physical grid
+    SPIVec proj(SPIVec &u, SPIVec &v, SPIgrid &grid);   // project using inner product for Gram-Schmidt process
+    std::vector<SPIVec> orthogonalize(std::vector<SPIVec> &x,SPIgrid &grid); // create orthonormal basis from array of vectors 
 
 }
 #endif // SPIGRID_H

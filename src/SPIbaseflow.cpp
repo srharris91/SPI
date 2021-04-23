@@ -207,8 +207,10 @@ namespace SPI{
                 SPIbaseflow baseflow(U, V, Ux, grid.Dy*U, grid.Dy*Ux, grid.Dy*V, O, O, O, O, O); // bad for UltraS grid
                 if(grid.ytype==SPI::UltraS){ // fix for UltraS grid
                     SPIgrid gridCheby(grid.y,"gridCheby",SPI::Chebyshev);
-                    baseflow.Uy = gridCheby.Dy*U;
-                    baseflow.Vy = gridCheby.Dy*V;
+                    SPIMat Dyp(grid.T*grid.S0invS1inv*grid.Dy*grid.That);
+                    baseflow.Uy = Dyp*U;
+                    baseflow.Uxy = Dyp*Ux;
+                    baseflow.Vy = Dyp*V;
                 }
 
                 // clear memory

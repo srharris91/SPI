@@ -1,5 +1,6 @@
 #include "SPImain.hpp"
 #include "tests.hpp"
+#include <time.h>
 
 void test_if_true(PetscBool test,std::string name){
     if (test) { SPI::printf("\x1b[32m"+name+" test passed"+"\x1b[0m"); }
@@ -10,9 +11,13 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
     PetscReal valuer=PetscRealPart(value);
     PetscReal goldenr=PetscRealPart(golden);
     if ((goldenr-tol<=valuer) && (valuer<=goldenr+tol)) { SPI::printf("\x1b[32m"+name+" test passed"+"\x1b[0m"); }
-    else{ std::cout<<"\x1b[31m"+name+" test failed"+"\x1b[0m"<<std::endl;
-            std::cout<<"      valuer="<<valuer<<std::endl;
-            std::cout<<"      goldenr="<<goldenr<<std::endl;}
+    else{ //std::cout<<"\x1b[31m"+name+" test failed"+"\x1b[0m"<<std::endl;
+        //std::cout<<"      valuer="<<valuer<<std::endl;
+        //std::cout<<"      goldenr="<<goldenr<<std::endl;
+        SPI::printf("\x1b[31m"+name+" test failed"+"\x1b[0m");
+        SPI::printf("\x1b[31m     goldenr=%.20f \x1b[0m",goldenr);
+        SPI::printf("\x1b[31m     valuer =%.20f \x1b[0m",valuer );
+    }
 }
 
 int tests(){
@@ -238,19 +243,19 @@ int tests(){
         SPI::SPIMat M(4,"M"),C(4,"C"),K(4,"K"); // (M*lambda^2 + C*lambda + K)*x = 0 from MatLab mathworks documentation
         // M
         M(0,0,3.);
-                    M(1,1,1.);
-                                M(2,2,3.);
-                                            M(3,3,1.);
+        M(1,1,1.);
+        M(2,2,3.);
+        M(3,3,1.);
         // C
         C(0,0,0.4);             C(0,2,-0.3);
 
         C(2,0,-0.3);            C(2,2,0.5); C(2,3,-0.2);
-                                C(3,2,-0.2);C(3,3,0.2);
+        C(3,2,-0.2);C(3,3,0.2);
         // K
         K(0,0,-7.); K(0,1,2.);  K(0,2,4);
         K(1,0,2);   K(1,1,-4);  K(1,2,2);
         K(2,0,4);   K(2,1,2);   K(2,2,-9);  K(2,3,3);
-                                K(3,2,3);   K(3,3,-3);
+        K(3,2,3);   K(3,3,-3);
         // assemble
         M();C();K();
 
@@ -450,6 +455,7 @@ int tests(){
         params.beta = 0.0;
 
         SPI::SPIVec eigenfunction(grid.y.rows*16,"q");
+        SPI::SPIVec eigenfunction8(grid.y.rows*8,"q");
         SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
         PetscScalar eigenvalue;
         eigenfunction.name = "eigenfunction";
@@ -463,7 +469,7 @@ int tests(){
         test_if_close(eigenvalue,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 1",1e-5);
         test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 1",1e-5);
         // LSTNP_spatial_right
-        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,channel);
+        std::tie(eigenvalue,eigenfunction8) = SPI::LSTNP_spatial_right(params,grid,channel);
         test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial_right 1",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         params.alpha = 0.978748+0.04439397*PETSC_i;
@@ -471,14 +477,14 @@ int tests(){
         SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 2",1e-5);
         test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial 2",1e-5);
-        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,channel,eigenfunction);
+        std::tie(eigenvalue,eigenfunction8) = SPI::LSTNP_spatial_right(params,grid,channel,eigenfunction);
         test_if_close(params.alpha,0.978748+0.04439397*PETSC_i,"LSTNP_spatial_right 2",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         params.alpha = 0.34305+0.0498376872*PETSC_i;
         std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
         SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.34305+0.049837*PETSC_i,"LSTNP_spatial 3",1e-5);
-        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,channel,eigenfunction);
+        std::tie(eigenvalue,eigenfunction8) = SPI::LSTNP_spatial_right(params,grid,channel,eigenfunction);
         test_if_close(eigenvalue,0.34305+0.049837*PETSC_i,"LSTNP_spatial_right 3",1e-5);
         //test_if_close(params.alpha,0.34305+0.049837*PETSC_i,"LSTNP_spatial 2",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
@@ -486,7 +492,7 @@ int tests(){
         std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel,leigenfunction,eigenfunction);
         SPI::printfc("cg = %g+%gi",cg);
         test_if_close(eigenvalue,0.6116672+0.140493*PETSC_i,"LSTNP_spatial 4",1e-5);
-        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,channel,eigenfunction);
+        std::tie(eigenvalue,eigenfunction8) = SPI::LSTNP_spatial_right(params,grid,channel,eigenfunction);
         test_if_close(eigenvalue,0.6116672+0.140493*PETSC_i,"LSTNP_spatial_right 4",1e-5);
         //test_if_close(params.alpha,0.635797+0.08405*PETSC_i,"LSTNP_spatial 3",1e-5);
         //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
@@ -570,6 +576,78 @@ int tests(){
         SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
         std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow,eigenfunction); // with initial guess
         test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial_right 4",1e-5);
+
+        SPI::printf("------------ LSTNP Blasius boundary layer end   -----------");
+    }
+    if(0){
+        SPI::printf("------------ LSTNP Blasius boundary layer start -----------");
+        PetscInt n=168;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //SPI::SPIVec y(SPI::set_FD_stretched_y(61.,n) ,"yFD");
+        //SPI::SPIgrid grid(y,"grid",SPI::FD);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        params.Re = 400.0;
+        params.omega = 86.*params.Re/(1000000.);
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = 0.094966+0.004564*PETSC_i;
+        //params.alpha = 0.106654+0.0018979*PETSC_i;
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"q");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        if(0){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+
+        PetscScalar cg;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        SPI::printfc("cg = %g+%gi",cg);
+        //std::tie(eigenvalue,eig_vec) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(eigenvalue,0.094966+0.004564*PETSC_i,"LSTNP_spatial 1",1e-5);
+        test_if_close(params.alpha,0.094966+0.004564*PETSC_i,"LSTNP_spatial 1",1e-5);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        //test_if_close(params.alpha,0.094966+0.004564*PETSC_i,"LSTNP_spatial_right 1",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        SPI::printfc("cg = %g+%gi",cg);
+        test_if_close(eigenvalue,0.094966+0.004564*PETSC_i,"LSTNP_spatial 2",1e-5);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow,eigenfunction); // with initial guess
+        //test_if_close(eigenvalue,0.094966+0.004564*PETSC_i,"LSTNP_spatial_right 2",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+
+        params.alpha = 0.1067+0.001898*PETSC_i;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow); 
+        SPI::printfc("cg = %g+%gi",cg);
+        test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial 3",1e-5);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow); 
+        //test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial_right 3",1e-5);
+        //SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow,leigenfunction,eigenfunction); // with initial guess
+        SPI::printfc("cg = %g+%gi",cg);
+        test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial 4",1e-5);
+        SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow,eigenfunction); // with initial guess
+        //test_if_close(eigenvalue,0.10665+0.0018979*PETSC_i,"LSTNP_spatial_right 4",1e-5);
 
         SPI::printf("------------ LSTNP Blasius boundary layer end   -----------");
     }
@@ -735,6 +813,84 @@ int tests(){
         SPI::printf("------------ BV Orthogonalize end   -----------");
     }
     if(alltests){
+        SPI::printf("------------ Gram-Schmidt Orthogonalize start -----------");
+        PetscInt n=8;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIVec A1(grid.That*(1.0-(grid.y^2)),"A1"),A2(grid.That*(1.0+(grid.y^2)),"A2");
+        std::vector<SPI::SPIVec> A={A1,A2};
+        //SPI::SPIMat Aorth(SPI::orthogonalize(A,grid));
+        //test_if_close(Aorth(2,0,PETSC_TRUE),-0.484122918275927,"orthogonalize 1",1e-12);
+        //test_if_close(Aorth(2,1,PETSC_TRUE),1.082531754730548,"orthogonalize 2",1e-12);
+        std::vector<SPI::SPIVec> Aorth(SPI::orthogonalize(A,grid));
+        test_if_close(Aorth[0](2,PETSC_TRUE),-0.484122918275927,"orthogonalize 1",1e-12);
+        test_if_close(Aorth[1](2,PETSC_TRUE),1.082531754730548,"orthogonalize 2",1e-12);
+
+        SPI::printf("------------ Gram-Schmidt Orthogonalize end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ Gram-Schmidt Orthogonalize start -----------");
+        PetscInt n=8;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIVec A1(grid.That*(1.0-(grid.y^2)),"A1"),A2(grid.That*(1.0+(grid.y^2)),"A2");
+        std::vector<SPI::SPIVec> A={A1,A2};
+        //SPI::SPIMat Aorth(SPI::orthogonalize(A,grid));
+        //test_if_close(Aorth(2,0,PETSC_TRUE),-0.484122918275927,"orthogonalize 1",1e-12);
+        //test_if_close(Aorth(2,1,PETSC_TRUE),1.082531754730548,"orthogonalize 2",1e-12);
+        std::vector<SPI::SPIVec> Aorth(SPI::orthogonalize(A,grid));
+        test_if_close(Aorth[0](2,PETSC_TRUE),-0.484122918275927,"orthogonalize 1",1e-12);
+        test_if_close(Aorth[1](2,PETSC_TRUE),1.082531754730548,"orthogonalize 2",1e-12);
+
+        // now try multiple length projection and integration
+        SPI::SPIVec A1l(SPI::block({
+                    {SPI::diag(A1),grid.O},
+                    {grid.O,SPI::diag(A2)}
+                    })()*SPI::ones(2*n),"A1l");
+        SPI::SPIVec A2l(SPI::block({
+                    {SPI::diag(A2),grid.O},
+                    {grid.O,SPI::diag(A1)}
+                    })()*SPI::ones(2*n),"A2l");
+        //A1.print();
+        //A2.print();
+        std::vector<SPI::SPIVec> Al = {A1l,A2l};
+        std::vector<SPI::SPIVec> Alorth(SPI::orthogonalize(Al,grid));
+        test_if_close(Alorth[0](2,PETSC_TRUE),-0.228217732293819,"orthogonalize 3",1e-12);
+        test_if_close(Alorth[0](10,PETSC_TRUE),0.228217732293819,"orthogonalize 4",1e-12);
+        test_if_close(Alorth[1](0,PETSC_TRUE),0.714434508311760,"orthogonalize 5",1e-12);
+        test_if_close(Alorth[1](8,PETSC_TRUE),-0.306186217847897,"orthogonalize 6",1e-12);
+        //Alorth[0].print();
+        //Alorth[1].print();
+        SPI::SPIVec A1ll(SPI::block({
+                    {SPI::diag(A1),grid.O,grid.O,grid.O},
+                    {grid.O,SPI::diag(A2),grid.O,grid.O},
+                    {grid.O,grid.O,SPI::diag(A1),grid.O},
+                    {grid.O,grid.O,grid.O,SPI::diag(A2)},
+                    })()*SPI::ones(4*n),"A1ll");
+        SPI::SPIVec A2ll(SPI::block({
+                    {SPI::diag(A2),grid.O,grid.O,grid.O},
+                    {grid.O,SPI::diag(A1),grid.O,grid.O},
+                    {grid.O,grid.O,SPI::diag(A2),grid.O},
+                    {grid.O,grid.O,grid.O,SPI::diag(A1)},
+                    })()*SPI::ones(4*n),"A2ll");
+        std::vector<SPI::SPIVec> All = {A1ll,A2ll};
+        std::vector<SPI::SPIVec> Allorth(SPI::orthogonalize(All,grid));
+        test_if_close(Allorth[0](2,PETSC_TRUE),-0.161374306091976,"orthogonalize 7",1e-12);
+        test_if_close(Allorth[0](8,PETSC_TRUE),0.484122918275927,"orthogonalize 8",1e-12);
+        test_if_close(Allorth[0](10,PETSC_TRUE),0.161374306091976,"orthogonalize 9",1e-12);
+        test_if_close(Allorth[0](18,PETSC_TRUE),-0.161374306091976,"orthogonalize 10",1e-12);
+        test_if_close(Allorth[0](24,PETSC_TRUE),0.484122918275927,"orthogonalize 11",1e-12);
+        test_if_close(Allorth[0](26,PETSC_TRUE),0.161374306091976,"orthogonalize 12",1e-12);
+        test_if_close(Allorth[1](2,PETSC_TRUE),0.360843918243516,"orthogonalize 13",1e-12);
+        test_if_close(Allorth[1](8,PETSC_TRUE),-0.216506350946110,"orthogonalize 14",1e-12);
+        test_if_close(Allorth[1](10,PETSC_TRUE),-0.360843918243516,"orthogonalize 15",1e-12);
+        test_if_close(Allorth[1](18,PETSC_TRUE),0.360843918243516,"orthogonalize 16",1e-12);
+        test_if_close(Allorth[1](24,PETSC_TRUE),-0.216506350946110,"orthogonalize 17",1e-12);
+        test_if_close(Allorth[1](26,PETSC_TRUE),-0.360843918243516,"orthogonalize 18",1e-12);
+
+        SPI::printf("------------ Gram-Schmidt Orthogonalize end   -----------");
+    }
+    if(alltests){
         SPI::printf("------------ SPIMat.H(SPIVec) start -----------");
         SPI::SPIMat A(4,2,"A");
         A(0,0,4.); A(0,1,3.);
@@ -815,9 +971,13 @@ int tests(){
         test_if_close((T*inv(S0)*inv(S1)*D2*That)(1,3,PETSC_TRUE),-0.08,"set_D_UltraS(SPIMat) 4",1e-7);
         //(T*inv(S0)*inv(S1)*D2*That).print();
         //((T*inv(S0)*inv(S1)*D2*That)*y).print();
+        //inv(S0).print();
+        //inv(S1).print();
+        //(inv(S0)*inv(S1)).print();
+        test_if_close((inv(S0)*inv(S1))(2,4,PETSC_TRUE),16.0,"inv(S0)*inv(S1) 1",1e-7);
         SPI::printf("------------ UltraSpherical ops end   -----------");
     }
-    if(0){
+    if(alltests){
         SPI::printf("------------ LST_temporal channel UltraS start -----------");
         PetscInt n=64;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
@@ -890,7 +1050,7 @@ int tests(){
 
         SPI::printf("------------ LST_temporal channel UltraS end   -----------");
     }
-    if(0){
+    if(alltests){
         SPI::printf("------------ LST_spatial channel flow UltraS start -----------");
         PetscInt n=64;
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
@@ -946,7 +1106,7 @@ int tests(){
 
         SPI::printf("------------ LST_spatial channel flow UltraS end   -----------");
     }
-    if(0){ // requires -mat_mumps_icntl_14 25 in command line call to work
+    if(alltests){ // requires -mat_mumps_icntl_14 25 in command line call to work
         SPI::printf("------------ LST_spatial Blasius boundary layer UltraS start -----------");
         PetscInt n=200;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
@@ -1035,8 +1195,8 @@ int tests(){
 
         SPI::printf("------------ eye and block timings end   -----------");
     }
-    if(1){
-        SPI::printf("------------ LSTNP_spatial Blasius boundary layer UltraS start -----------");
+    if(alltests){
+        SPI::printf("------------ LSTNP_spatial_right Blasius boundary layer UltraS start -----------");
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
@@ -1083,14 +1243,963 @@ int tests(){
 
         params.alpha = (0.54213+0.083968*PETSC_i)/1.7208;
         std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
-        test_if_close(params.alpha*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatial 2",1e-5);
+        test_if_close(params.alpha*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatial_right 2",1e-5);
 
         params.alpha = (0.29967+0.230773*PETSC_i)/1.7208;
         std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
-        test_if_close(params.alpha*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatial 3",1e-5);
+        test_if_close(params.alpha*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatial_right 3",1e-5);
 
         SPI::printf("------------ LSTNP_spatial_right Blasius boundary layer UltraS end   -----------");
     }
+    if(alltests){
+        SPI::printf("------------ LST_spatial_cg Blasius boundary layer physical vs UltraS start -----------");
+        PetscInt n=169;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        //params.Re = 400.0;
+        //params.omega = 86.*params.Re/(1000000.);
+        params.Re = 1000.0/1.7208;
+        params.omega = 0.26/1.7208;
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.74155+0.345132*PETSC_i)/1.7208;
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*8,"eigenfunction");
+        SPI::SPIVec leigenfunction(grid.y.rows*8,"leigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        //SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(0){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+
+        // LST_spatial_cg UltraS
+        PetscScalar cg;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LST_spatial_cg(params,grid,bl_flow);
+        SPI::printfc("cg = %.10f + %.10fi",cg);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LST_spatial_cg UltraS 1",1e-5);
+        SPI::SPIMat &O = grid.O;
+        SPI::SPIMat T(SPI::block({
+                    {grid.T,O,O,O,O,O,O,O},
+                    {O,grid.T,O,O,O,O,O,O},
+                    {O,O,grid.T,O,O,O,O,O},
+                    {O,O,O,grid.T,O,O,O,O},
+                    {O,O,O,O,grid.T,O,O,O},
+                    {O,O,O,O,O,grid.T,O,O},
+                    {O,O,O,O,O,O,grid.T,O},
+                    {O,O,O,O,O,O,O,grid.T},
+                    })());
+        SPI::SPIVec eigenfunctionout(T*eigenfunction,"UltraS");
+        SPI::SPIVec leigenfunctionout(T*leigenfunction,"UltraSl");
+        // normalize
+        eigenfunctionout /= SPI::L2(eigenfunctionout);
+        leigenfunctionout /= SPI::L2(leigenfunctionout);
+        SPI::save(eigenfunctionout,"eigenfunction.h5");
+        SPI::save(leigenfunctionout,"eigenfunction.h5");
+        // LST_spatial physical
+        SPI::SPIVec leigenfunction8(8*n,"Physicall");
+        SPI::SPIVec eigenfunction8(8*n,"Physical");
+        std::tie(eigenvalue,cg,leigenfunction8,eigenfunction8) = SPI::LST_spatial_cg(params,grid2,bl_flow);
+        SPI::printfc("cg = %.10f + %.10fi",cg);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LST_spatial_cg physical 1",1e-5);
+        SPI::save(eigenfunction8,"eigenfunction.h5");
+        SPI::save(leigenfunction8,"eigenfunction.h5");
+        SPI::save(grid.y,"eigenfunction.h5");
+        // finite difference what is the group velocity of this mode?
+        PetscScalar deltaOmega = 1e-2;
+        params.omega += deltaOmega;
+        PetscScalar deltaeigenvalue;
+        std::tie(deltaeigenvalue,cg,leigenfunction8,eigenfunction8) = SPI::LST_spatial_cg(params,grid2,bl_flow);
+        SPI::printfc("with delta_omega cg = %.10f + %.10fi",cg);
+        cg = deltaOmega/(deltaeigenvalue-eigenvalue);
+        SPI::printfc("with finite diff delta_omega cg = %.10f + %.10fi",cg);
+        params.omega -= 2.0*deltaOmega;
+        PetscScalar deltaeigenvaluem;
+        std::tie(deltaeigenvaluem,cg,leigenfunction8,eigenfunction8) = SPI::LST_spatial_cg(params,grid,bl_flow);
+        cg = (2.0*deltaOmega)/(deltaeigenvalue-deltaeigenvaluem);
+        SPI::printfc("with finite diff delta_omega2 cg = %.10f + %.10fi",cg);
+        // LSTNP_spatial physical
+        //std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid2,bl_flow);
+        //SPI::printfc("cg = %.10f + %.10fi",cg);
+        //test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial physical 1",1e-4);
+
+        // these following 2 cases don't work
+        //params.alpha = (0.54213+0.083968*PETSC_i)/1.7208;
+        //std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        //SPI::printfc("cg = %.10f + %.10fi",cg);
+        //test_if_close(params.alpha*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatial UltraS 2",1e-5);
+        //std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LST_spatial_cg(params,grid2,bl_flow);
+        //SPI::printfc("cg = %.10f + %.10fi",cg);
+        //test_if_close(params.alpha*1.7208,(0.54213+0.083968*PETSC_i),"LST_spatial_cg 2",1e-5);
+
+        //params.alpha = (0.29967+0.230773*PETSC_i)/1.7208;
+        //std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        //SPI::printfc("cg = %.10f + %.10fi",cg);
+        //test_if_close(params.alpha*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatial UltraS 3",1e-5);
+        //std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LST_spatial_cg(params,grid,bl_flow);
+        //SPI::printfc("cg = %.10f + %.10fi",cg);
+        //test_if_close(params.alpha*1.7208,(0.29967+0.230773*PETSC_i),"LST_spatial_cg 3",1e-5);
+
+        SPI::printf("------------ LST_spatial_cg Blasius boundary layer UltraS end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ LSTNP_spatial Blasius boundary layer UltraS start -----------");
+        PetscInt n=169;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        //params.Re = 400.0;
+        //params.omega = 86.*params.Re/(1000000.);
+        params.Re = 1000.0/1.7208;
+        params.omega = 0.26/1.7208;
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.74155+0.345132*PETSC_i)/1.7208;
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"eigenfunction");
+        SPI::SPIVec leigenfunction(grid.y.rows*16,"leigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        //SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(1){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+
+        PetscScalar cg;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        SPI::printfc("cg = %.10f + %.10fi",cg);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial UltraS 1",1e-4);
+        SPI::SPIMat &O = grid.O;
+        SPI::SPIMat &t = grid.T;
+        SPI::SPIMat T(SPI::block({
+                    {t,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,t,O,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,t,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,t,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,t,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,t,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,t,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,t,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,t,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,t,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,t,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,t,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,t,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,t,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,O,t,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,t},
+                    })());
+        SPI::SPIVec eigenfunctionout(T*eigenfunction,"UltraS");
+        SPI::SPIVec leigenfunctionout(T*leigenfunction,"UltraSl");
+        //SPI::save(eigenfunctionout,"eigenfunctionNP.h5");
+        //SPI::save(leigenfunctionout,"eigenfunctionNP.h5");
+        //SPI::save(grid.y,"eigenfunctionNP.h5");
+        // LST_spatial physical
+        SPI::SPIVec leigenfunction16(16*n);
+        SPI::SPIVec eigenfunction16(16*n);
+        std::tie(eigenvalue,cg,leigenfunction16,eigenfunction16) = SPI::LSTNP_spatial(params,grid2,bl_flow);
+        SPI::printfc("cg = %.10f + %.10fi",cg);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial physical 1",1e-4);
+        // LSTNP_spatial physical
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid2,bl_flow);
+        SPI::printfc("cg = %.10f + %.10fi",cg);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial physical 1",1e-4);
+
+        params.alpha = (0.54213+0.083968*PETSC_i)/1.7208;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        SPI::printfc("cg = %.10f + %.10fi",cg);
+        test_if_close(params.alpha*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatial UltraS 2",1e-5);
+
+        params.alpha = (0.29967+0.230773*PETSC_i)/1.7208;
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        SPI::printfc("cg = %.10f + %.10fi",cg);
+        test_if_close(params.alpha*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatial UltraS 3",1e-5);
+
+        SPI::printf("------------ LSTNP_spatial Blasius boundary layer UltraS end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ LSTNP_spatial_right Blasius boundary layer UltraS start -----------");
+        PetscInt n=169;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        //params.Re = 400.0;
+        //params.omega = 86.*params.Re/(1000000.);
+        params.Re = 1000.0/1.7208;
+        params.omega = 0.26/1.7208;
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.74155+0.345132*PETSC_i)/1.7208;
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"eigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        //SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(1){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial_right UltraS 1",1e-4);
+        SPI::SPIMat &O = grid.O;
+        SPI::SPIMat &t = grid.T;
+        SPI::SPIMat T(SPI::block({
+                    {t,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,t,O,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,t,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,t,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,t,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,t,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,t,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,t,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,t,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,t,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,t,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,t,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,t,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,t,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,O,t,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,t},
+                    })());
+        SPI::SPIVec eigenfunctionout(T*eigenfunction,"UltraS");
+        //SPI::save(eigenfunctionout,"eigenfunctionNP.h5");
+        //SPI::save(grid.y,"eigenfunctionNP.h5");
+        // LST_spatial physical
+        SPI::SPIVec leigenfunction16(16*n);
+        SPI::SPIVec eigenfunction16(16*n);
+        std::tie(eigenvalue,eigenfunction16) = SPI::LSTNP_spatial_right(params,grid2,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial_right physical 1",1e-4);
+        // LSTNP_spatial physical
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid2,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial_right physical 1",1e-4);
+
+        params.alpha = (0.54213+0.083968*PETSC_i)/1.7208;
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatial_right UltraS 2",1e-5);
+
+        params.alpha = (0.29967+0.230773*PETSC_i)/1.7208;
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatial_right UltraS 3",1e-5);
+
+        SPI::printf("------------ LSTNP_spatial_right Blasius boundary layer UltraS end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ LSTNP_spatials_right Blasius boundary layer UltraS start -----------");
+        PetscInt n=169;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        //SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        //params.Re = 400.0;
+        //params.omega = 86.*params.Re/(1000000.);
+        params.Re = 1000.0/1.7208;
+        params.omega = 0.26/1.7208;
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.74155+0.345132*PETSC_i)/1.7208;
+        params.beta = 0.0;
+        //params.print();
+
+        std::vector<SPI::SPIVec> eigenfunction(1); //grid.y.rows*16,"eigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        eigenfunction[0] = SPI::ones(grid.y.rows*16);
+        std::vector<PetscScalar> eigenvalue(1);
+        std::vector<PetscScalar> eigenvalues;
+        std::vector<SPI::SPIVec> eigenfunctions;
+        eigenvalue[0] = params.alpha;
+        //eigenfunction[0].name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(1){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatials_right(params,grid,bl_flow,eigenvalue,eigenfunction);
+        eigenvalues.push_back(params.alpha);
+        eigenfunctions.push_back(eigenfunction[0]);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(eigenvalue[0]*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatials_right UltraS 1",1e-4);
+        //std::cout<<"eigenvalue = "<<eigenvalue[0]*1.7208<<std::endl;
+        SPI::SPIMat &O = grid.O;
+        SPI::SPIMat &t = grid.T;
+        SPI::SPIMat T(SPI::block({
+                    {t,O,O,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,t,O,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,t,O,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,t,O,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,t,O,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,t,O,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,t,O,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,t,O,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,t,O,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,t,O,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,t,O,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,t,O,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,t,O,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,t,O,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,O,t,O},
+                    {O,O,O,O,O,O,O,O,O,O,O,O,O,O,O,t},
+                    })());
+        SPI::SPIVec eigenfunctionout(T*eigenfunction[0],"UltraS");
+        SPI::save(eigenfunctionout,"eigenfunctionNP.h5");
+        SPI::save(grid.y,"eigenfunctionNP.h5");
+        // LST_spatial physical
+        //std::vector<SPI::SPIVec> eigenfunction16;
+        //std::tie(eigenvalue,eigenfunction16) = SPI::LSTNP_spatials_right(params,grid2,bl_flow);
+        //test_if_close(eigenvalue[0]*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatials_right physical 1",1e-4);
+        //std::cout<<"eigenvalue = "<<eigenvalue<<std::endl;
+        // LSTNP_spatial physical
+        //std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatials_right(params,grid2,bl_flow);
+        //test_if_close(eigenvalue[0]*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatials_right physical 1",1e-4);
+        //std::cout<<"eigenvalue = "<<eigenvalue<<std::endl;
+
+        params.alpha = (0.54213+0.083968*PETSC_i)/1.7208;
+        eigenvalue[0] = params.alpha;
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatials_right(params,grid,bl_flow,eigenvalue,eigenfunction);
+        eigenvalues.push_back(params.alpha);
+        eigenfunctions.push_back(eigenfunction[0]);
+        test_if_close(eigenvalue[0]*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatials_right UltraS 2",1e-5);
+        //std::cout<<"eigenvalue = "<<eigenvalue[0]*1.7208<<std::endl;
+
+        params.alpha = (0.29967+0.230773*PETSC_i)/1.7208;
+        eigenvalue[0] = params.alpha;
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatials_right(params,grid,bl_flow,eigenvalue,eigenfunction);
+        eigenvalues.push_back(params.alpha);
+        eigenfunctions.push_back(eigenfunction[0]);
+        test_if_close(eigenvalue[0]*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatials_right UltraS 3",1e-4);
+        //std::cout<<"eigenvalue = "<<eigenvalue[0]*1.7208<<std::endl;
+        //std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatials_right(params,grid,bl_flow,eigenvalue,eigenfunction);
+        //test_if_close(eigenvalue[0]*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatials_right UltraS 3",1e-5);
+        //std::cout<<"eigenvalue = "<<eigenvalue[0]*1.7208<<std::endl;
+
+        std::vector<PetscScalar> eigenvalues2;
+        std::vector<SPI::SPIVec> eigenfunctions2;
+        std::tie(eigenvalues2,eigenfunctions2) = SPI::LSTNP_spatials_right(params,grid,bl_flow,eigenvalues,eigenfunctions);
+        test_if_close(eigenvalues2[0]*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatials_right UltraS 1",1e-4);
+        test_if_close(eigenvalues2[1]*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatials_right UltraS 2",1e-5);
+        test_if_close(eigenvalues2[2]*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatials_right UltraS 3",1e-5);
+
+        SPI::printf("------------ LSTNP_spatials_right Blasius boundary layer UltraS end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ UltraS int start -----------");
+        PetscInt n=11;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIVec a(grid.That*(y^2));
+        SPI::SPIVec a2(y^2);
+        //std::cout<<"integrate = "<<integrate_coeffs(a)<<std::endl;
+        test_if_close(integrate_coeffs(a),2.0/3.0,"integrate_coeffs 1",1e-12);
+        test_if_close(integrate_coeffs(a),2.0/3.0,"integrate_coeffs 1",1e-12);
+        a = (grid.That*((y^2)+(4.0*y)+1.0));
+        test_if_close(integrate_coeffs(a),8.0/3.0,"integrate_coeffs 2",1e-12);
+        a = (grid.That*((y^2)+(4.0*y)));
+        test_if_close(integrate_coeffs(a),2.0/3.0,"integrate_coeffs 3",1e-12);
+        a = (grid.That*(4.0*(y^2)+(y)+10.0));
+        test_if_close(integrate_coeffs(a),68.0/3.0,"integrate_coeffs 4",1e-12);
+
+        SPI::SPIVec y2(SPI::set_Cheby_mapped_y(0.,10.,n) ,"yCheby");
+        SPI::SPIgrid grid2(y2,"grid",SPI::UltraS);
+        a = grid2.That*(4.0*(y2^2)+(y2)+10.0);
+        test_if_close(integrate_coeffs(a,grid2.y),4450.0/3.0,"integrate_coeffs 5",1e-12);
+
+        SPI::SPIVec y3(SPI::set_Cheby_mapped_y(-10.,10.,n) ,"yCheby");
+        SPI::SPIgrid grid3(y3,"grid",SPI::UltraS);
+        a = grid3.That*(4.0*(y3^2)+(y3)+10.0);
+        test_if_close(integrate_coeffs(a,grid3.y),8600.0/3.0,"integrate_coeffs 6",1e-12);
+
+        SPI::SPIVec y4(SPI::set_Cheby_mapped_y(-1.,10.,n) ,"yCheby");
+        SPI::SPIgrid grid4(y4,"grid",SPI::UltraS);
+        a = grid4.That*(4.0*(y4^2)+(y4)+10.0);
+        test_if_close(integrate_coeffs(a,grid4.y),8965.0/6.0,"integrate_coeffs 7",1e-12);
+
+        SPI::SPIVec y5(SPI::set_Cheby_mapped_y(-1.,10.,n) ,"yCheby");
+        SPI::SPIgrid grid5(y5,"grid",SPI::UltraS);
+        SPI::SPIgrid grid5_2(y5,"grid",SPI::Chebyshev);
+        a = grid5.That*(4.0*(y5^2)+(y5)+10.0);
+        a2 = (4.0*(y5^2)+(y5)+10.0);
+        test_if_close(integrate(a,grid5),8965.0/6.0,"integrate 1 UltraS",1e-12);
+        test_if_close(integrate(a2,grid5_2),8965.0/6.0,"integrate 1 Chebyshev",1e-12);
+
+        SPI::SPIVec y6(SPI::set_Cheby_mapped_y(-1.,10.,201) ,"yCheby");
+        SPI::SPIgrid grid6(y6,"grid",SPI::Chebyshev);
+        a2 = (4.0*(y6^2)+(y6)+10.0);
+        test_if_close(integrate(a2,grid6),8965.0/6.0,"integrate 2",1e-1);
+
+        SPI::SPIVec y7(SPI::set_Cheby_mapped_y(0.,21.,41) ,"yCheby");
+        SPI::SPIgrid grid7(y7,"grid",SPI::UltraS);
+        SPI::SPIVec a7(41*4,"a3");
+        //SPI::SPIVec tmp(grid7.That*(1.0-(y7^2)));
+        SPI::SPIVec tmp(grid7.That*(1.0-(y7^2)+y7*y7*y7+y7*PETSC_i));
+        for(PetscInt i=0; i<4; ++i){
+            for(PetscInt j=0; j<41; ++j){
+                a7(i*41+j,tmp(j,PETSC_TRUE));
+            }
+        }
+        a7();
+        //test_if_close(integrate(a7,grid7),-3066.0*4.0,"integrate 3",1e-11);
+        test_if_close(integrate(a7,grid7),182217.0,"integrate 3",1e-11);
+        test_if_close(PetscImaginaryPart(integrate(a7,grid7)),441.0*2.0,"integrate 3 imaginary",1e-11);
+        SPI::printf("------------ UltraS int end   -----------");
+    }
+    if(alltests){ // and timing of LSTNP_spatials_right vs LSTNP_spatial_right
+        SPI::printf("------------ LSTNP_spatials_right Blasius boundary layer UltraS start -----------");
+        PetscInt n=119;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        //params.Re = 400.0;
+        //params.omega = 86.*params.Re/(1000000.);
+        params.Re = 1000.0/1.7208;
+        params.omega = 0.26/1.7208;
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.74155+0.345132*PETSC_i)/1.7208;
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"eigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        //SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(1){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+        // timing
+        time_t timer1,timer2,timer3;
+        double seconds;
+        time(&timer1); // get current time
+
+        std::vector<PetscScalar> alphas_guess(3);
+        std::vector<SPI::SPIVec> eigenfunction_guess(3);
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        alphas_guess[0] = eigenvalue;
+        eigenfunction_guess[0] = eigenfunction;
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(params.alpha*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatial_right 1",1e-4);
+
+        params.alpha = (0.54213+0.083968*PETSC_i)/1.7208;
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        alphas_guess[1] = eigenvalue;
+        eigenfunction_guess[1] = eigenfunction;
+        test_if_close(params.alpha*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatial_right 2",1e-5);
+
+        params.alpha = (0.29967+0.230773*PETSC_i)/1.7208;
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        alphas_guess[2] = eigenvalue;
+        eigenfunction_guess[2] = eigenfunction;
+        test_if_close(params.alpha*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatial_right 3",1e-3);
+        time(&timer2); // get current time
+
+        std::vector<PetscScalar> alpha_spatials_right;
+        std::vector<SPI::SPIVec> eig_vecs_spatials_right;
+        std::tie(alpha_spatials_right,eig_vecs_spatials_right) = SPI::LSTNP_spatials_right(params,grid,bl_flow,alphas_guess,eigenfunction_guess);
+        test_if_close(alpha_spatials_right[0]*1.7208,(0.74155+0.345132*PETSC_i),"LSTNP_spatials_right 1",1e-4);
+        test_if_close(alpha_spatials_right[1]*1.7208,(0.54213+0.083968*PETSC_i),"LSTNP_spatials_right 2",1e-5);
+        test_if_close(alpha_spatials_right[2]*1.7208,(0.29967+0.230773*PETSC_i),"LSTNP_spatials_right 3",1e-3);
+        //std::cout<<"alpha_spatials_right[0] = "<<alpha_spatials_right[0]<<std::endl;
+        //std::cout<<"alpha_spatials_right[1] = "<<alpha_spatials_right[1]<<std::endl;
+        //std::cout<<"alpha_spatials_right[2] = "<<alpha_spatials_right[2]<<std::endl;
+        //std::cout<<"alphas_guess[0] = "<<alphas_guess[0]<<std::endl;
+        //std::cout<<"alphas_guess[1] = "<<alphas_guess[1]<<std::endl;
+        //std::cout<<"alphas_guess[2] = "<<alphas_guess[2]<<std::endl;
+        time(&timer3); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial_right 3 solves on Blasius boundary layer",seconds);
+        seconds = difftime(timer3,timer2);
+        SPI::printf("%.10f seconds for LSTNP_spatials_right 3 solves on Blasius boundary layer",seconds);
+
+        SPI::printf("------------ LSTNP_spatials_right Blasius boundary layer UltraS end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ A*x=b grid UltraS start -----------");
+        PetscInt n=20;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        //SPI::SPIgrid grid(y,"grid",SPI::FD);
+        SPI::SPIgrid grid2(y,"grid",SPI::UltraS);
+        SPI::SPIMat A;
+        A = grid.Dyy + grid.Dy + grid.I;
+        SPI::SPIVec b(SPI::zeros(n));
+        std::vector<PetscInt> rowBCs = {0*n,n-1};
+        A.eye_rows(rowBCs);
+        b(rowBCs[0],0.0);
+        b(rowBCs[1],1.0);
+        b();
+        SPI::SPIVec x;
+        x = SPI::solve(A,b);
+        //x.print();
+
+        // exact solution
+        SPI::SPIVec xexact(SPI::zeros(n));
+        PetscScalar i=PETSC_i;
+        PetscScalar a=std::exp(0.5)/(2.0*i*std::sin(std::sqrt(3.0)/2.0));
+        //std::cout<<"a = "<<a<<std::endl;
+        xexact = SPI::exp(-0.5*grid.y)*((a*SPI::exp((i*std::sqrt(3.0)/2.0)*grid.y)) - (a*SPI::exp((-i*std::sqrt(3.0)/2.0)*grid.y )));
+        //(x-xexact).print();
+        std::cout<<"error physical = "<<SPI::L2(x-xexact)<<std::endl;
+
+        // UltraS solution
+        SPI::SPIMat A2(n,n);
+        //MatMPIAIJSetPreallocation(A.mat,20,NULL,20,NULL);
+        A2 = grid2.Dyy + grid2.Dy + grid2.I;
+        //MatMPIAIJSetPreallocation(A.mat,20,NULL,20,NULL);
+        b = SPI::zeros(n);
+        rowBCs = {n-2,n-1};
+        A2.zero_rows(rowBCs);
+        MatSetOption(A2.mat,MAT_NEW_NONZERO_ALLOCATION_ERR, PETSC_FALSE);
+        for(PetscInt j=0; j<n; ++j){
+            A2(rowBCs[0],j,grid.T(0,j,PETSC_TRUE));      // u at the wall
+            A2(rowBCs[1],j,grid.T(n-1,j,PETSC_TRUE));      // u at the wall
+        }
+        b(rowBCs[0],0.0);
+        b(rowBCs[1],1.0);
+        b();
+        A2();
+        x = SPI::solve(A2,b);
+        std::cout<<"error UltraS = "<<SPI::L2((grid.T*x)-xexact)<<std::endl;
+        xexact = (SPI::exp(0.5-grid.y/2.0)/std::sin(std::sqrt(3.0)/2.0))*SPI::sin(std::sqrt(3.0)/2.0 * grid.y);
+        std::cout<<"error UltraS = "<<SPI::L2((grid.T*x)-xexact)<<std::endl;
+        //std::cout<<"erf(1) = "<<std::erf(1.0)<<std::endl;
+        //std::cout<<"erf(1) = "<<std::erf((double)1.0)<<std::endl;
+        //std::cout<<"erf(1) = "<<std::erf(std::complex<double>(1.0))<<std::endl;
+        //SPI::erf(SPI::ones(n)).print();
+        //
+        // solve u'' + x*u' + u = (4*y + 17)*e^(4*x) with u(0) = 1 and u(1) = e^4
+        // solution is u=e^(4*y)
+        A = grid.Dyy + SPI::diag(y)*grid.Dy + grid.I;
+        b = (4.0*y + 17.0) * SPI::exp(4.0*y);
+        rowBCs = {0*n,n-1};
+        A.eye_rows(rowBCs);
+        b(rowBCs[0],1.0);
+        b(rowBCs[1],std::exp(4.0));
+        b();
+        x = SPI::solve(A,b);
+
+        // exact solution
+        xexact = SPI::exp(4.0*y);
+
+        std::cout<<"error non-const = "<<SPI::L2(x - xexact)<<std::endl;
+
+        // solve non-const using UltraS
+        A = grid2.Dyy + grid2.S1S0That*(SPI::diag(y)*(grid2.T*grid2.S0invS1inv*grid2.Dy)) + grid2.I;
+        b = grid2.S1S0That*(((4.0*y) + 17.0) * SPI::exp(4.0*y));
+        rowBCs = {n-2,n-1};
+        A.zero_rows(rowBCs);
+        MatSetOption(A.mat,MAT_NEW_NONZERO_ALLOCATION_ERR, PETSC_FALSE);
+        for(PetscInt j=0; j<n; ++j){
+            A(rowBCs[0],j,grid.T(0,j,PETSC_TRUE));      // u at the wall
+            A(rowBCs[1],j,grid.T(n-1,j,PETSC_TRUE));      // u at the wall
+        }
+        A();
+        b(rowBCs[0],1.0);
+        b(rowBCs[1],std::exp(4.0));
+        b();
+        x = SPI::solve(A,b);
+
+        std::cout<<"error non-const UltraS = "<<SPI::L2(grid.T*x - xexact)<<std::endl;
+
+        SPI::printf("------------ A*x=b grid UltraS end   -----------");
+    }
+    if(alltests){ // and timing of LSTNP_spatials_right vs LSTNP_spatial_right
+        SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS start -----------");
+        PetscInt n=169;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        params.Re = 400.0;
+        params.omega = 86.*params.Re/(1000000.);
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.094966+0.004564*PETSC_i);
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"eigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue,cg;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(0){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+        // timing
+        time_t timer1,timer2;
+        double seconds;
+
+        time(&timer1); // get current time
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial_right 1 solves on Blasius boundary layer",seconds);
+        test_if_close(params.alpha,(0.094966355495876+0.004564261943353*PETSC_i),"LSTNP_spatial_right 1",1e-8);
+
+        std::vector<PetscScalar> alphas_guess(2);
+        std::vector<SPI::SPIVec> eigenfunction_guess(2);
+        time(&timer1); // get current time
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial_right 1 solves on Blasius boundary layer",seconds);
+        alphas_guess[0] = eigenvalue;
+        eigenfunction_guess[0] = eigenfunction;
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow);
+        test_if_close(params.alpha,(0.094966355495876+0.004564261943353*PETSC_i),"LSTNP_spatial_right 1",1e-8);
+        //SPI::printf("LSTNP_spatial_right 1 non-Parallel Blasius boundary layer eigenvalue = %.10f + %.10fi",eigenvalue);
+
+        time(&timer1); // get current time
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial 2 solves on Blasius boundary layer",seconds);
+        test_if_close(params.alpha,(0.094966355495876+0.004564261943353*PETSC_i),"LSTNP_spatial 2",1e-8);
+
+        params.alpha = (0.10665444+0.00189793*PETSC_i);
+        time(&timer1); // get current time
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial_right 3 solves on Blasius boundary layer",seconds);
+        alphas_guess[1] = eigenvalue;
+        eigenfunction_guess[1] = eigenfunction;
+        test_if_close(params.alpha,(0.106654447306241+0.001897936897103*PETSC_i),"LSTNP_spatial_right 3",1e-8);
+        //SPI::printf("LSTNP_spatial_right 2 non-Parallel Blasius boundary layer eigenvalue = %.10f + %.10fi",eigenvalue);
+
+        time(&timer1); // get current time
+        std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,bl_flow);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial 4 solves on Blasius boundary layer",seconds);
+        test_if_close(params.alpha,(0.106654447306241+0.001897936897103*PETSC_i),"LSTNP_spatial 4",1e-8);
+
+        std::vector<PetscScalar> eigenvalues(2);
+        std::vector<SPI::SPIVec> eigenfunctions(2);
+        time(&timer1); // get current time
+        std::tie(eigenvalues,eigenfunctions) = SPI::LSTNP_spatials_right(params,grid,bl_flow,alphas_guess,eigenfunction_guess);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatials_right 5,6 solves on Blasius boundary layer",seconds);
+        test_if_close(eigenvalues[0],(0.094966355495876+0.004564261943353*PETSC_i),"LSTNP_spatials_right 5",1e-8);
+        test_if_close(eigenvalues[1],(0.106654447306241+0.001897936897103*PETSC_i),"LSTNP_spatials_right 6",1e-8);
+
+        SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS end   -----------");
+    }
+    if(alltests){ // and timing of LSTNP_spatials_right vs LSTNP_spatial_right
+        SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS start -----------");
+        PetscInt n=169;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        params.Re = 400.0;
+        params.omega = 86.*params.Re/(1000000.);
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.094966+0.004564*PETSC_i);
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"eigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue,cg;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(0){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+        // timing
+        time_t timer1,timer2;
+        double seconds;
+
+        time(&timer1); // get current time
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right2(params,grid,bl_flow);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial_right 1 solves on Blasius boundary layer",seconds);
+        test_if_close(params.alpha,(0.094966355495876+0.004564261943353*PETSC_i),"LSTNP_spatial_right 1",1e-8);
+        SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS end   -----------");
+    }
+    if(1){ // and timing of LSTNP_spatials_right vs LSTNP_spatial_right
+        SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS start -----------");
+        PetscInt n=169;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
+        //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        //SPI::SPIgrid grid0(y,"grid",SPI::UltraS); // good now
+        //SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev); // good now
+        //SPI::SPIgrid grid3(y,"grid",SPI::FD); // good now
+        //SPI::SPIVec y2;
+        //2.0*y;
+        //2.0+y;
+        //2.0/y;
+        //y/2.0;
+        //y2 = y;
+        // test grid making routines
+        //SPI::SPIMat Dy_1(SPI::set_D(y,1)); // this is good now
+        //SPI::SPIMat Dy_2(SPI::set_D_Chebyshev(y,1,PETSC_TRUE)); // this is good now
+        //SPI::SPIMat Dyy_1(SPI::set_D(y,2)); // this is good now
+        //SPI::SPIMat Dyy_2(SPI::set_D_Chebyshev(y,2,PETSC_TRUE)); // this is good now
+        //SPI::SPIVec xi = (SPI::ones(n));// good
+        //SPI::SPIMat I(SPI::eye(n),"I");// good
+        //SPI::SPIVec s(SPI::arange(4));// good
+        //SPI::SPIMat D(n);// good
+        //D = SPI::zeros(n,n);
+        //SPI::SPIVec Coeffs(SPI::get_D_Coeffs(s,1)); // this is good now
+        //Coeffs.~SPIVec();
+        //Coeffs = SPI::arange(4);
+        //Coeffs.~SPIVec();
+        //Coeffs = SPI::arange(4);
+        //D*=4.0;
+        //SPI::map_D(D,y,1,4); // good now
+        //SPI::SPIMat Dy(SPI::map_D(D,y,1,4)); // good now
+        //SPI::SPIMat D1(SPI::eye(n)); // good
+        //SPI::diag(1./(D*y)); // good
+        //SPI::diag(1./(D*y))*D; // good now;
+        //D*D; // good now
+        //y^3;
+        //y^y;
+        //D*y;
+        //D+D;
+        //SPI::SPIMat Dy1(SPI::set_D(y,1,4,PETSC_TRUE));
+        //-1.*(D*y);
+        //SPI::diag(y^2);
+        //s *= y; // good
+        //SPI::factorial(3);
+        //SPI::SPIMat A(3);
+        //A(0,0,1.0); A(0,1,1.0); A(0,2,1.0);
+        //A(1,0,1.0); A(1,1,2.0); A(1,2,3.0);
+        //A(2,0,1.0); A(2,1,4.0); A(2,2,9.0);
+        //SPI::SPIVec b(3);
+        //b(1,1.0);
+        //A();b();
+        //SPI::solve(A,b); // good now
+        //b/A; // good now
+        //SPI::block({
+                //{A,A},
+                //{A,A}
+                //})();
+        //SPI::set_T_That(y.rows); // good now
+        //SPI::meshgrid(y,y); // good now
+        //D%D; // good now
+        //SPI::SPIMat A2(4,3); // good
+        //A2();
+        //SPI::SPIMat A3(A2); // good
+        //SPI::SPIMat Y1,Y2;
+        //std::tie(Y1,Y2) = SPI::meshgrid(y,y); // good
+        //cos(Y1%acos(Y2));
+        //SPI::SPIMat Y3;
+        //Y1.T(Y3);
+        //SPI::SPIgrid grid(y,"grid",SPI::UltraS); // works
+        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev); // works
+        //grid.print();
+        //exit(0);
+        //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
+        //SPI::printf("n = %d",n);
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+
+        SPI::SPIparams params("Blasius parameters");
+        params.Re = 400.0;
+        params.omega = 86.*params.Re/(1000000.);
+        params.nu = 1./params.Re;
+        params.x = params.Re;
+        params.x_start = params.x;
+        params.alpha = (0.094966+0.004564*PETSC_i);
+        params.beta = 0.0;
+        //params.print();
+
+        SPI::SPIVec eigenfunction(grid.y.rows*16,"eigenfunction");
+        SPI::SPIVec eigenfunction2(grid.y.rows*8,"eigenfunction");
+        //SPI::SPIVec eig_vec(grid.y.rows*8,"q");
+        SPI::SPIVec leigenfunction(grid.y.rows*16,"q");
+        PetscScalar eigenvalue,eigenvalue2,cg;
+        eigenfunction.name = "eigenfunction";
+
+        SPI::SPIbaseflow bl_flow = SPI::blasius(params,grid);
+        //SPI::SPIbaseflow bl_flow = SPI::channel(params,grid);
+        if(0){ // set to parallel baseflow
+            SPI::SPIVec o(SPI::zeros(n),"zero");
+            bl_flow.Ux = o;
+            bl_flow.Uxy = o;
+            bl_flow.V = o;
+            bl_flow.Vy = o;
+        }
+        //bl_flow.print();
+        // timing
+        time_t timer1,timer2;
+        double seconds;
+
+        time(&timer1); // get current time
+        params.print();
+        //grid.print();
+        //(grid.Dy*grid.y).print();
+        //(grid.Dyy*grid.y).print();
+        //bl_flow.print();
+        //grid.T.print();
+        //grid.That.print();
+        //std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right2(params,grid,bl_flow); // good
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow);
+        std::tie(eigenvalue2,eigenfunction2) = SPI::LST_spatial(params,grid,bl_flow);
+        time(&timer2); // get current time
+        seconds = difftime(timer2,timer1);
+        SPI::printf("%.10f seconds for LSTNP_spatial_right 1 solves on Blasius boundary layer",seconds);
+        test_if_close(eigenvalue,(0.094966355495876+0.004564261943353*PETSC_i),"LSTNP_spatial_right 1",1e-8);
+        SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS end   -----------");
+
+        SPI::SPIMat M(4),C(4),K(4);
+        M(0,0,3.0); M(1,1,1.0); M(2,2,3.0); M(3,3,1.0); M();
+        C(0,0,0.4); C(0,2,-0.3);
+        C(2,0,-0.3); C(2,2,0.5); C(2,3,-0.2);
+        C(3,2,-0.2); C(3,3,0.2);
+        C();
+        K(0,0,-7.0); K(0,1, 2.0); K(0,2, 4.0);
+        K(1,0, 2.0); K(1,1,-4.0); K(1,2, 2.0);
+        K(2,0, 4.0); K(2,1, 2.0); K(2,2,-9.0); K(2,3, 3.0);
+                                  K(3,2, 3.0); K(3,3,-3.0);
+        K();
+        SPI::SPIVec eigenfunction_4(4);
+        std::tie(eigenvalue,eigenfunction_4) = SPI::polyeig({K,C,M},-2.4498); // good
+        SPI::printfc("eigenvalue = %.10f + %.10f",eigenvalue);
+        K.zero_rows({1,2});
+        M.eye_row(1);
+        K = M*K;
+        //eigenfunction_4.print();
+        //(0.1828*eigenfunction_4/eigenfunction_4(0,PETSC_TRUE)).print();
+        //(eigenvalue*eigenvalue*(M*eigenfunction_4) + eigenvalue*(C*eigenfunction_4) + (K*eigenfunction_4)).print();
+    }
+
 
     return 0;
 }

@@ -1,7 +1,4 @@
 #include "SPIVec.hpp"
-#include <petscviewerhdf5.h>
-#include "SPIprint.hpp"
-#include <math.h>
 
 namespace SPI{
 
@@ -98,7 +95,27 @@ namespace SPI{
     PetscScalar SPIVec::operator()(
             PetscInt _row, ///< what row to get value
             PetscBool global ///< [in] whether to broadcast value to all processors or not (default is false)
-            ) {
+            )const{
+        PetscScalar v,v_global=0.;
+        PetscInt low,high;
+        PetscErrorCode ierr2;
+        ierr2 = VecGetOwnershipRange(vec,&low, &high);CHKERRXX(ierr2);
+        if ((low<=_row) && (_row<high)){
+            ierr2 = VecGetValues(vec,1,&_row,&v);CHKERRXX(ierr2);
+        }
+        if (global){
+            MPIU_Allreduce(&v,&v_global,1,MPIU_SCALAR,MPIU_SUM,PETSC_COMM_WORLD);
+        }
+        else{
+            v_global=v; // return local value
+        }
+        return v_global;
+    }
+    /** get value at row (on all processors) \return scalar value at row specified */
+    PetscScalar SPIVec::operator()(
+            PetscInt _row, ///< what row to get value
+            PetscBool global ///< [in] whether to broadcast value to all processors or not (default is false)
+            ){
         PetscScalar v,v_global=0.;
         PetscInt low,high;
         ierr = VecGetOwnershipRange(vec,&low, &high);CHKERRXX(ierr);
@@ -450,6 +467,11 @@ namespace SPI{
             flag_init=PETSC_FALSE;
             ierr = VecDestroy(&vec);CHKERRXX(ierr);
         }
+        //else{
+            //(*this)=zeros(1);
+            //ierr = VecDestroy(&vec);CHKERRXX(ierr);
+
+        //}
     }
 
     // overload operator, scale with scalar
@@ -699,6 +721,24 @@ namespace SPI{
     SPIVec atanh(const SPIVec &A){ return _Function_on_each_element(&std::atanh<PetscReal>, A); }
     /** \brief take the atanh of each element in a vector */
     SPIVec sqrt(const SPIVec &A){ return _Function_on_each_element(&std::sqrt<PetscReal>, A); }
+    /** \brief take the erf of each element in a vector */
+    SPIVec erf(const SPIVec &A){
+            SPIVec out(A);
+            for (PetscInt i=0; i<out.rows; ++i){
+                out(i,std::erf((double)(PetscRealPart(out(i)))));                // TODO speed up by getting all values at once on local processor and looping through those
+            }
+            out();
+            return out;
+    }
+    /** \brief take the erfc(z) = 1-erf(z) of each element in a vector */
+    SPIVec erfc(const SPIVec &A){
+            SPIVec out(A);
+            for (PetscInt i=0; i<out.rows; ++i){
+                out(i,std::erfc((double)(PetscRealPart(out(i)))));                // TODO speed up by getting all values at once on local processor and looping through those
+            }
+            out();
+            return out;
+    }
     /** \brief function to take element by element of two vectors e.g. (*f)(A(i),B(i)) for all i */
     template <class T>
         SPIVec _Function_on_each_element(
@@ -750,6 +790,49 @@ namespace SPI{
         PetscScalar sum;
         x1.ierr = VecSum(x1.vec,&sum); CHKERRXX(x1.ierr);
         return sum;
+    }
+    /** \brief integrate a vector of chebyshev Coefficients on a grid */
+    PetscScalar integrate_coeffs(
+            const SPIVec &a     ///< [in] chebyshev coefficients to integrate
+            ){
+        PetscInt n=a.rows;
+        PetscInt N=n-1;
+        SPIVec d(n+1,"d");
+        PetscScalar value=0.0,d0=0.0;
+        for(PetscInt i=1; i<=N+1; ++i){
+            if(i==1){
+                value=0.5*(2.0*a(i-1,PETSC_TRUE)-a(i+1,PETSC_TRUE));
+            }
+            else if(i==N+1){
+                value = 0.5/((PetscScalar)i)*(2.0*a(i-1,PETSC_TRUE));
+            }
+            else if(i==N){
+                value = 0.5/((PetscScalar)i)*(1.0*a(i-1,PETSC_TRUE));
+            }
+            else{
+                value = 0.5/((PetscScalar)i)*(1.0*a(i-1,PETSC_TRUE) - a(i+1,PETSC_TRUE));
+            }
+            d(i,value);
+            if((i%2)==0){ // even
+                d0 -= value;
+            }
+            else{ // odd
+                d0 += value;
+            }
+        }
+        d(0,d0);
+        d(); // assemble
+        return sum(d);
+    }
+    /** \brief integrate a vector of chebyshev Coefficients on a stretched grid */
+    PetscScalar integrate_coeffs(
+            const SPIVec &a,      ///< [in] chebyshev coefficients
+            const SPIVec &y       ///< [in] Cheby_mapped_y grid
+            ){
+        PetscScalar ai=y(0,PETSC_TRUE);
+        PetscScalar bi=y(y.rows-1,PETSC_TRUE);
+        PetscScalar mul = (bi-ai)/2.0;
+        return mul*integrate_coeffs(a);
     }
 
 
