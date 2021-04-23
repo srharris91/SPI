@@ -1,4 +1,6 @@
 #include "SPIVec.hpp"
+// use 1 to use the GPU and 0 or anything else to only use CPU and MPI.  Be sure this matches what is in SPIMat.cpp
+#define USE_GPU 0
 
 namespace SPI{
 
@@ -29,7 +31,11 @@ namespace SPI{
         //std::cout<<" rows at initialization "<<this->rows<<std::endl;
         ierr = VecCreate(PETSC_COMM_WORLD,&vec);CHKERRXX(ierr);
         ierr = VecSetSizes(vec,PETSC_DECIDE,_rows);CHKERRXX(ierr);
+#if USE_GPU == 1
+        ierr = VecSetType(vec,VECMPICUDA);CHKERRXX(ierr);
+#else
         ierr = VecSetType(vec,VECMPI);CHKERRXX(ierr);
+#endif
         flag_init=PETSC_TRUE;
     }
 
@@ -45,7 +51,11 @@ namespace SPI{
         SPI::printf("rows at initialization %D",this->rows);
         ierr = VecCreate(PETSC_COMM_WORLD,&vec);CHKERRQ(ierr);
         ierr = VecSetSizes(vec,PETSC_DECIDE,_rows);CHKERRQ(ierr);
+#if USE_GPU == 1
+        ierr = VecSetType(vec,VECMPICUDA);CHKERRQ(ierr);
+#else
         ierr = VecSetType(vec,VECMPI);CHKERRQ(ierr);
+#endif
         flag_init=PETSC_TRUE;
         return 0;
     }
@@ -186,7 +196,11 @@ namespace SPI{
         SPIVec A;
         A=*this;
         ierr = VecAXPY(A.vec,1.,X.vec);CHKERRXX(ierr);
+#if USE_GPU == 1
+        ierr = VecSetType(A.vec,VECMPICUDA);CHKERRXX(ierr);
+#else
         ierr = VecSetType(A.vec,VECMPI);CHKERRXX(ierr);
+#endif
         return A;
     }
     /** Y+a operation \return SPIVec Z=Y+a */
@@ -241,7 +255,11 @@ namespace SPI{
         SPIVec A;
         A=*this;
         ierr = VecAXPY(A.vec,-1.,X.vec);CHKERRXX(ierr);
+#if USE_GPU == 1
+        ierr = VecSetType(A.vec,VECMPICUDA);CHKERRXX(ierr);
+#else
         ierr = VecSetType(A.vec,VECMPI);CHKERRXX(ierr);
+#endif
         return A;
     }
     /** -X operation \return Z in Z=-X operation */

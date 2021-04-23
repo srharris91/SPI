@@ -2,6 +2,8 @@
 #include "SPIprint.hpp"
 #include <petscviewerhdf5.h>
 #include <petscmath.h>
+// use 1 to use the GPU and 0 or anything else to only use CPU and MPI.  Be sure this matches what is in SPIVec.cpp
+#define USE_GPU 0
 
 namespace SPI{
 
@@ -47,7 +49,11 @@ namespace SPI{
         ierr = MatCreate(PETSC_COMM_WORLD,&mat);CHKERRXX(ierr);
         ierr = MatSetSizes(mat,PETSC_DECIDE,PETSC_DECIDE,m,n);CHKERRXX(ierr);
         //ierr = MatSetFromOptions(mat);CHKERRXX(ierr);
+#if UUSE_GPU == 1
+        ierr = MatSetType(mat,MATMPIAIJCUSPARSE);CHKERRXX(ierr);
+#else
         ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
+#endif
         ierr = MatSetUp(mat);CHKERRXX(ierr);
         flag_init=PETSC_TRUE;
         return 0;
@@ -213,7 +219,11 @@ namespace SPI{
         SPIMat A;
         A=*this;
         ierr = MatAXPY(A.mat,1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
+#if USE_GPU == 1
+        ierr = MatSetType(A.mat,MATMPIAIJCUSPARSE);CHKERRXX(ierr);
+#else
         ierr = MatSetType(A.mat,MATMPIAIJ);CHKERRXX(ierr);
+#endif
         return A;
     }
     // overloaded operator, MatAXPY
@@ -232,7 +242,11 @@ namespace SPI{
         SPIMat A;
         A=*this;
         ierr = MatAXPY(A.mat,-1.,X.mat,DIFFERENT_NONZERO_PATTERN);CHKERRXX(ierr);
+#if USE_GPU == 1
+        ierr = MatSetType(A.mat,MATMPIAIJCUSPARSE);CHKERRXX(ierr);
+#else
         ierr = MatSetType(A.mat,MATMPIAIJ);CHKERRXX(ierr);
+#endif
         return A;
     }
     /** \brief -X operation \return new matrix after operation */
@@ -336,7 +350,11 @@ namespace SPI{
         rows=A.rows;
         cols=A.cols;
         ierr = MatConvert(A.mat,MATSAME,MAT_INITIAL_MATRIX,&mat);CHKERRXX(ierr);
+#if USE_GPU == 1
+        ierr = MatSetType(mat,MATMPIAIJCUSPARSE);CHKERRXX(ierr);
+#else
         ierr = MatSetType(mat,MATMPIAIJ);CHKERRXX(ierr);
+#endif
         flag_init=PETSC_TRUE;
         //
         return *this;
@@ -1949,7 +1967,11 @@ Optional: Get some information from the solver and display it
         //SPI::SPIMat AorthH("AorthH");
         E.ierr = BVOrthogonalize(bv,PETSC_NULL); CHKERRXX(E.ierr);
         E.ierr = BVCreateMat(bv,&E.mat); CHKERRXX(E.ierr);
+#if USE_GPU == 1
+        E.ierr = MatConvert(E.mat,MATMPIAIJCUSPARSE,MAT_INPLACE_MATRIX,&E.mat); CHKERRXX(E.ierr);
+#else
         E.ierr = MatConvert(E.mat,MATMPIAIJ,MAT_INPLACE_MATRIX,&E.mat); CHKERRXX(E.ierr);
+#endif
         E.rows=m;
         E.cols=n;
         E();

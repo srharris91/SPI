@@ -361,10 +361,10 @@ int tests(){
         test_if_close(block(3,3,PETSC_TRUE),1.,"block(std::vector<std::vector<SPIMat>>) 4");
         SPI::printf("------------ block test end    -------------");
     }
-    if(alltests){
+    if(1){
         SPI::printf("------------ LST_temporal test start  -------------");
         // create grid and derivatives using chebyshev polynomials
-        PetscInt n=64;
+        PetscInt n=128;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
         SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
 
@@ -2052,7 +2052,7 @@ int tests(){
         test_if_close(params.alpha,(0.094966355495876+0.004564261943353*PETSC_i),"LSTNP_spatial_right 1",1e-8);
         SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS end   -----------");
     }
-    if(1){ // and timing of LSTNP_spatials_right vs LSTNP_spatial_right
+    if(0){ // and timing of LSTNP_spatials_right vs LSTNP_spatial_right
         SPI::printf("------------ LSTNP_spatials_right non-Parallel Blasius boundary layer UltraS start -----------");
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");

@@ -37,6 +37,7 @@
 
 # data files
 *hdf5
+*h5
 *dat
 *dat.info
 
