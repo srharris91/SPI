@@ -89,6 +89,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad89a9da200d92b4e6dd52693dd868bfa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIMat.html#ad89a9da200d92b4e6dd52693dd868bfa">SPIMat</a> (std::string _name=&quot;SPIMat&quot;)</td></tr>
 <tr class="memdesc:ad89a9da200d92b4e6dd52693dd868bfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor with no arguments (no initialization)  <a href="structSPI_1_1SPIMat.html#ad89a9da200d92b4e6dd52693dd868bfa">More...</a><br /></td></tr>
 <tr class="separator:ad89a9da200d92b4e6dd52693dd868bfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab93a7aff40c0e13d2ea8c60295f28af1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIMat.html#ab93a7aff40c0e13d2ea8c60295f28af1">SPIMat</a> (const std::vector&lt; <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &gt; &amp;A, std::string _name=&quot;SPIMat&quot;)</td></tr>
+<tr class="separator:ab93a7aff40c0e13d2ea8c60295f28af1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90bfcb9f9577021b0b0655050b863daa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIMat.html#a90bfcb9f9577021b0b0655050b863daa">SPIMat</a> (const <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;A, std::string _name=&quot;SPIMat&quot;)</td></tr>
 <tr class="separator:a90bfcb9f9577021b0b0655050b863daa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cabd449a5280896fe5a17406b895949"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIMat.html#a2cabd449a5280896fe5a17406b895949">SPIMat</a> (PetscInt rowscols, std::string _name=&quot;SPIMat&quot;)</td></tr>
@@ -100,6 +102,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab64bb6362d381e9f8959e28b263c17cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec416214c8b573382f9c98b15baf24c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIMat.html#aec416214c8b573382f9c98b15baf24c6">set</a> (PetscInt m, PetscInt n, const PetscScalar v)</td></tr>
 <tr class="separator:aec416214c8b573382f9c98b15baf24c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a14bd851bdcbc4a5a261094a13071638b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIMat.html#a14bd851bdcbc4a5a261094a13071638b">set_col</a> (const PetscInt <a class="el" href="structSPI_1_1SPIMat.html#a5f066c9f2f6276dbb6331adc10ed354f">col</a>, const <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;v)</td></tr>
+<tr class="separator:a14bd851bdcbc4a5a261094a13071638b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99e48a9d19f80141205522d6ba07e32f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSPI_1_1SPIMat.html#a99e48a9d19f80141205522d6ba07e32f">add</a> (PetscInt m, PetscInt n, const PetscScalar v)</td></tr>
 <tr class="memdesc:a99e48a9d19f80141205522d6ba07e32f"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a scalar value at position row m and column n  <a href="structSPI_1_1SPIMat.html#a99e48a9d19f80141205522d6ba07e32f">More...</a><br /></td></tr>
 <tr class="separator:a99e48a9d19f80141205522d6ba07e32f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -247,7 +251,7 @@ Data Fields</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00017">17</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad89a9da200d92b4e6dd52693dd868bfa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad89a9da200d92b4e6dd52693dd868bfa">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad89a9da200d92b4e6dd52693dd868bfa">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -270,12 +274,43 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00012">12</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00013">13</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ab93a7aff40c0e13d2ea8c60295f28af1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab93a7aff40c0e13d2ea8c60295f28af1">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SPI::SPIMat::SPIMat </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>_name</em> = <code>&quot;SPIMat&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>constructor using a vector of column vectors </p>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00025">25</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a90bfcb9f9577021b0b0655050b863daa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90bfcb9f9577021b0b0655050b863daa">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a90bfcb9f9577021b0b0655050b863daa">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -308,12 +343,12 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00016">16</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00017">17</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a2cabd449a5280896fe5a17406b895949"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cabd449a5280896fe5a17406b895949">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cabd449a5280896fe5a17406b895949">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -346,12 +381,12 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00024">24</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00038">38</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a38d4fb8183f87bd90b9309a20d8c4650"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38d4fb8183f87bd90b9309a20d8c4650">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a38d4fb8183f87bd90b9309a20d8c4650">&#9670;&nbsp;</a></span>SPIMat() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -392,7 +427,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00031">31</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00045">45</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -413,7 +448,7 @@ Data Fields</h2></td></tr>
 
 <p>destructor to delete memory </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00483">483</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00508">508</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -461,7 +496,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00072">72</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00097">97</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -501,7 +536,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00207">207</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00232">232</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -524,7 +559,7 @@ Data Fields</h2></td></tr>
 <p>get column vector </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> of column vector </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00464">464</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00489">489</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -546,7 +581,7 @@ Data Fields</h2></td></tr>
 <p>elemenwise conjugate current matrix </p>
 <dl class="section return"><dt>Returns</dt><dd>current matrix after conjugate of each element </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00410">410</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00435">435</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -568,7 +603,7 @@ Data Fields</h2></td></tr>
 <p>get diagonal of matrix </p>
 <dl class="section return"><dt>Returns</dt><dd>vector of current diagonal </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00420">420</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00445">445</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -597,7 +632,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00433">433</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00458">458</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -626,7 +661,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00457">457</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00482">482</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -648,7 +683,7 @@ Data Fields</h2></td></tr>
 <p>Hermitian Transpose the current mat. </p>
 <dl class="section return"><dt>Returns</dt><dd>current matrix after transpose </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00397">397</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00422">422</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -677,7 +712,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00402">402</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00427">427</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -706,7 +741,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00390">390</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00415">415</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -751,7 +786,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00041">41</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00055">55</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -773,7 +808,7 @@ Data Fields</h2></td></tr>
 <p>assmelbe the matrix </p>
 <dl class="section return"><dt>Returns</dt><dd>the current matrix </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00193">193</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00218">218</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -820,7 +855,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00135">135</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00160">160</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -867,7 +902,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00144">144</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00169">169</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -914,7 +949,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00125">125</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00150">150</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -968,7 +1003,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00155">155</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00180">180</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1015,7 +1050,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00104">104</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00129">129</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1062,7 +1097,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00081">81</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00106">106</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1091,7 +1126,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00269">269</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00294">294</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1120,7 +1155,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00260">260</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00285">285</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1149,7 +1184,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00329">329</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00354">354</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1178,7 +1213,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00278">278</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00303">303</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1207,7 +1242,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00288">288</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00313">313</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1236,7 +1271,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00295">295</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00320">320</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1265,7 +1300,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00216">216</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00241">241</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1294,7 +1329,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00200">200</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00225">225</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1316,7 +1351,7 @@ Data Fields</h2></td></tr>
 <p>-X operation </p>
 <dl class="section return"><dt>Returns</dt><dd>new matrix after operation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00253">253</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00278">278</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1345,7 +1380,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00239">239</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00264">264</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1374,7 +1409,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00231">231</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00256">256</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1403,7 +1438,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00309">309</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00334">334</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1432,7 +1467,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00315">315</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00340">340</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1461,7 +1496,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00302">302</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00327">327</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1490,7 +1525,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00342">342</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00367">367</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1512,7 +1547,7 @@ Data Fields</h2></td></tr>
 <p>print mat to screen using PETSC_VIEWER_STDOUT_WORLD </p>
 <dl class="section return"><dt>Returns</dt><dd>0 if successful </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00473">473</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00498">498</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1534,7 +1569,7 @@ Data Fields</h2></td></tr>
 <p>take the real part of the vector </p>
 <dl class="section return"><dt>Returns</dt><dd>the vector after taking the real part of it </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00415">415</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00440">440</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1579,7 +1614,45 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00063">63</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00077">77</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a14bd851bdcbc4a5a261094a13071638b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14bd851bdcbc4a5a261094a13071638b">&#9670;&nbsp;</a></span>set_col()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &amp; SPI::SPIMat::set_col </td>
+          <td>(</td>
+          <td class="paramtype">const PetscInt&#160;</td>
+          <td class="paramname"><em>col</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;&#160;</td>
+          <td class="paramname"><em>v</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>set a column vector into a matrix </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">col</td><td>[in] </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">v</td><td>[in] </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00086">86</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1601,7 +1674,7 @@ Data Fields</h2></td></tr>
 <p>Transpose the current mat. </p>
 <dl class="section return"><dt>Returns</dt><dd>current matrix after transpose </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00380">380</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00405">405</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1630,7 +1703,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00367">367</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00392">392</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1659,7 +1732,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00426">426</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00451">451</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1688,7 +1761,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00440">440</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00465">465</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1717,7 +1790,7 @@ Data Fields</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00450">450</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00475">475</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>
@@ -1754,7 +1827,7 @@ Data Fields</h2></td></tr>
 
 <p>flag if it has been initialized </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00031">31</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00032">32</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
 
 </div>
 </div>
@@ -1772,7 +1845,7 @@ Data Fields</h2></td></tr>
 
 <p>ierr for various routines and operators </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00028">28</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00029">29</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
 
 </div>
 </div>
@@ -1790,7 +1863,7 @@ Data Fields</h2></td></tr>
 
 <p>petsc Mat data </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00027">27</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00028">28</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
 
 </div>
 </div>
@@ -1808,7 +1881,7 @@ Data Fields</h2></td></tr>
 
 <p>Matrix name. </p>
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00032">32</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8hpp_source.html#l00033">33</a> of file <a class="el" href="SPIMat_8hpp_source.html">SPIMat.hpp</a>.</p>
 
 </div>
 </div>

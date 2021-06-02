@@ -2,6 +2,7 @@
 #include "SPIprint.hpp"
 #include <petscviewerhdf5.h>
 #include <petscmath.h>
+#include <slepcsvd.h>
 // use 1 to use the GPU and 0 or anything else to only use CPU and MPI.  Be sure this matches what is in SPIVec.cpp
 #define USE_GPU 0
 
@@ -19,6 +20,19 @@ namespace SPI{
             ){
         name=_name; 
         (*this) = A;
+    }
+    /** constructor using a vector of column vectors*/
+    SPIMat::SPIMat(
+            const std::vector<SPIVec> &A,
+            std::string _name
+            ){
+        PetscInt m=A[0].rows;
+        PetscInt n=A.size();
+        Init(m,n,_name); // initialize the matrix
+        for(PetscInt j=0; j<n; ++j){
+            set_col(j,A[j]);
+        }
+        (*this)();
     }
     /** constructor with one arguement to make square matrix */
     SPIMat::SPIMat(
@@ -66,6 +80,17 @@ namespace SPI{
             const PetscScalar v ///< [in] scalar to insert in matrix
             ){
         ierr = MatSetValue(mat,m,n,v,INSERT_VALUES);CHKERRXX(ierr);
+        return (*this);
+    }
+    /** set a column vector into a matrix */
+    SPIMat& SPIMat::set_col(
+            const PetscInt col, ///< [in] 
+            const SPIVec &v     ///< [in] 
+            ){
+        for(PetscInt i=0; i<rows; ++i){
+            (*this)(i,col,v(i,PETSC_TRUE));
+        }
+        //(*this)();
         return (*this);
     }
     /** \brief add a scalar value at position row m and column n \return current matrix after adding the value*/
@@ -318,7 +343,7 @@ namespace SPI{
         SPIMat Z(A.rows,A.cols);
         for(PetscInt i=0; i<Z.rows; ++i){
             for(PetscInt j=0; j<Z.cols; ++j){
-                Z(i,j,(*this)(i,j)/A(i,j,PETSC_TRUE));
+                Z(i,j,((*this)(i,j,PETSC_TRUE))/A(i,j,PETSC_TRUE));
             }
         }
         Z();
@@ -822,6 +847,82 @@ namespace SPI{
         return C;
     }
 
+    /** \brief solve SVD problem of A=U*E*V^H for skinny A matrix \return tuple of sigma,u,v   std::tie(sigma, u, v) = svd(A) */
+    std::tuple<std::vector<PetscReal>, std::vector<SPIVec>, std::vector<SPIVec>> svd(
+            const SPIMat &A         ///< [in] A to perform SVD decomposition A=U*E*V^H problem
+            ){
+        // set m to be the number of rows and k to be number of columns
+        PetscInt m=A.rows; // number of rows
+        PetscInt n=A.cols; // number of columns
+        SVD     svd;    // SVD context
+        //PetscReal sigmai;
+        //SPIVec ui(m,"u");
+        //SPIVec vi(n,"v");
+        std::vector<PetscReal> sigma(n);
+        std::vector<SPIVec> u(n);
+        std::vector<SPIVec> v(n);
+        PetscInt nconv;
+        //PetscReal error;
+
+        SVDCreate(PETSC_COMM_WORLD, &svd);
+        SVDSetOperator(svd, A.mat);
+        //SVDSetProblemType(svd, SVD_STANDARD);
+        SVDSetFromOptions(svd);
+        SVDSolve(svd);
+        //MatCreateVecs(A.mat,&vi.vec,&ui.vec);
+        //ui.flag_init=PETSC_TRUE;
+        //vi.flag_init=PETSC_TRUE;
+        SVDGetConverged(svd, &nconv);
+        //std::cout<<"n="<<n<<" nconv = "<<nconv<<std::endl;
+        for(PetscInt j=0; j<nconv; j++){
+            //std::cout<<"j = "<<j<<std::endl;
+            MatCreateVecs(A.mat,&v[j].vec,&u[j].vec);
+            SVDGetSingularTriplet(svd,j,&(sigma[j]),u[j].vec,v[j].vec);
+            u[j].flag_init=PETSC_TRUE;
+            //u[j].name = "u";
+            u[j].rows = m;
+
+            v[j].flag_init=PETSC_TRUE;
+            //v[j].name = "v";
+            v[j].rows = n;
+            //SVDGetSingularTriplet(svd,j,&sigmai,ui.vec,vi.vec);
+            //SVDComputeError(svd,j,SVD_ERROR_RELATIVE,&error);
+            //sigma.push_back(sigmai);
+            //u.push_back(ui);
+            //v.push_back(vi);
+            //sigma[j] = sigmai;
+            //u[j] = ui;
+            //v[j] = vi;
+            //std::cout<<"j = "<<j<<" sigma = "<<sigma[j]<<" error = "<<error<<std::endl;
+        }
+        //std::cout<<"made it here"<<std::endl;
+        SVDDestroy(&svd);
+        //std::cout<<"made it here deallocate"<<std::endl;
+        return std::make_tuple(sigma,u,v);
+    }
+    /** \brief solve least squares problem of A*x=y for skinny A matrix using SVD \return x */
+    SPIVec lstsq(
+            const SPIMat &A,    ///< [in] A matrix in A*x=y least squares problem
+            SPIVec &y           ///< [in] y in A*x=y least squares problem
+            ){
+        PetscInt n=A.cols;
+        std::vector<PetscReal> sigma;
+        std::vector<SPIVec> u,v;
+        SPIVec x(zeros(n));
+        std::tie(sigma,u,v) = svd(A);
+        for(PetscInt j=0; j<n; ++j){
+            x += ((y.dot(u[j]))/sigma[j]) * v[j];
+        }
+        return x;
+    }
+    /** \brief solve least squares problem of A*x=y for skinny A matrix (or vectors of columns vectors) using SVD \return x */
+    SPIVec lstsq(
+            const std::vector<SPIVec> &A,   ///< [in] vectors of columns vectors making up A matrix
+            SPIVec &y                       ///< [in] y in A*x=y least squares problem
+            ){
+        SPIMat S(A);
+        return lstsq(S,y);
+    }
     /** \brief solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) \return tuple of eigenvalue and eigenvector closest to the target value e.g.  std::tie(alpha, eig_vector) = eig(A,B,0.1+0.4*PETSC_i) */
     std::tuple<PetscScalar, SPIVec, SPIVec> eig(
             const SPIMat &A,        ///< [in] A in Ax=kBx generalized eigenvalue problem
@@ -1091,6 +1192,7 @@ namespace SPI{
             // ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
 
             ierr = EPSGetEigenpair(eps,0,&alpha,PETSC_NULL,eigr_vec.vec,PETSC_NULL);CHKERRXX(ierr);
+            eigr_vec.rows=rows;
             //ierr = EPSGetLeftEigenvector(eps,0,eigl_vec.vec,PETSC_NULL);CHKERRXX(ierr);
         }
 
@@ -1394,6 +1496,7 @@ Optional: Get some information from the solver and display it
             // ierr = PetscPrintf(PETSC_COMM_WORLD,"\n");CHKERRXX(ierr);
 
             ierr = EPSGetEigenpair(eps,0,&alpha,PETSC_NULL,eigr_vec.vec,PETSC_NULL);CHKERRXX(ierr);
+            eigr_vec.rows=rows;
             //ierr = EPSGetLeftEigenvector(eps,0,eigl_vec.vec,PETSC_NULL);CHKERRXX(ierr);
         }
 

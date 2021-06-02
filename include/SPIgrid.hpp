@@ -30,9 +30,10 @@ namespace SPI{
     /** 
      * \brief Class to contain various grid parameters
      */
-    struct SPIgrid {
-        SPIgrid(SPIVec &y, std::string name="SPIgrid", gridtype _gridtype=FD);            // constructor with set_grid arguments (set default values and derivatives)
-        ~SPIgrid();                    // destructor
+    struct SPIgrid1D {
+        SPIgrid1D();            // constructor with no arguments
+        SPIgrid1D(SPIVec &y, std::string name="SPIgrid1D", gridtype _gridtype=FD);            // constructor with set_grid arguments (set default values and derivatives)
+        ~SPIgrid1D();                    // destructor
         PetscInt ny;                // number of points in wall-normal coordinate
         void print();               // print all members of the class
         void set_grid( SPIVec &y ); // function to save grid to internal grid 
@@ -62,9 +63,51 @@ namespace SPI{
                   flag_set_operators=PETSC_FALSE; ///< flag if set_operators has been executed
 
     };
-    PetscScalar integrate(const SPIVec &a, SPIgrid &grid); // integrate a vector of Chebyshev Coefficients on physical grid
-    SPIVec proj(SPIVec &u, SPIVec &v, SPIgrid &grid);   // project using inner product for Gram-Schmidt process
-    std::vector<SPIVec> orthogonalize(std::vector<SPIVec> &x,SPIgrid &grid); // create orthonormal basis from array of vectors 
+    struct SPIgrid2D{
+        SPIgrid2D(SPIVec &y, SPIVec &t, std::string name="SPIgrid2D", gridtype y_gridtype=FD, gridtype t_gridtype=FT);            // constructor with set_grid arguments (set default values and derivatives)
+        ~SPIgrid2D();                    // destructor
+        PetscInt ny,nt;                // number of points in wall-normal coordinate
+        void print();               // print all members of the class
+        void set_grid( SPIVec &y, SPIVec &t ); // function to save grid to internal grid 
+        void set_derivatives(PetscInt order=4);     // function to create derivatives on internal grid
+        void set_operators();     // function to create zero and identity operators on internal grid
+        // vars
+        std::string name;   ///< name of grid
+        // grid
+        SPIVec y,       ///< grid for wall-normal dimension
+               t;       ///< grid for time dimension
+        SPIMat T,       ///< transform from chebyshev to physical
+               That,    ///< transform from physical to chebyshev
+               S1S0That,///< UltraSpherical helper matrix S1*S0*That for baseflow
+               S0invS1inv;  ///< inverse of S0^-1 * S1^-1
+        gridtype ytype,     ///< type of grid for wall-normal dimension
+                 ttype;  ///< type of grid for time dimension
+
+        // derivatives
+        // 2D derivatives
+        //SPIMat Dy2D,    ///< 1st derivative operator with respect to y of size nyxny
+               //Dyy2D,   ///< 2nd derivative operator with respect to y of size nyxny
+               //Dt2D;    ///< 1st derivative operator with respect to t of size ntxnt
+        SPIgrid1D grid1Dy,grid1Dt;
+        // 3D derivatives
+        SPIMat Dy,      ///< 1st derivative operator with respect to y of size ny*nt x ny*nt
+               Dyy,     ///< 2nd derivative operator with respect to y of size ny*nt x ny*nt
+               Dt;      ///< 1st derivative operator with respect to t of size ny*nt x ny*nt
+        SPIMat O,       ///< zero matrix same size as derivative operators of size ny*nt x ny*nt
+               I;       ///< identity matrix same size as derivative operators of size ny*nt x ny*nt
+        // flags
+        PetscBool flag_set_grid=PETSC_FALSE,        ///< flag if set_grid has been executed
+                  flag_set_derivatives=PETSC_FALSE, ///< flag if set_derivatives has been executed
+                  flag_set_operators=PETSC_FALSE; ///< flag if set_operators has been executed
+
+    };
+    SPIVec SPIVec1Dto2D(SPIgrid2D &grid2D, SPIVec &u); // function to inflate a vector u from a 2D grid to a 3D grid
+    PetscScalar integrate(const SPIVec &a, SPIgrid1D &grid); // integrate a vector of Chebyshev Coefficients on physical grid
+    PetscScalar integrate(const SPIVec &a, SPIgrid2D &grid); // integrate a vector of Chebyshev Coefficients on physical grid
+    SPIVec proj(SPIVec &u, SPIVec &v, SPIgrid1D &grid);   // project using inner product for Gram-Schmidt process
+    SPIVec proj(SPIVec &u, SPIVec &v, SPIgrid2D &grid);   // project using inner product for Gram-Schmidt process
+    std::vector<SPIVec> orthogonalize(std::vector<SPIVec> &x,SPIgrid1D &grid); // create orthonormal basis from array of vectors 
+    std::vector<SPIVec> orthogonalize(std::vector<SPIVec> &x,SPIgrid2D &grid); // create orthonormal basis from array of vectors 
 
 }
 #endif // SPIGRID_H

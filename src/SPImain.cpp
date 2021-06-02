@@ -38,7 +38,7 @@ int main(int argc, char **args){
         //SPI::SPIMat D(SPI::set_D(y,d,order));
         //D.print();
         //(D*(y^2)-2*y).print(); // near zero
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
         //grid.Dy.print();
 
         // channel flow Orr-Sommerfeld solution

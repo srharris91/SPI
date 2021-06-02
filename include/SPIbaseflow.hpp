@@ -46,8 +46,8 @@ namespace SPI{
                P;       //  pressure baseflow
         ~SPIbaseflow(); // destructor to delete memory
     };
-    SPIbaseflow blasius(SPIparams &params, SPIgrid &grid);
+    SPIbaseflow blasius(SPIparams &params, SPIgrid1D &grid);
     int _bblf( const PetscScalar input[3], PetscScalar output[3]); // Blasius boundary layer flow ODE
-    SPIbaseflow channel(SPIparams &params, SPIgrid &grid);
+    SPIbaseflow channel(SPIparams &params, SPIgrid1D &grid);
 }
 #endif // SPIBASEFLOW_H

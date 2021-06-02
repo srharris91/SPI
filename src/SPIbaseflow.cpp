@@ -77,7 +77,7 @@ namespace SPI{
     /* \brief set Blasius boundary layer flow \return SPIbaseflow at the current conditions */
     SPIbaseflow blasius(
             SPIparams &params,  ///< [in] parameters such as x and nu (freestream Uinf=1)
-            SPIgrid &grid        ///< [in] grid containing wall-normal points
+            SPIgrid1D &grid        ///< [in] grid containing wall-normal points
             ){ // if base flow is Blasius Flat-Plate
                 PetscInt multiply_nypts = 8; //data.multiply_nypts_for_bblf;
                 PetscScalar dy,jfloat;
@@ -206,7 +206,7 @@ namespace SPI{
                 //SPIbaseflow baseflow(U, V, Ux, Uy, grid.Dy*Ux, Vy, O, O, O, O, O); // doesn't project correctly
                 SPIbaseflow baseflow(U, V, Ux, grid.Dy*U, grid.Dy*Ux, grid.Dy*V, O, O, O, O, O); // bad for UltraS grid
                 if(grid.ytype==SPI::UltraS){ // fix for UltraS grid
-                    SPIgrid gridCheby(grid.y,"gridCheby",SPI::Chebyshev);
+                    SPIgrid1D gridCheby(grid.y,"gridCheby",SPI::Chebyshev);
                     SPIMat Dyp(grid.T*grid.S0invS1inv*grid.Dy*grid.That);
                     baseflow.Uy = Dyp*U;
                     baseflow.Uxy = Dyp*Ux;
@@ -240,7 +240,7 @@ namespace SPI{
     /* \brief calculate baseflow for Plane Poiseuille flow \return SPIbaseflow of the Plane Poiseuille flow */
     SPIbaseflow channel(
             SPIparams &params,  ///< [in] parameters such as x and nu (freestream Uinf=1)
-            SPIgrid &grid        ///< [in] grid containing wall-normal points
+            SPIgrid1D &grid        ///< [in] grid containing wall-normal points
             ){ 
         SPI::SPIVec U((1.0-((grid.y)^2)),"U");
         SPI::SPIVec Uy((-2.*grid.y),"Uy");

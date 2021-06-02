@@ -20,6 +20,7 @@ namespace SPI{
 
         // Constructors
         SPIMat(std::string _name="SPIMat");                     // constructor with no arguments (no initialization)
+        SPIMat(const std::vector<SPIVec> &A, std::string _name="SPIMat");   // constructor using a vector of column vectors
         SPIMat(const SPIMat  &A, std::string _name="SPIMat");   // constructor using another SPIMat
         SPIMat(PetscInt rowscols, std::string _name="SPIMat");  // constructor with one arguement to make square matrix
         SPIMat(PetscInt rowsm, PetscInt colsn, std::string _name="SPIMat"); // constructor of rectangular matrix
@@ -33,6 +34,7 @@ namespace SPI{
         
         PetscInt Init(PetscInt m,PetscInt n, std::string name="SPIMat"); // initialize the matrix of size m by n
         SPIMat& set(PetscInt m, PetscInt n,const PetscScalar v); // set a scalar value at position row m and column n
+        SPIMat& set_col(const PetscInt col,const SPIVec &v); // set a column into a matrix 
         SPIMat& add(PetscInt m, PetscInt n,const PetscScalar v); // add a scalar value at position row m and column n
         // () operators
         PetscScalar operator()(PetscInt m, PetscInt n, PetscBool global=PETSC_FALSE);             // get local value at row m, column n
@@ -95,6 +97,9 @@ namespace SPI{
     SPIMat zeros(const PetscInt m,const PetscInt n); // create, form, and return zero matrix of size mxn
     SPIMat diag(const SPIVec &diag,const PetscInt k=0); // set diagonal of matrix
     SPIMat kron(const SPIMat &A, const SPIMat &B); // set kronecker inner product of two matrices
+    std::tuple<std::vector<PetscReal>,std::vector<SPIVec>,std::vector<SPIVec>> svd(const SPIMat &A); // solve general SVD problem of A = U*E*V^H
+    SPIVec lstsq(const SPIMat &A, SPIVec &y); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
+    SPIVec lstsq(const std::vector<SPIVec> &A, SPIVec &y); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
     std::tuple<PetscScalar,SPIVec,SPIVec> eig(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
     std::tuple<PetscScalar,SPIVec> eig_right(const SPIMat &A, const SPIMat &B, const PetscScalar target,const PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)
     std::tuple<PetscScalar,SPIVec, SPIVec> eig_init(const SPIMat &A, const SPIMat &B, const PetscScalar target,const SPIVec &ql, const SPIVec &qr, PetscReal tol=-1,const PetscInt max_iter=-1); // solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector) using initial subspace from q

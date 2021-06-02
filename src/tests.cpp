@@ -1,6 +1,7 @@
 #include "SPImain.hpp"
 #include "tests.hpp"
 #include <time.h>
+#include <slepcsvd.h>
 
 void test_if_true(PetscBool test,std::string name){
     if (test) { SPI::printf("\x1b[32m"+name+" test passed"+"\x1b[0m"); }
@@ -22,7 +23,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_FALSE;
+    PetscBool alltests=PETSC_TRUE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
@@ -361,12 +362,12 @@ int tests(){
         test_if_close(block(3,3,PETSC_TRUE),1.,"block(std::vector<std::vector<SPIMat>>) 4");
         SPI::printf("------------ block test end    -------------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ LST_temporal test start  -------------");
         // create grid and derivatives using chebyshev polynomials
         PetscInt n=128;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
 
         // channel flow Plane Poiseuille solution
         SPI::SPIMat U(SPI::diag(1.0-((grid.y)^2)),"U");
@@ -403,7 +404,7 @@ int tests(){
         SPI::printf("------------ LST_spatial test start   -------------");
         PetscInt n=128;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
         // channel flow Orr-Sommerfeld solution
         SPI::SPIMat U(SPI::diag(1.0-((grid.y)^2)),"U");
         SPI::SPIMat Uy(SPI::diag(-2.*grid.y),"Uy");
@@ -442,7 +443,7 @@ int tests(){
         SPI::printf("------------ LSTNP_spatial test start   -------------");
         PetscInt n=64;
         SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
         // channel flow Orr-Sommerfeld solution
         SPI::SPIVec U((1.0-(grid.y*grid.y)),"U");
         SPI::SPIVec Uy((-2.*grid.y),"Uy");
@@ -503,7 +504,7 @@ int tests(){
         PetscInt n=16;
         //SPI::SPIVec y(SPI::set_Cheby_y(n),"yCheby");
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0,61.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
         grid.Dyy.print();
         SPI::printf("------------ Chebyshev derivatives end   -----------");
     }
@@ -511,11 +512,11 @@ int tests(){
         SPI::printf("------------ LSTNP Blasius boundary layer start -----------");
         PetscInt n=168;
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
-        //SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        //SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
         //SPI::printf("n = %d",n);
         SPI::SPIVec y(SPI::set_FD_stretched_y(61.,n) ,"yFD");
-        SPI::SPIgrid grid(y,"grid",SPI::FD);
+        SPI::SPIgrid1D grid(y,"grid",SPI::FD);
         //grid.print();
         //(grid.Dy*grid.y).print();
 
@@ -583,11 +584,11 @@ int tests(){
         SPI::printf("------------ LSTNP Blasius boundary layer start -----------");
         PetscInt n=168;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
         //SPI::printf("n = %d",n);
         //SPI::SPIVec y(SPI::set_FD_stretched_y(61.,n) ,"yFD");
-        //SPI::SPIgrid grid(y,"grid",SPI::FD);
+        //SPI::SPIgrid1D grid(y,"grid",SPI::FD);
         //grid.print();
         //(grid.Dy*grid.y).print();
 
@@ -655,11 +656,11 @@ int tests(){
         SPI::printf("------------ LST Blasius boundary layer start -----------");
         PetscInt n=200;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
         //SPI::printf("n = %d",n);
         //SPI::SPIVec y(SPI::set_FD_stretched_y(21.,n) ,"yFD");
-        //SPI::SPIgrid grid(y,"grid",SPI::FD);
+        //SPI::SPIgrid1D grid(y,"grid",SPI::FD);
         //grid.print();
         //(grid.Dy*grid.y).print();
 
@@ -707,11 +708,11 @@ int tests(){
         SPI::printf("------------ LSTNP parallel Blasius boundary layer start -----------");
         PetscInt n=1000; // needs 1700 if using finite difference with default stretching...., 1000 if using delta=1.01 stretching
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
-        //SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
+        //SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
         //SPI::printf("n = %d",n);
         SPI::SPIVec y(SPI::set_FD_stretched_y(21.,n,1.01) ,"yFD");
-        SPI::SPIgrid grid(y,"grid",SPI::FD);
+        SPI::SPIgrid1D grid(y,"grid",SPI::FD);
         //grid.print();
         //(grid.Dy*grid.y).print();
 
@@ -749,7 +750,7 @@ int tests(){
         SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue*1.7208);
 
         params.alpha = (0.29967+0.230773*PETSC_i)/1.7208;
-        std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow); 
+        std::tie(eigenvalue,eigenfunction) = SPI::LSTNP_spatial_right(params,grid,bl_flow); 
         test_if_close(eigenvalue*1.7208,(0.29967+0.083968*PETSC_i),"LSTNP_spatial_right 3",1e-5);
         SPI::printfc("eigenvalue is %.10f + %.10fi",eigenvalue*1.7208);
 
@@ -762,7 +763,9 @@ int tests(){
         SPI::SPIMat Dt(SPI::set_D_Fourier(t),"Dt");
         SPI::SPIVec y(sin(t));
         SPI::SPIVec yp(cos(t));
-        test_if_close((Dt*y)(2,PETSC_TRUE),yp(2,PETSC_TRUE),"set_D_Fourier",1e-12);
+        test_if_close((Dt*y)(2,PETSC_TRUE),yp(2,PETSC_TRUE),"set_D_Fourier 1",1e-12);
+        test_if_close(SPI::L2((Dt*y)-yp),0.0,"set_D_Fourier 2",1e-12);
+        Dt.print();
         SPI::printf("------------ Fourier Collocated derivative operator end   -----------");
     }
     if(alltests){
@@ -816,7 +819,7 @@ int tests(){
         SPI::printf("------------ Gram-Schmidt Orthogonalize start -----------");
         PetscInt n=8;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         SPI::SPIVec A1(grid.That*(1.0-(grid.y^2)),"A1"),A2(grid.That*(1.0+(grid.y^2)),"A2");
         std::vector<SPI::SPIVec> A={A1,A2};
         //SPI::SPIMat Aorth(SPI::orthogonalize(A,grid));
@@ -832,7 +835,7 @@ int tests(){
         SPI::printf("------------ Gram-Schmidt Orthogonalize start -----------");
         PetscInt n=8;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         SPI::SPIVec A1(grid.That*(1.0-(grid.y^2)),"A1"),A2(grid.That*(1.0+(grid.y^2)),"A2");
         std::vector<SPI::SPIVec> A={A1,A2};
         //SPI::SPIMat Aorth(SPI::orthogonalize(A,grid));
@@ -889,6 +892,110 @@ int tests(){
         test_if_close(Allorth[1](26,PETSC_TRUE),-0.360843918243516,"orthogonalize 18",1e-12);
 
         SPI::printf("------------ Gram-Schmidt Orthogonalize end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ Gram-Schmidt Orthogonalize 2D start -----------");
+        PetscInt n=8;
+        SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
+        SPI::SPIVec t(SPI::set_Cheby_mapped_y(0.,3.,n) ,"tCheby");
+        SPI::SPIgrid2D grid(y,t,"grid",SPI::Chebyshev,SPI::Chebyshev);
+        SPI::SPIgrid2D gridFD(y,t,"grid",SPI::FD,SPI::FD);
+        SPI::SPIgrid2D gridUltraS(y,t,"grid",SPI::UltraS,SPI::FD);
+
+        // test integration
+        SPI::SPIVec A1((1.0-(grid.y)),"A1"),A2(grid.grid1Dy.That*(1.0+(grid.y)),"A2");
+        SPI::SPIVec A1l(SPIVec1Dto2D(grid,A1));
+        SPI::SPIVec A2l(SPIVec1Dto2D(grid,A2));
+        //std::cout<<"intChebyshev = "<<SPI::integrate(A1l,grid)<<std::endl;
+        //std::cout<<"intFD = "<<SPI::integrate(A1l,gridFD)<<std::endl;
+        test_if_close(SPI::integrate(A1l,grid),6.0,"integrate SPIgrid2D Chebyshev 1",1e-12);
+        test_if_close(SPI::integrate(A1l,gridFD),6.0,"integrate SPIgrid2D FD 2",1e-12);
+        test_if_close(SPI::integrate(A2l,gridUltraS),6.0,"integrate SPIgrid2D UltraS 3",1e-12);
+        //std::cout<<"intUltraS = "<<SPI::integrate(A2l,gridUltraS)<<std::endl;
+        //std::cout<<"int_1D = "<<SPI::integrate(A1,grid.grid1Dy)<<std::endl;
+        test_if_close(SPI::integrate(A1,grid.grid1Dy),2.0,"integrate SPIgrid1D Chebyshev 4",1e-12);
+
+        // test projection
+        SPI::SPIVec yp1(y+1.0);
+        SPI::SPIVec nym1(1.0-y);
+        A2l = SPIVec1Dto2D(grid,yp1);
+        SPI::SPIVec A1lp,A2lp;
+        A1lp = SPI::proj(A1l,A2l,grid);
+        //A2lp = SPI::proj(A1l,A2l,gridFD);
+        //A1lp.print();
+        //A2lp.print();
+        //SPI::proj(nym1,yp1,grid.grid1Dy).print();
+        test_if_close(A1lp(1,PETSC_TRUE),SPI::proj(nym1,yp1,grid.grid1Dy)(1,PETSC_TRUE),"proj SPIgrid2D 1",1e-12);
+        //std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,bl_flow); 
+        //std::cout<<"norm = "<<std::sqrt(SPI::integrate(SPI::abs(A1lp)^2,grid))<<std::endl;
+        //A1l = SPIVec1Dto2D(grid,nym1);
+        //A2l = SPIVec1Dto2D(grid,yp1);
+        std::vector<SPI::SPIVec> A12ls = {A1l,A2l};
+        std::vector<SPI::SPIVec> A12lso;
+        A12lso = SPI::orthogonalize(A12ls,grid);
+        //for(PetscInt i=0; i<A12lso.size(); ++i){
+            //A12lso[i].print();
+        //}
+        //for(PetscInt i=0; i<A12lso.size(); ++i){
+            //std::cout<<"norm = "<<std::sqrt(SPI::integrate(SPI::abs(A12lso[i])^2,grid))<<std::endl;
+        //}
+        test_if_close(std::sqrt(SPI::integrate(SPI::abs(A12lso[0])^2,grid)),1.0,"norm SPIgrid2D after projection 1",1e-12);
+        test_if_close(std::sqrt(SPI::integrate(SPI::abs(A12lso[1])^2,grid)),1.0,"norm SPIgrid2D after orthogonalize 1",1e-12);
+            
+
+
+
+        /*
+        SPI::SPIVec A1(grid.That*(1.0-(grid.y^2)),"A1"),A2(grid.That*(1.0+(grid.y^2)),"A2");
+        std::vector<SPI::SPIVec> A={A1,A2};
+        std::vector<SPI::SPIVec> Aorth(SPI::orthogonalize(A,grid));
+        test_if_close(Aorth[0](2,PETSC_TRUE),-0.484122918275927,"orthogonalize 1",1e-12);
+        test_if_close(Aorth[1](2,PETSC_TRUE),1.082531754730548,"orthogonalize 2",1e-12);
+
+        // now try multiple length projection and integration
+        SPI::SPIVec A1l(SPI::block({
+                    {SPI::diag(A1),grid.O},
+                    {grid.O,SPI::diag(A2)}
+                    })()*SPI::ones(2*n),"A1l");
+        SPI::SPIVec A2l(SPI::block({
+                    {SPI::diag(A2),grid.O},
+                    {grid.O,SPI::diag(A1)}
+                    })()*SPI::ones(2*n),"A2l");
+        std::vector<SPI::SPIVec> Al = {A1l,A2l};
+        std::vector<SPI::SPIVec> Alorth(SPI::orthogonalize(Al,grid));
+        test_if_close(Alorth[0](2,PETSC_TRUE),-0.228217732293819,"orthogonalize 3",1e-12);
+        test_if_close(Alorth[0](10,PETSC_TRUE),0.228217732293819,"orthogonalize 4",1e-12);
+        test_if_close(Alorth[1](0,PETSC_TRUE),0.714434508311760,"orthogonalize 5",1e-12);
+        test_if_close(Alorth[1](8,PETSC_TRUE),-0.306186217847897,"orthogonalize 6",1e-12);
+        SPI::SPIVec A1ll(SPI::block({
+                    {SPI::diag(A1),grid.O,grid.O,grid.O},
+                    {grid.O,SPI::diag(A2),grid.O,grid.O},
+                    {grid.O,grid.O,SPI::diag(A1),grid.O},
+                    {grid.O,grid.O,grid.O,SPI::diag(A2)},
+                    })()*SPI::ones(4*n),"A1ll");
+        SPI::SPIVec A2ll(SPI::block({
+                    {SPI::diag(A2),grid.O,grid.O,grid.O},
+                    {grid.O,SPI::diag(A1),grid.O,grid.O},
+                    {grid.O,grid.O,SPI::diag(A2),grid.O},
+                    {grid.O,grid.O,grid.O,SPI::diag(A1)},
+                    })()*SPI::ones(4*n),"A2ll");
+        std::vector<SPI::SPIVec> All = {A1ll,A2ll};
+        std::vector<SPI::SPIVec> Allorth(SPI::orthogonalize(All,grid));
+        test_if_close(Allorth[0](2,PETSC_TRUE),-0.161374306091976,"orthogonalize 7",1e-12);
+        test_if_close(Allorth[0](8,PETSC_TRUE),0.484122918275927,"orthogonalize 8",1e-12);
+        test_if_close(Allorth[0](10,PETSC_TRUE),0.161374306091976,"orthogonalize 9",1e-12);
+        test_if_close(Allorth[0](18,PETSC_TRUE),-0.161374306091976,"orthogonalize 10",1e-12);
+        test_if_close(Allorth[0](24,PETSC_TRUE),0.484122918275927,"orthogonalize 11",1e-12);
+        test_if_close(Allorth[0](26,PETSC_TRUE),0.161374306091976,"orthogonalize 12",1e-12);
+        test_if_close(Allorth[1](2,PETSC_TRUE),0.360843918243516,"orthogonalize 13",1e-12);
+        test_if_close(Allorth[1](8,PETSC_TRUE),-0.216506350946110,"orthogonalize 14",1e-12);
+        test_if_close(Allorth[1](10,PETSC_TRUE),-0.360843918243516,"orthogonalize 15",1e-12);
+        test_if_close(Allorth[1](18,PETSC_TRUE),0.360843918243516,"orthogonalize 16",1e-12);
+        test_if_close(Allorth[1](24,PETSC_TRUE),-0.216506350946110,"orthogonalize 17",1e-12);
+        test_if_close(Allorth[1](26,PETSC_TRUE),-0.360843918243516,"orthogonalize 18",1e-12);
+        */
+
+        SPI::printf("------------ Gram-Schmidt Orthogonalize 2D end   -----------");
     }
     if(alltests){
         SPI::printf("------------ SPIMat.H(SPIVec) start -----------");
@@ -981,7 +1088,7 @@ int tests(){
         SPI::printf("------------ LST_temporal channel UltraS start -----------");
         PetscInt n=64;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1055,7 +1162,7 @@ int tests(){
         PetscInt n=64;
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1111,7 +1218,7 @@ int tests(){
         PetscInt n=200;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1200,7 +1307,7 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1256,8 +1363,8 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
-        SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid2(y,"grid",SPI::Chebyshev);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1370,8 +1477,8 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
-        SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid2(y,"grid",SPI::Chebyshev);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1467,8 +1574,8 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
-        SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid2(y,"grid",SPI::Chebyshev);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1555,8 +1662,8 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
-        //SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
+        //SPI::SPIgrid1D grid2(y,"grid",SPI::Chebyshev);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1667,7 +1774,7 @@ int tests(){
         SPI::printf("------------ UltraS int start -----------");
         PetscInt n=11;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         SPI::SPIVec a(grid.That*(y^2));
         SPI::SPIVec a2(y^2);
         //std::cout<<"integrate = "<<integrate_coeffs(a)<<std::endl;
@@ -1681,35 +1788,35 @@ int tests(){
         test_if_close(integrate_coeffs(a),68.0/3.0,"integrate_coeffs 4",1e-12);
 
         SPI::SPIVec y2(SPI::set_Cheby_mapped_y(0.,10.,n) ,"yCheby");
-        SPI::SPIgrid grid2(y2,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid2(y2,"grid",SPI::UltraS);
         a = grid2.That*(4.0*(y2^2)+(y2)+10.0);
         test_if_close(integrate_coeffs(a,grid2.y),4450.0/3.0,"integrate_coeffs 5",1e-12);
 
         SPI::SPIVec y3(SPI::set_Cheby_mapped_y(-10.,10.,n) ,"yCheby");
-        SPI::SPIgrid grid3(y3,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid3(y3,"grid",SPI::UltraS);
         a = grid3.That*(4.0*(y3^2)+(y3)+10.0);
         test_if_close(integrate_coeffs(a,grid3.y),8600.0/3.0,"integrate_coeffs 6",1e-12);
 
         SPI::SPIVec y4(SPI::set_Cheby_mapped_y(-1.,10.,n) ,"yCheby");
-        SPI::SPIgrid grid4(y4,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid4(y4,"grid",SPI::UltraS);
         a = grid4.That*(4.0*(y4^2)+(y4)+10.0);
         test_if_close(integrate_coeffs(a,grid4.y),8965.0/6.0,"integrate_coeffs 7",1e-12);
 
         SPI::SPIVec y5(SPI::set_Cheby_mapped_y(-1.,10.,n) ,"yCheby");
-        SPI::SPIgrid grid5(y5,"grid",SPI::UltraS);
-        SPI::SPIgrid grid5_2(y5,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid5(y5,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid5_2(y5,"grid",SPI::Chebyshev);
         a = grid5.That*(4.0*(y5^2)+(y5)+10.0);
         a2 = (4.0*(y5^2)+(y5)+10.0);
         test_if_close(integrate(a,grid5),8965.0/6.0,"integrate 1 UltraS",1e-12);
         test_if_close(integrate(a2,grid5_2),8965.0/6.0,"integrate 1 Chebyshev",1e-12);
 
         SPI::SPIVec y6(SPI::set_Cheby_mapped_y(-1.,10.,201) ,"yCheby");
-        SPI::SPIgrid grid6(y6,"grid",SPI::Chebyshev);
+        SPI::SPIgrid1D grid6(y6,"grid",SPI::Chebyshev);
         a2 = (4.0*(y6^2)+(y6)+10.0);
         test_if_close(integrate(a2,grid6),8965.0/6.0,"integrate 2",1e-1);
 
         SPI::SPIVec y7(SPI::set_Cheby_mapped_y(0.,21.,41) ,"yCheby");
-        SPI::SPIgrid grid7(y7,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid7(y7,"grid",SPI::UltraS);
         SPI::SPIVec a7(41*4,"a3");
         //SPI::SPIVec tmp(grid7.That*(1.0-(y7^2)));
         SPI::SPIVec tmp(grid7.That*(1.0-(y7^2)+y7*y7*y7+y7*PETSC_i));
@@ -1729,7 +1836,7 @@ int tests(){
         PetscInt n=119;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,21.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -1815,9 +1922,9 @@ int tests(){
         SPI::printf("------------ A*x=b grid UltraS start -----------");
         PetscInt n=20;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev);
-        //SPI::SPIgrid grid(y,"grid",SPI::FD);
-        SPI::SPIgrid grid2(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev);
+        //SPI::SPIgrid1D grid(y,"grid",SPI::FD);
+        SPI::SPIgrid1D grid2(y,"grid",SPI::UltraS);
         SPI::SPIMat A;
         A = grid.Dyy + grid.Dy + grid.I;
         SPI::SPIVec b(SPI::zeros(n));
@@ -1906,7 +2013,7 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -2006,7 +2113,7 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        SPI::SPIgrid grid(y,"grid",SPI::UltraS);
+        SPI::SPIgrid1D grid(y,"grid",SPI::UltraS);
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -2057,9 +2164,9 @@ int tests(){
         PetscInt n=169;
         SPI::SPIVec y(SPI::set_Cheby_mapped_y(0.,61.,n) ,"yCheby");
         //SPI::SPIVec y(SPI::set_Cheby_mapped_y(-1.,1.,n) ,"yCheby");
-        //SPI::SPIgrid grid0(y,"grid",SPI::UltraS); // good now
-        //SPI::SPIgrid grid2(y,"grid",SPI::Chebyshev); // good now
-        //SPI::SPIgrid grid3(y,"grid",SPI::FD); // good now
+        //SPI::SPIgrid1D grid0(y,"grid",SPI::UltraS); // good now
+        //SPI::SPIgrid1D grid2(y,"grid",SPI::Chebyshev); // good now
+        //SPI::SPIgrid1D grid3(y,"grid",SPI::FD); // good now
         //SPI::SPIVec y2;
         //2.0*y;
         //2.0+y;
@@ -2121,8 +2228,8 @@ int tests(){
         //cos(Y1%acos(Y2));
         //SPI::SPIMat Y3;
         //Y1.T(Y3);
-        //SPI::SPIgrid grid(y,"grid",SPI::UltraS); // works
-        SPI::SPIgrid grid(y,"grid",SPI::Chebyshev); // works
+        //SPI::SPIgrid1D grid(y,"grid",SPI::UltraS); // works
+        SPI::SPIgrid1D grid(y,"grid",SPI::Chebyshev); // works
         //grid.print();
         //exit(0);
         //SPI::SPIVec y(SPI::linspace(0.,61.,n) ,"yFD");
@@ -2198,6 +2305,112 @@ int tests(){
         //eigenfunction_4.print();
         //(0.1828*eigenfunction_4/eigenfunction_4(0,PETSC_TRUE)).print();
         //(eigenvalue*eigenvalue*(M*eigenfunction_4) + eigenvalue*(C*eigenfunction_4) + (K*eigenfunction_4)).print();
+    }
+    if(alltests){
+        SPI::printf("------------ SVD start -----------");
+        SPI::SPIVec x(4,"x");
+        x(0,0.0); x(1,1.0); x(2,2.0); x(3,3.0);
+        x();
+        SPI::SPIVec y(4,"y");
+        y(0,-1.0); y(1,0.2); y(2,0.9); y(3,2.1);
+        y();
+        //y.print();
+        SPI::SPIMat A(4,2,"A");
+        A(0,0,0); A(0,1,1.0);
+        A(1,0,1); A(1,1,1.0);
+        A(2,0,2); A(2,1,1.0);
+        A(3,0,3); A(3,1,1.0);
+        A();
+
+        std::vector<PetscReal> sigma;
+        std::vector<SPI::SPIVec> u;
+        std::vector<SPI::SPIVec> v;
+
+        //std::cout<<"made it here before svd"<<std::endl;
+        //A.print();
+        std::tie(sigma,u,v) = SPI::svd(A);
+        //SPI::svd(A);
+        //std::cout<<"made it here after  svd"<<std::endl;
+        SPI::SPIVec xi(SPI::zeros(2));
+        for(PetscInt j=0; j<2; ++j){
+            xi += ((y.dot(u[j]))/sigma[j]) * v[j];
+            //std::cout<<"sigma["<<j<<"] = "<<sigma[j]<<std::endl;
+            //u[j].print();
+            //v[j].print();
+        }
+        //xi.print();
+        test_if_close(xi(0,PETSC_TRUE),1.0,"SVD 1",1e-14);
+        test_if_close(xi(1,PETSC_TRUE),-0.95,"SVD 2",1e-14);
+
+        //(A*v[0] - sigma[0]*u[0]).print();
+        //(A*v[1] - sigma[1]*u[1]).print();
+        //(A*xi).print();
+
+        SPI::printf("------------ SVD end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ least squares start -----------");
+        SPI::SPIVec x;
+        //SPI::SPIVec x(4,"x");
+        //x(0,0.0); x(1,1.0); x(2,2.0); x(3,3.0);
+        //x();
+        SPI::SPIVec y(4,"y");
+        y(0,-1.0); y(1,0.2); y(2,0.9); y(3,2.1);
+        y();
+        SPI::SPIMat A(4,2,"A");
+        A(0,0,0); A(0,1,1.0);
+        A(1,0,1); A(1,1,1.0);
+        A(2,0,2); A(2,1,1.0);
+        A(3,0,3); A(3,1,1.0);
+        A();
+        
+        x = lstsq(A,y);
+        test_if_close(x(0,PETSC_TRUE),1.0,"lstsq 1",1e-14);
+        test_if_close(x(1,PETSC_TRUE),-0.95,"lstsq 2",1e-14);
+        //x.print();
+
+        SPI::printf("------------ least squares end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ set_col start -----------");
+        SPI::SPIVec x1(4,"x1");
+        x1(0,0.0); x1(1,1.0); x1(2,2.0); x1(3,3.0);
+        x1();
+        //x1.print();
+        SPI::SPIVec x2(4,"x2");
+        x2(0,1.0); x2(1,1.0); x2(2,1.0); x2(3,1.0);
+        x2();
+        //x2.print();
+        SPI::SPIMat A(4,2,"A");
+        A.set_col(0,x1);
+        A.set_col(1,x2);
+        A();
+        //A.print();
+        test_if_close(A(2,0,PETSC_TRUE),2.0,"set_col 1",1e-14);
+        test_if_close(A(2,1,PETSC_TRUE),1.0,"set_col 2",1e-14);
+        SPI::printf("------------ set_col end   -----------");
+    }
+    if(alltests){
+        SPI::printf("------------ SPIMat(std::vector<SPIVec>) and lstsq(std::vector<SPIVec>,SPIVec) start -----------");
+        SPI::SPIVec y(4,"y");
+        y(0,-1.0); y(1,0.2); y(2,0.9); y(3,2.1);
+        y();
+        SPI::SPIVec x1(4,"x1");
+        x1(0,0.0); x1(1,1.0); x1(2,2.0); x1(3,3.0);
+        x1();
+        SPI::SPIVec x2(4,"x2");
+        x2(0,1.0); x2(1,1.0); x2(2,1.0); x2(3,1.0);
+        x2();
+        std::vector<SPI::SPIVec> x = {x1,x2};
+        SPI::SPIMat A(x);
+        //A.print();
+        test_if_close(A(2,0,PETSC_TRUE),2.0,"set_col 1",1e-14);
+        test_if_close(A(2,1,PETSC_TRUE),1.0,"set_col 2",1e-14);
+
+        SPI::SPIVec xi(SPI::lstsq(x,y));
+        test_if_close(xi(0,PETSC_TRUE),1.0,"lstsq(std::vector<SPIVec>,SPIVec) 1",1e-14);
+        test_if_close(xi(1,PETSC_TRUE),-0.95,"lstsq(std::vector<SPIVec>,SPIVec) 2",1e-14);
+        SPI::printf("------------ SPIMat(std::vector<SPIVec>) and lstsq(std::vector<SPIVec>,SPIVec) end   -----------");
     }
 
 

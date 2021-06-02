@@ -86,6 +86,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="SPIprint_8hpp_source.html">SPIprint.hpp</a>&quot;</code><br />
 <code>#include &lt;petscviewerhdf5.h&gt;</code><br />
 <code>#include &lt;petscmath.h&gt;</code><br />
+<code>#include &lt;slepcsvd.h&gt;</code><br />
 </div>
 <p><a href="SPIMat_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -131,6 +132,15 @@ Functions</h2></td></tr>
 <tr class="memitem:aa44a3f1d413e162c8caadb4b3e55bbe1"><td class="memItemLeft" align="right" valign="top">SPIMat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aa44a3f1d413e162c8caadb4b3e55bbe1">SPI::kron</a> (const SPIMat &amp;A, const SPIMat &amp;B)</td></tr>
 <tr class="memdesc:aa44a3f1d413e162c8caadb4b3e55bbe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">set kronecker inner product of two matrices  <a href="namespaceSPI.html#aa44a3f1d413e162c8caadb4b3e55bbe1">More...</a><br /></td></tr>
 <tr class="separator:aa44a3f1d413e162c8caadb4b3e55bbe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a972189faefbbbc2bf373f7cfdd1cfc1e"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; std::vector&lt; PetscReal &gt;, std::vector&lt; SPIVec &gt;, std::vector&lt; SPIVec &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a972189faefbbbc2bf373f7cfdd1cfc1e">SPI::svd</a> (const SPIMat &amp;A)</td></tr>
+<tr class="memdesc:a972189faefbbbc2bf373f7cfdd1cfc1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve SVD problem of A=U*E*V^H for skinny A matrix  <a href="namespaceSPI.html#a972189faefbbbc2bf373f7cfdd1cfc1e">More...</a><br /></td></tr>
+<tr class="separator:a972189faefbbbc2bf373f7cfdd1cfc1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae39201eb25429f50611ceeb9b2d186d5"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ae39201eb25429f50611ceeb9b2d186d5">SPI::lstsq</a> (const SPIMat &amp;A, SPIVec &amp;y)</td></tr>
+<tr class="memdesc:ae39201eb25429f50611ceeb9b2d186d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve least squares problem of A*x=y for skinny A matrix using SVD  <a href="namespaceSPI.html#ae39201eb25429f50611ceeb9b2d186d5">More...</a><br /></td></tr>
+<tr class="separator:ae39201eb25429f50611ceeb9b2d186d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d68c60309091daaece0417399d35b3b"><td class="memItemLeft" align="right" valign="top">SPIVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a7d68c60309091daaece0417399d35b3b">SPI::lstsq</a> (const std::vector&lt; SPIVec &gt; &amp;A, SPIVec &amp;y)</td></tr>
+<tr class="memdesc:a7d68c60309091daaece0417399d35b3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve least squares problem of A*x=y for skinny A matrix (or vectors of columns vectors) using SVD  <a href="namespaceSPI.html#a7d68c60309091daaece0417399d35b3b">More...</a><br /></td></tr>
+<tr class="separator:a7d68c60309091daaece0417399d35b3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31e97930c72d0cc86f8d9826dbcfff85"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, SPIVec, SPIVec &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a31e97930c72d0cc86f8d9826dbcfff85">SPI::eig</a> (const SPIMat &amp;A, const SPIMat &amp;B, const PetscScalar target, const PetscReal tol, const PetscInt max_iter)</td></tr>
 <tr class="memdesc:a31e97930c72d0cc86f8d9826dbcfff85"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve general eigenvalue problem of Ax = kBx and return a tuple of tie(PetscScalar alpha, SPIVec eig_vector)  <a href="namespaceSPI.html#a31e97930c72d0cc86f8d9826dbcfff85">More...</a><br /></td></tr>
 <tr class="separator:a31e97930c72d0cc86f8d9826dbcfff85"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -210,7 +220,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00006">6</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SPIMat_8cpp_source.html#l00007">7</a> of file <a class="el" href="SPIMat_8cpp_source.html">SPIMat.cpp</a>.</p>
 
 </div>
 </div>

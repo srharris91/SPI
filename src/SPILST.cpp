@@ -4,7 +4,7 @@ namespace SPI{
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with alpha being pure real, and omega the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_temporal(params,grid,baseflow).  Will solve for closest eigenvalue to params.omega */
     std::tuple<PetscScalar, SPIVec> LST_temporal(
             SPIparams &params,          ///< [inout] contains parameters including Re, alpha, and omega.  Will overwrite omega with true omega value once solved
-            SPIgrid &grid,              ///< [in] grid class containing the grid location and respective derivatives
+            SPIgrid1D &grid,              ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow,      ///< [in] baseflow for parallel flow
             SPIVec q                    ///< [in] initial guess for temporal problem
             ){
@@ -146,7 +146,7 @@ namespace SPI{
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_spatial(params,grid,baseflow).  Will solve for closest eigenvalue to params.omega */
     std::tuple<PetscScalar, SPIVec> LST_spatial(
             SPIparams &params,          ///< [inout] contains parameters including Re, alpha, and omega.  Will overwrite omega with true omega value once solved
-            SPIgrid &grid,              ///< [in] grid class containing the grid location and respective derivatives
+            SPIgrid1D &grid,              ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow,      ///< [in] baseflow for parallel flow
             SPIVec q                    ///< [in] initial guess for temporal problem
             ){
@@ -348,7 +348,7 @@ namespace SPI{
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(omega,eig_vector) = LST_spatial(params,grid,baseflow).  Will solve for closest eigenvalue to params.omega */
     std::tuple<PetscScalar, PetscScalar, SPIVec, SPIVec> LST_spatial_cg(
             SPIparams &params,          ///< [inout] contains parameters including Re, alpha, and omega.  Will overwrite omega with true omega value once solved
-            SPIgrid &grid,              ///< [in] grid class containing the grid location and respective derivatives
+            SPIgrid1D &grid,              ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow       ///< [in] baseflow for parallel flow
             ){
         PetscInt n = grid.ny;
@@ -552,7 +552,7 @@ namespace SPI{
                 //SPI::printfc("in LST_spatial_cg UltraS cg = %.10f + %.10fi",cg);
                 //cg = integrate(That*((T*((eig_vec)))*conj(T*(S0invS1inv*(M*eigl_vec)))),grid) / integrate(That*((T*(S0invS1inv*(dLdomega*eig_vec)))*conj(T*eigl_vec)),grid);
                 //SPI::printfc("in LST_spatial_cg UltraS cg = %.10f + %.10fi",cg);
-                //SPIgrid grid2(grid.y,"grid",SPI::Chebyshev);
+                //SPIgrid1D grid2(grid.y,"grid",SPI::Chebyshev);
                 //cg = integrate(((T*(S0invS1inv*(M*eig_vec)))*conj(T*eigl_vec)),grid2) / integrate(((T*(S0invS1inv*(dLdomega*eig_vec)))*conj(T*eigl_vec)),grid2);
                 //SPI::printfc("in LST_spatial_cg UltraSp cg = %.10f + %.10fi",cg);
                 //cg = ((T*((eig_vec))).dot(T*(S0invS1inv*(M*eigl_vec)))) / ((T*(S0invS1inv*(dLdomega*eig_vec))).dot(T*eigl_vec));
@@ -714,7 +714,7 @@ namespace SPI{
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(alpha,group_velocity,left_eig_vector,right_eig_vector) = LSTNP_spatial(params,grid,baseflow).  Will solve for closest eigenvalue to params.alpha */
     std::tuple<PetscScalar, PetscScalar, SPIVec, SPIVec> LSTNP_spatial(
             SPIparams &params,          ///< [inout] contains parameters including Re, alpha, and omega.  Will overwrite omega with true omega value once solved
-            SPIgrid &grid,              ///< [in] grid class containing the grid location and respective derivatives
+            SPIgrid1D &grid,              ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow,      ///< [in] baseflow for parallel flow
             SPIVec ql,                  ///< [in] initial guess for spatial problem (adjoint) for left eigenfunction
             SPIVec qr                   ///< [in] initial guess for spatial problem
@@ -1045,7 +1045,7 @@ namespace SPI{
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(alpha,right_eig_vector) = LSTNP_spatial(params,grid,baseflow).  Will solve for closest eigenvalue to params.alpha */
     std::tuple<PetscScalar, SPIVec> LSTNP_spatial_right(
             SPIparams &params,          ///< [inout] contains parameters including Re, alpha, and omega.  Will overwrite omega with true omega value once solved
-            SPIgrid &grid,              ///< [in] grid class containing the grid location and respective derivatives
+            SPIgrid1D &grid,              ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow,      ///< [in] baseflow for parallel flow
             SPIVec qr                   ///< [in] initial guess for spatial problem
             ){
@@ -1264,6 +1264,7 @@ namespace SPI{
             }else{
                 std::tie(alpha,eig_vec) = SPI::eig_right(L,M,alpha);
             }
+            eig_vec.rows=4*ny;
             //SPIMat L(block(
             //alpha = alpha; // invert
             params.alpha = alpha;
@@ -1274,7 +1275,7 @@ namespace SPI{
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with omega being pure real, and alpha the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(alpha,right_eig_vector) = LSTNP_spatial(params,grid,baseflow).  Will solve for closest eigenvalue to params.alpha */
     std::tuple<PetscScalar, SPIVec> LSTNP_spatial_right2(
             SPIparams &params,          ///< [inout] contains parameters including Re, alpha, and omega.  Will overwrite omega with true omega value once solved
-            SPIgrid &grid,              ///< [in] grid class containing the grid location and respective derivatives
+            SPIgrid1D &grid,              ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow,      ///< [in] baseflow for parallel flow
             SPIVec qr                   ///< [in] initial guess for spatial problem
             ){
@@ -1480,7 +1481,7 @@ namespace SPI{
     /** \brief solve the local stability theory problem for the linearized Navier-Stokes equations using non-parallel baseflow with omega being pure real, and alpha the eigenvalue \return tuple of eigenvalue and eigenvector closest to the target value e.g. std::tie(alphas,right_eig_vectors) = LSTNP_spatials_right(params,grid,baseflow).  Will solve for closest eigenvalue to params.alpha */
     std::tuple<std::vector<PetscScalar>, std::vector<SPIVec>> LSTNP_spatials_right(
             SPIparams &params,                  ///< [inout] contains parameters including Re and omega.
-            SPIgrid &grid,                      ///< [in] grid class containing the grid location and respective derivatives
+            SPIgrid1D &grid,                      ///< [in] grid class containing the grid location and respective derivatives
             SPIbaseflow &baseflow,              ///< [in] baseflow for parallel flow
             std::vector<PetscScalar> &alphas,    ///< [in] vector of alpha guesses
             std::vector<SPIVec> &qrs             ///< [in] initial guesses for spatial problem

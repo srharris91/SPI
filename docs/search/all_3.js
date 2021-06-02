@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['channel_18',['channel',['../namespaceSPI.html#a31620aeea47cdc42a025b6a38b6218b0',1,'SPI']]],
+  ['channel_18',['channel',['../namespaceSPI.html#a1b1d3a33b09ea672d360f86a84362c1c',1,'SPI']]],
   ['chebyshev_19',['Chebyshev',['../namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a5178d3e41b993b3276b1c039afadcc63',1,'SPI']]],
   ['col_20',['col',['../structSPI_1_1SPIMat.html#a5f066c9f2f6276dbb6331adc10ed354f',1,'SPI::SPIMat']]],
   ['cols_21',['cols',['../structSPI_1_1SPIMat.html#aa738c1f222a190aadea196974dca7ff4',1,'SPI::SPIMat']]],

@@ -379,10 +379,22 @@ namespace SPI{
             std::tie(N,J) = meshgrid(n,j);
             SPIMat NmJ(N-J,"NmJ");
             D = ((PETSC_PI/T)*((-1.0)^(NmJ)))/tan((PETSC_PI/nptss)*(NmJ));
+            //std::cout<<"PETSC_PI/T = "<<PETSC_PI/T<<std::endl;
+            //((-1.0)^(NmJ)).print();
+            //((PETSC_PI/T)*((-1.0)^(NmJ))).print();
+            //tan((PETSC_PI/nptss)*(NmJ)).print();
+            //((((PETSC_PI/T)*((-1.0)^(NmJ))).real())/tan((PETSC_PI/nptss)*(NmJ)).real()).print();
+            //((((PETSC_PI/T)*((-1.0)^(NmJ))).real())*(1.0/(tan((PETSC_PI/nptss)*(NmJ)).real()))).print();
+            //std::cout<<"made it here"<<std::endl;
+            //(1.0/(tan((PETSC_PI/nptss)*(NmJ)).real())).print();
+            //std::cout<<"made it here2"<<std::endl;
+
+            //D.print();
             D.ierr = MatDiagonalSet(D.mat,zeros(npts).vec,INSERT_VALUES);CHKERRXX(D.ierr);
             D();
             D.real();
             if(d==2) D = D*D; // then return Dyy
+            //D.print();
             return D;
         }
         else{
@@ -390,10 +402,12 @@ namespace SPI{
         }
     }
 
-    /** \brief constructor with no arguments (set default values) */
-    SPIgrid::SPIgrid(
+    /** \brief constructor with at no arguments */
+    SPIgrid1D::SPIgrid1D(){}
+    /** \brief constructor with at least one argument (set default values) */
+    SPIgrid1D::SPIgrid1D(
             SPIVec &y,  ///< [in] grid to save
-            std::string name, ///< [in] name of grid (default to SPIgrid)
+            std::string name, ///< [in] name of grid (default to SPIgrid1D)
             gridtype _ytype ///< [in] what type of grid (default finite difference FD)
             ){
         // set grid name and type
@@ -409,7 +423,7 @@ namespace SPI{
 
 
     /** \brief saves grid to internal grid */
-    void SPIgrid::print(){
+    void SPIgrid1D::print(){
     SPI::printf("---------------- "+this->name+" start --------------------------");
         if(this->flag_set_grid) {
             //PetscInt ny2 = this->ny;
@@ -434,7 +448,7 @@ namespace SPI{
     }
 
     /** \brief saves grid to internal grid */
-    void SPIgrid::set_grid(
+    void SPIgrid1D::set_grid(
             SPIVec &y ///< [in] grid to save
             ){
         this->y=y;
@@ -444,7 +458,7 @@ namespace SPI{
     }
 
     /** \brief sets derivatives Dy and Dyy using saved grid */
-    void SPIgrid::set_derivatives(
+    void SPIgrid1D::set_derivatives(
             PetscInt order      ///< [in] order of accuracy of finite difference derivative (default 4)
             ){
         if(this->ytype==FD){
@@ -461,6 +475,15 @@ namespace SPI{
             this->Dy=set_D_Chebyshev(this->y,1,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
             this->Dy.name=std::string("Dy");
             this->Dyy=set_D_Chebyshev(this->y,2,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
+            this->Dyy.name=std::string("Dyy");
+            this->Dy.real(); // just take only real part
+            this->Dyy.real(); // just take only real part
+            this->flag_set_derivatives=PETSC_TRUE;
+        }
+        else if(this->ytype==FT){
+            this->Dy=set_D_Fourier(this->y,1);   // default Fourier operator on uniform grid
+            this->Dy.name=std::string("Dy");
+            this->Dyy=set_D_Fourier(this->y,2);   // default Chebyshev operator on uniform grid
             this->Dyy.name=std::string("Dyy");
             this->Dy.real(); // just take only real part
             this->Dyy.real(); // just take only real part
@@ -492,12 +515,12 @@ namespace SPI{
             this->flag_set_derivatives=PETSC_TRUE;
         }
         else{
-            SPI::printf("Warning this type of ytype grid is not implemented in SPIgrid.set_derivatives");
+            SPI::printf("Warning this type of ytype grid is not implemented in SPIgrid1D.set_derivatives");
         }
     }
 
     /** \brief sets zero and identity operators for grid */
-    void SPIgrid::set_operators(){
+    void SPIgrid1D::set_operators(){
         PetscInt m = Dy.rows;
         PetscInt n = Dy.cols;
         this->O = zeros(m,n);;   // default Chebyshev operator on non-uniform grid
@@ -525,7 +548,7 @@ namespace SPI{
     }
 
     /** \brief destructor of saved SPIVec and SPIMat */
-    SPIgrid::~SPIgrid(){
+    SPIgrid1D::~SPIgrid1D(){
         // destroy grid variables and reset flags
         if (this->flag_set_grid){
             this->y.~SPIVec();
@@ -551,11 +574,217 @@ namespace SPI{
             this->flag_set_operators=PETSC_FALSE;
         }
     }
+    /** \brief constructor with no arguments (set default values) */
+    SPIgrid2D::SPIgrid2D(
+            SPIVec &y,  ///< [in] grid in wall-normal direction to save
+            SPIVec &t,  ///< [in] grid in time dimension to save
+            std::string name, ///< [in] name of grid (default to SPIgrid1D)
+            gridtype y_gridtype, ///< [in] what type of grid (default finite difference FD)
+            gridtype t_gridtype ///< [in] what type of grid (default Fourier Transform FT)
+            ){
+        // set grid name and type
+        this->name = name;
+        this->ytype = y_gridtype;
+        this->ttype = t_gridtype;
+        // set grid 
+        this->set_grid(y,t);
+        // set respective derivatives
+        this->set_derivatives();
+        // set respective operators
+        this->set_operators();
+    }
 
+
+    /** \brief saves grid to internal grid */
+    void SPIgrid2D::print(){
+    SPI::printf("---------------- "+this->name+" start --------------------------");
+        if(this->flag_set_grid) {
+            //PetscInt ny2 = this->ny;
+            //SPI::printf("ny = %D",ny2);
+            this->y.print();
+            this->t.print();
+        }
+        if(this->flag_set_derivatives){
+            this->Dy.print();
+            this->Dyy.print();
+            this->Dt.print();
+        }
+        if(this->flag_set_operators){
+            this->O.print();
+            this->I.print();
+        }
+    SPI::printf("---------------- "+this->name+" done ---------------------------");
+    }
+
+    /** \brief saves grid to internal grid */
+    void SPIgrid2D::set_grid(
+            SPIVec &y, ///< [in] grid in wall-normal dimension to save
+            SPIVec &t  ///< [in] grid in time dimension to save
+            ){
+        this->y=y;
+        this->y.name=std::string("y");
+        this->ny = y.rows;
+        this->t=t;
+        this->t.name=std::string("t");
+        this->nt = t.rows;
+        this->grid1Dy.set_grid(y);
+        this->grid1Dt.set_grid(t);
+        this->flag_set_grid=PETSC_TRUE;
+    }
+
+    /** \brief sets derivatives Dy and Dyy using saved grid */
+    void SPIgrid2D::set_derivatives(
+            PetscInt order      ///< [in] order of accuracy of finite difference derivative (default 4)
+            ){
+        //std::cout<<" grid3D set derivatives 1"<<std::endl;
+        //PetscInt ny=this->ny;
+        //PetscInt nt=this->nt;
+        // set 2D operators in wall-normal
+        grid1Dy.ytype=ytype;
+        grid1Dy.set_derivatives(order);
+        grid1Dt.ytype=ttype;
+        grid1Dt.set_derivatives(order);
+        // if(this->ytype==FD){
+        //     this->Dy2D=set_D(this->y,1,order);   // default of fourth order nonuniform grid
+        //     this->Dy2D.name=std::string("Dy2D");
+        //     this->Dyy2D=set_D(this->y,2,order); // default of fourth order nonuniform grid
+        //     this->Dyy2D.name=std::string("Dyy2D");
+        //     this->Dy2D.real(); // just take only real part
+        //     this->Dyy2D.real(); // just take only real part
+        //     this->flag_set_derivatives=PETSC_TRUE;
+        // }
+        // else if(this->ytype==FT){
+        //     this->Dy2D=set_D_Fourier(this->y,1);   // default Fourier operator on uniform grid
+        //     this->Dy2D.name=std::string("Dy2D");
+        //     this->Dyy2D=set_D_Fourier(this->y,2);   // default Chebyshev operator on uniform grid
+        //     this->Dyy2D.name=std::string("Dyy2D");
+        //     this->Dy2D.real(); // just take only real part
+        //     this->Dyy2D.real(); // just take only real part
+        //     this->flag_set_derivatives=PETSC_TRUE;
+        // }
+        // else if(this->ytype==Chebyshev){
+        //     this->Dy2D=set_D_Chebyshev(this->y,1,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
+        //     this->Dy2D.name=std::string("Dy2D");
+        //     this->Dyy2D=set_D_Chebyshev(this->y,2,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
+        //     this->Dyy2D.name=std::string("Dyy2D");
+        //     this->Dy2D.real(); // just take only real part
+        //     this->Dyy2D.real(); // just take only real part
+        //     this->flag_set_derivatives=PETSC_TRUE;
+        // }
+        // set 2D operators in time
+        // if(this->ttype==FD){
+        //     this->Dt2D=set_D(this->t,1);   // default of fourth order nonuniform grid
+        //     this->Dt2D.name=std::string("Dt2D");
+        //     this->Dt2D.real(); // just take only real part
+        //     this->flag_set_derivatives=PETSC_TRUE;
+        // }
+        // else if(this->ttype==FT){
+        //     this->Dt2D=set_D_Fourier(this->t,1);   // default Fourier operator on uniform grid
+        //     this->Dt2D.name=std::string("Dt2D");
+        //     this->Dt2D.real(); // just take only real part
+        //     this->flag_set_derivatives=PETSC_TRUE;
+        // }
+        // else if(this->ttype==Chebyshev){
+        //     this->Dt2D=set_D_Chebyshev(this->y,1,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
+        //     this->Dt2D.name=std::string("Dt2D");
+        //     this->Dt2D.real(); // just take only real part
+        //     this->flag_set_derivatives=PETSC_TRUE;
+        // }
+        // set 3D operators
+        this->Dy = kron(eye(nt),this->grid1Dy.Dy);
+        this->Dy.name = "Dy";
+        this->Dyy = kron(eye(nt),this->grid1Dy.Dyy);
+        this->Dyy.name = "Dyy";
+        this->Dt = kron(this->grid1Dt.Dy,eye(ny));
+        this->Dt.name = "Dt";
+        // set 3D operators
+        if((ytype==Chebyshev) || (ytype==UltraS)){
+            this->T = kron(eye(nt),this->grid1Dy.T);
+            this->T.name = "T";
+            this->That = kron(eye(nt),this->grid1Dy.That);
+            this->That.name = "That";
+        }
+        if(ytype==UltraS){
+            this->S1S0That = kron(eye(nt),this->grid1Dy.S1S0That);
+            this->S1S0That.name = "S1S0That";
+            this->S0invS1inv = kron(eye(nt),this->grid1Dy.S0invS1inv);
+            this->S0invS1inv.name = "S0invS1inv";
+        }
+    }
+
+    /** \brief sets zero and identity operators for grid */
+    void SPIgrid2D::set_operators(){
+        //PetscInt ny = Dy.rows;
+        //PetscInt n = Dy.cols;
+        PetscInt n=(this->ny)*(this->nt);
+        this->O=zeros(n,n);;    // zero matrix of size ny*nt x ny*nt
+        this->O.name="zero";
+        this->I=eye(n);   
+        this->I.name="eye";     // identity matrix of size ny*nt x ny*nt
+        this->grid1Dy.set_operators(); // in case they are needed
+        this->grid1Dt.set_operators(); // in case they are needed
+        this->flag_set_operators=PETSC_TRUE;
+    }
+
+    /** \brief destructor of saved SPIVec and SPIMat */
+    SPIgrid2D::~SPIgrid2D(){
+        // destroy grid variables and reset flags
+        if (this->flag_set_grid){
+            this->y.~SPIVec();
+            this->t.~SPIVec();
+            this->flag_set_grid=PETSC_FALSE;
+        }
+        // destroy derivative operators and reset flags
+        if (this->flag_set_derivatives){
+            //this->Dy2D.~SPIMat();
+            //this->Dyy2D.~SPIMat();
+            //this->Dt2D.~SPIMat();
+            this->Dy.~SPIMat();
+            this->Dyy.~SPIMat();
+            this->Dt.~SPIMat();
+            this->T.~SPIMat();
+            this->That.~SPIMat();
+            this->S1S0That.~SPIMat();
+            this->S0invS1inv.~SPIMat();
+            this->flag_set_derivatives=PETSC_FALSE;
+        }
+        // destroy operators and reset flags
+        if (this->flag_set_operators){
+            this->O.~SPIMat();
+            this->I.~SPIMat();
+            this->flag_set_operators=PETSC_FALSE;
+        }
+        grid1Dy.~SPIgrid1D();
+        grid1Dt.~SPIgrid1D();
+    }
+
+    /** \brief expand a 1D vector to a 2D vector copying data along time dimension */
+    SPIVec SPIVec1Dto2D(
+            SPIgrid2D &grid2D,  ///< [in] 3D grid containing wall-normal and time dimensions
+            SPIVec &u           ///< [in] vector to inflate to match the 3D operator
+            ){
+        PetscInt nu=u.rows; // should be equal to ny
+        PetscInt ny=grid2D.ny;
+        if(nu!=ny) exit(1);
+        PetscInt nt=grid2D.nt;
+        SPIVec U(ny*nt,u.name);
+        std::vector<PetscScalar> utmp(ny);
+        for(PetscInt j=0; j<ny; ++j){
+            utmp[j] = u(j,PETSC_TRUE);
+        }
+        for(PetscInt i=0; i<nt; ++i){
+            for(PetscInt j=0; j<ny; ++j){
+                //std::cout<<" i,j,j+i*ny = "<<i<<","<<j<<","<<j+i*ny<<std::endl;
+                U(j+i*ny,utmp[j]);
+            }
+        }
+        U();
+        return U;
+    }
     /** \brief integrate a vector of chebyshev Coefficients on a physical grid */
     PetscScalar integrate(
-            const SPIVec &a,          ///< [in] vector to integrate over grid (Chebyshev coefficients or physical values)
-            SPIgrid &grid       ///< [in] respective grid
+            const SPIVec &a,      ///< [in] vector to integrate over grid (Chebyshev coefficients or physical values)
+            SPIgrid1D &grid       ///< [in] respective grid
             ){
         if(grid.ytype==UltraS){ // if using UltraSpherical, then it is in Chebyshev coefficients
             PetscInt ny=grid.y.rows;
@@ -606,11 +835,223 @@ namespace SPI{
             return val;
         }
     }
+    /** \brief integrate a vector of chebyshev Coefficients on a physical grid */
+    PetscScalar integrate(
+            const SPIVec &a,      ///< [in] vector to integrate over grid (Chebyshev coefficients or physical values)
+            SPIgrid2D &grid       ///< [in] respective grid
+            ){
+        if((grid.ytype==UltraS) && (grid.ttype==FD)){ // if using UltraSpherical, then it is in Chebyshev coefficients
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            //SPIVec atmp2(ny,"atmp2");
+            SPIVec atmpt(nt,"atmpt");
+            //SPIVec atmpt2(nt,"atmpt2");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    //atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = integrate_coeffs(atmp,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                }
+                atmpt();
+                val2 = trapz(atmpt,grid.t);
+                val += val2;
+            }
+            return val;
+        }
+        else if((grid.ytype==UltraS) && (grid.ttype==Chebyshev)){ // if using UltraSpherical, then it is in Chebyshev coefficients
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            //SPIVec atmp2(ny,"atmp2");
+            SPIVec atmpt(nt,"atmpt");
+            SPIVec atmpt2(nt,"atmpt2");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    //atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = integrate_coeffs(atmp,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                }
+                atmpt();
+                atmpt2 = ((grid.grid1Dy.That)*atmpt);
+                val2 = integrate_coeffs(atmpt,grid.t);
+                val += val2;
+            }
+            return val;
+        }
+        else if((grid.ytype==Chebyshev) && (grid.ttype==Chebyshev)){ // if using UltraSpherical, then it is in Chebyshev coefficients
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            SPIVec atmp2(ny,"atmp2");
+            SPIVec atmpt(nt,"atmpt");
+            SPIVec atmpt2(nt,"atmpt2");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = integrate_coeffs(atmp2,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                }
+                atmpt();
+                atmpt2 = ((grid.grid1Dt.That)*atmpt);
+                val2 = integrate_coeffs(atmpt2,grid.t);
+                val += val2;
+            }
+                //val2 = integrate_coeffs(atmp2,grid.y);
+            return val;
+        }
+        else if((grid.ytype==Chebyshev) && (grid.ttype==FT)){
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            SPIVec atmp2(ny,"atmp2");
+            //SPIVec atmpt(nt,"atmpt");
+            //SPIVec atmpt2(nt,"atmpt2");
+            SPIVec atmpt(nt+1,"atmpt");
+            SPIVec t(nt+1,"t");
+            for(PetscInt i=0; i<nt; ++i){
+                t(i,grid.t(i,PETSC_TRUE));
+            }
+            PetscScalar dt = grid.t(1,PETSC_TRUE) - grid.t(0,PETSC_TRUE);
+            t(nt,grid.t(nt-1,PETSC_TRUE)+dt);
+            t();
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = integrate_coeffs(atmp2,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                    if(j==0){ atmpt(nt,val2); }
+                }
+                atmpt();
+                //atmpt2 = ((grid.grid1Dt.That)*atmpt);
+                //val2 = integrate_coeffs(atmpt2,grid.t);
+                val2 = trapz(atmpt,t);
+                val += val2;
+            }
+            std::cout<<"integrate val = "<<val<<std::endl;
+            return val;
+        }
+        else if((grid.ytype==FD) && (grid.ttype==FD)){ // otherwise they are physical values, let's integrate using trapezoidal rule
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            //SPIVec atmp2(ny,"atmp2");
+            SPIVec atmpt(nt,"atmpt");
+            //SPIVec atmpt2(nt,"atmpt2");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    //atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = trapz(atmp,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                }
+                atmpt();
+                //atmpt2 = ((grid.grid1Dt.That)*atmpt);
+                val2 = trapz(atmpt,grid.t);
+                val += val2;
+            }
+                //val2 = integrate_coeffs(atmp2,grid.y);
+            return val;
+        }
+        else if((grid.ytype==FD) && (grid.ttype==FT)){ // otherwise they are physical values, let's integrate using trapezoidal rule assuming periodic endpoint
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            //SPIVec atmp2(ny,"atmp2");
+            SPIVec atmpt(nt+1,"atmpt");
+            SPIVec t(nt+1,"t");
+            for(PetscInt i=0; i<nt; ++i){
+                t(i,grid.t(i,PETSC_TRUE));
+            }
+            PetscScalar dt = grid.t(1,PETSC_TRUE) - grid.t(0,PETSC_TRUE);
+            t(nt,grid.t(nt-1,PETSC_TRUE)+dt);
+            t();
+            //SPIVec atmpt2(nt,"atmpt2");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    //atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = trapz(atmp,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                    if(j==0){ atmpt(nt,val2); }
+                }
+                atmpt();
+                //atmpt2 = ((grid.grid1Dt.That)*atmpt);
+                val2 = trapz(atmpt,t);
+                val += val2;
+            }
+                //val2 = integrate_coeffs(atmp2,grid.y);
+            return val;
+        }
+        else{
+            std::cout<<"integrate mixed types not available"<<std::endl;
+            exit(1);
+            return 0;
+        }
+    }
     /* \brief project using inner product for Gram-Schmidt process */
     SPIVec proj(
             SPIVec &u,      ///< [in] first vector to project
             SPIVec &v,      ///< [in] second vector to project
-            SPIgrid &grid   ///< [in] respective grid
+            SPIgrid1D &grid   ///< [in] respective grid
             ){
         if(grid.ytype==UltraS){
             PetscInt n = u.rows/grid.y.rows;
@@ -653,10 +1094,57 @@ namespace SPI{
             return (integrate(conj(u)*v,grid)/integrate(conj(u)*u,grid)) * u;
         }
     }
-    /* \brief orthogonalize a basis dense matrix from an array of vec using SLEPc BV */
+    /* \brief project using inner product for Gram-Schmidt process */
+    SPIVec proj(
+            SPIVec &u,      ///< [in] first vector to project
+            SPIVec &v,      ///< [in] second vector to project
+            SPIgrid2D &grid   ///< [in] respective grid
+            ){
+        if(grid.ytype==UltraS){
+            PetscInt n = u.rows/grid.y.rows;
+            SPIVec utmp, vtmp;
+            SPIMat T, That;
+            if(n==1){
+                T = grid.T;
+                That = grid.That;
+                utmp=T*u;
+                vtmp=T*v;
+            }else if(n==2){
+                T = block({
+                        {grid.T,grid.O},
+                        {grid.O,grid.T},
+                        })();
+                That = block({
+                        {grid.That,grid.O},
+                        {grid.O,grid.That},
+                        })();
+                utmp=T*u;
+                vtmp=T*v;
+            }else if(n==4){
+                T = block({
+                        {grid.T,grid.O,grid.O,grid.O},
+                        {grid.O,grid.T,grid.O,grid.O},
+                        {grid.O,grid.O,grid.T,grid.O},
+                        {grid.O,grid.O,grid.O,grid.T},
+                        })();
+                That = block({
+                        {grid.That,grid.O,grid.O,grid.O},
+                        {grid.O,grid.That,grid.O,grid.O},
+                        {grid.O,grid.O,grid.That,grid.O},
+                        {grid.O,grid.O,grid.O,grid.That},
+                        })();
+                utmp=T*u;
+                vtmp=T*v;
+            }
+            return (integrate(That*(conj(utmp)*vtmp),grid)/integrate(That*(conj(utmp)*utmp),grid)) * u;
+        }else{
+            return (integrate(conj(u)*v,grid)/integrate(conj(u)*u,grid)) * u;
+        }
+    }
+    /* \brief orthogonalize a basis dense matrix from an array of vec using Gram-Schmidt */
     std::vector<SPIVec> orthogonalize(
             std::vector<SPIVec> &x,  ///< [in] array of vectors to orthogonalize 
-            SPIgrid &grid             ///< [in] respective grid for integration using Gram-Schmidt
+            SPIgrid1D &grid             ///< [in] respective grid for integration using Gram-Schmidt
             ){
         //PetscInt m=x[0].rows;   // number of rows
         PetscInt n=x.size();    // number of columns
@@ -670,7 +1158,8 @@ namespace SPI{
         for(PetscInt i=0; i<n; ++i){
             if(i>0){
                 for(PetscInt j=1; j<=i; ++j){
-                    qi[i] -= proj(qi[j-1],x[i],grid);
+                    //qi[i] -= proj(qi[j-1],x[i],grid); // if using Classical Gram-Schmidt orthogonalization
+                    qi[i] -= proj(qi[j-1],qi[i],grid); // if using Modified  Gram-Schmidt orthogonalization
                     //std::cout<<" projecting i,j = "<<i<<","<<j<<std::endl;
                 }
             }
@@ -734,14 +1223,98 @@ namespace SPI{
             }
         }
         return qi;
-        //// set into Q
-        //for(PetscInt i=0; i<m; ++i){
-        //for(PetscInt j=0; j<n; ++j){
-        //Q(i,j,qi[j](i,PETSC_TRUE));
-        //}
-        //}
-        //Q();
-        //return Q;
+    }
+    /* \brief orthogonalize a basis dense matrix from an array of vec using SLEPc BV */
+    std::vector<SPIVec> orthogonalize(
+            std::vector<SPIVec> &x,  ///< [in] array of vectors to orthogonalize 
+            SPIgrid2D &grid             ///< [in] respective grid for integration using Gram-Schmidt
+            ){
+        //PetscInt m=x[0].rows;   // number of rows
+        PetscInt n=x.size();    // number of columns
+        //SPIMat Q(m,n,"Q");
+        std::vector<SPIVec> qi(n);
+        // copy x[i]
+        for(PetscInt i=0; i<n; ++i){
+            qi[i] = x[i];
+        }
+        // project
+        for(PetscInt i=0; i<n; ++i){
+            if(i>0){
+                for(PetscInt j=1; j<=i; ++j){
+                    //qi[i] -= proj(qi[j-1],x[i],grid);
+                    //qi[i] -= proj(qi[j-1],x[i],grid); // if using Classical Gram-Schmidt orthogonalization
+                    qi[i] -= proj(qi[j-1],qi[i],grid); // if using Modified  Gram-Schmidt orthogonalization
+                    //std::cout<<" projecting i,j = "<<i<<","<<j<<std::endl;
+                }
+            }
+        }
+        // normalize
+        if(grid.ytype==UltraS){
+            SPIVec qtmp;
+            PetscInt ni = qi[0].rows/grid.y.rows;
+            if(ni==1){
+                for(PetscInt i=0; i<n; ++i){
+                    //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
+                    qtmp = SPI::abs(grid.T*qi[i]);
+                    qtmp = grid.That*(qtmp*qtmp);
+                    qi[i] /= sqrt(integrate(qtmp,grid));
+                }
+            }
+            else if(ni==2){
+                SPIMat T(block({
+                            {grid.T,grid.O},
+                            {grid.O,grid.T},
+                            })(),"T");
+                SPIMat That(block({
+                            {grid.That,grid.O},
+                            {grid.O,grid.That},
+                            })(),"That");
+                for(PetscInt i=0; i<n; ++i){
+                    //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
+                    qtmp = SPI::abs(T*qi[i]);
+                    qtmp = That*(qtmp*qtmp);
+                    qi[i] /= sqrt(integrate(qtmp,grid));
+                }
+            }
+            else if(ni==4){
+                SPIMat T(block({
+                            {grid.T,grid.O,grid.O,grid.O},
+                            {grid.O,grid.T,grid.O,grid.O},
+                            {grid.O,grid.O,grid.T,grid.O},
+                            {grid.O,grid.O,grid.O,grid.T},
+                            })(),"T");
+                SPIMat That(block({
+                            {grid.That,grid.O,grid.O,grid.O},
+                            {grid.O,grid.That,grid.O,grid.O},
+                            {grid.O,grid.O,grid.That,grid.O},
+                            {grid.O,grid.O,grid.O,grid.That},
+                            })(),"That");
+                for(PetscInt i=0; i<n; ++i){
+                    //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
+                    qtmp = SPI::abs(T*qi[i]);
+                    qtmp = That*(qtmp*qtmp);
+                    qi[i] /= sqrt(integrate(qtmp,grid));
+                }
+            }
+            else{
+                SPI::printf("orthogonalize not implemented yet");
+                exit(1);
+            }
+        }
+        else{
+            for(PetscInt i=0; i<n; ++i){
+                //std::cout<<"sqrt(integrate(SPI::abs(qi[i])^2,grid)) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid))<<std::endl;
+                //std::cout<<"sqrt(integrate(SPI::abs(qi[i])*SPI::abs(qi[i]),grid)) = "<<sqrt(integrate(SPI::abs(qi[i])*SPI::abs(qi[i]),grid))<<std::endl;
+                //std::cout<<"abs(qi[i])(1),qi[i](1) = "<<SPI::abs(qi[i])(1,PETSC_TRUE)<<", "<<qi[i](1,PETSC_TRUE)<<std::endl;
+                //std::cout<<"(abs(qi[i])*abs(qi[i]))(1) = "<<(SPI::abs(qi[i])*SPI::abs(qi[i]))(1,PETSC_TRUE)<<std::endl;
+                //std::cout<<"sum(abs(qi[i])*abs(qi[i])) = "<<SPI::sum(SPI::abs(qi[i])*SPI::abs(qi[i]))<<std::endl;
+                //std::cout<<"integrate(abs(qi[i])*abs(qi[i])) = "<<SPI::integrate(SPI::abs(qi[i])*SPI::abs(qi[i]),grid)<<std::endl;
+                //(SPI::abs(qi[i])*SPI::abs(qi[i])).print();
+                qi[i] /= sqrt(integrate(SPI::abs(qi[i])^2,grid));
+            }
+        }
+        //qi[0].print();
+        return qi;
     }
 
 
