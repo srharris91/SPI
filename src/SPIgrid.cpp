@@ -930,6 +930,47 @@ namespace SPI{
                 //val2 = integrate_coeffs(atmp2,grid.y);
             return val;
         }
+        else if((grid.ytype==UltraS) && (grid.ttype==FT)){
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            //SPIVec atmp2(ny,"atmp2");
+            //SPIVec atmpt(nt,"atmpt");
+            //SPIVec atmpt2(nt,"atmpt2");
+            SPIVec atmpt(nt+1,"atmpt");
+            SPIVec t(nt+1,"t");
+            for(PetscInt i=0; i<nt; ++i){
+                t(i,grid.t(i,PETSC_TRUE));
+            }
+            PetscScalar dt = grid.t(1,PETSC_TRUE) - grid.t(0,PETSC_TRUE);
+            t(nt,grid.t(nt-1,PETSC_TRUE)+dt);
+            t();
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    //atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = integrate_coeffs(atmp,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                    if(j==0){ atmpt(nt,val2); }
+                }
+                atmpt();
+                //atmpt2 = ((grid.grid1Dt.That)*atmpt);
+                //val2 = integrate_coeffs(atmpt2,grid.t);
+                val2 = trapz(atmpt,t);
+                val += val2;
+            }
+            std::cout<<"integrate val = "<<val<<std::endl;
+            return val;
+        }
         else if((grid.ytype==Chebyshev) && (grid.ttype==FT)){
             PetscInt ny=grid.ny;
             PetscInt nt=grid.nt;
@@ -1101,15 +1142,18 @@ namespace SPI{
             SPIgrid2D &grid   ///< [in] respective grid
             ){
         if(grid.ytype==UltraS){
-            PetscInt n = u.rows/grid.y.rows;
+            std::cout<<"in proj 1"<<std::endl;
+            PetscInt n = u.rows/(grid.y.rows*grid.t.rows);
             SPIVec utmp, vtmp;
             SPIMat T, That;
             if(n==1){
+                std::cout<<"in proj 2"<<std::endl;
                 T = grid.T;
                 That = grid.That;
                 utmp=T*u;
                 vtmp=T*v;
             }else if(n==2){
+                std::cout<<"in proj 3"<<std::endl;
                 T = block({
                         {grid.T,grid.O},
                         {grid.O,grid.T},
@@ -1121,21 +1165,27 @@ namespace SPI{
                 utmp=T*u;
                 vtmp=T*v;
             }else if(n==4){
+                std::cout<<"in proj 4"<<std::endl;
                 T = block({
                         {grid.T,grid.O,grid.O,grid.O},
                         {grid.O,grid.T,grid.O,grid.O},
                         {grid.O,grid.O,grid.T,grid.O},
                         {grid.O,grid.O,grid.O,grid.T},
                         })();
+                std::cout<<"in proj 5"<<std::endl;
                 That = block({
                         {grid.That,grid.O,grid.O,grid.O},
                         {grid.O,grid.That,grid.O,grid.O},
                         {grid.O,grid.O,grid.That,grid.O},
                         {grid.O,grid.O,grid.O,grid.That},
                         })();
+                std::cout<<"in proj 6"<<std::endl;
                 utmp=T*u;
+                std::cout<<"in proj 7"<<std::endl;
                 vtmp=T*v;
+                std::cout<<"in proj 8"<<std::endl;
             }
+            std::cout<<"in proj 9"<<std::endl;
             return (integrate(That*(conj(utmp)*vtmp),grid)/integrate(That*(conj(utmp)*utmp),grid)) * u;
         }else{
             return (integrate(conj(u)*v,grid)/integrate(conj(u)*u,grid)) * u;
@@ -1167,7 +1217,7 @@ namespace SPI{
         // normalize
         if(grid.ytype==UltraS){
             SPIVec qtmp;
-            PetscInt ni = qi[0].rows/grid.y.rows;
+            PetscInt ni = qi[0].rows/(grid.y.rows);
             if(ni==1){
                 for(PetscInt i=0; i<n; ++i){
                     //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
@@ -1229,6 +1279,7 @@ namespace SPI{
             std::vector<SPIVec> &x,  ///< [in] array of vectors to orthogonalize 
             SPIgrid2D &grid             ///< [in] respective grid for integration using Gram-Schmidt
             ){
+        //std::cout<<"in orthogonalize 1"<<std::endl;
         //PetscInt m=x[0].rows;   // number of rows
         PetscInt n=x.size();    // number of columns
         //SPIMat Q(m,n,"Q");
@@ -1237,6 +1288,7 @@ namespace SPI{
         for(PetscInt i=0; i<n; ++i){
             qi[i] = x[i];
         }
+        //std::cout<<"in orthogonalize 2"<<std::endl;
         // project
         for(PetscInt i=0; i<n; ++i){
             if(i>0){
@@ -1248,10 +1300,11 @@ namespace SPI{
                 }
             }
         }
+        //std::cout<<"in orthogonalize 3"<<std::endl;
         // normalize
         if(grid.ytype==UltraS){
             SPIVec qtmp;
-            PetscInt ni = qi[0].rows/grid.y.rows;
+            PetscInt ni = qi[0].rows/(grid.y.rows*grid.t.rows);
             if(ni==1){
                 for(PetscInt i=0; i<n; ++i){
                     //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
@@ -1277,24 +1330,28 @@ namespace SPI{
                 }
             }
             else if(ni==4){
+                //std::cout<<"in orthogonalize 4"<<std::endl;
                 SPIMat T(block({
                             {grid.T,grid.O,grid.O,grid.O},
                             {grid.O,grid.T,grid.O,grid.O},
                             {grid.O,grid.O,grid.T,grid.O},
                             {grid.O,grid.O,grid.O,grid.T},
                             })(),"T");
+                //std::cout<<"in orthogonalize 5"<<std::endl;
                 SPIMat That(block({
                             {grid.That,grid.O,grid.O,grid.O},
                             {grid.O,grid.That,grid.O,grid.O},
                             {grid.O,grid.O,grid.That,grid.O},
                             {grid.O,grid.O,grid.O,grid.That},
                             })(),"That");
+                //std::cout<<"in orthogonalize 6"<<std::endl;
                 for(PetscInt i=0; i<n; ++i){
                     //std::cout<<" norm(q) = "<<sqrt(integrate(SPI::abs(qi[i])^2,grid));
                     qtmp = SPI::abs(T*qi[i]);
                     qtmp = That*(qtmp*qtmp);
                     qi[i] /= sqrt(integrate(qtmp,grid));
                 }
+                //std::cout<<"in orthogonalize 7"<<std::endl;
             }
             else{
                 SPI::printf("orthogonalize not implemented yet");
@@ -1313,6 +1370,7 @@ namespace SPI{
                 qi[i] /= sqrt(integrate(SPI::abs(qi[i])^2,grid));
             }
         }
+        //std::cout<<"in orthogonalize 8"<<std::endl;
         //qi[0].print();
         return qi;
     }
