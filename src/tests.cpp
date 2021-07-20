@@ -23,7 +23,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_TRUE;
+    PetscBool alltests=PETSC_FALSE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
@@ -2411,6 +2411,20 @@ int tests(){
         test_if_close(xi(0,PETSC_TRUE),1.0,"lstsq(std::vector<SPIVec>,SPIVec) 1",1e-14);
         test_if_close(xi(1,PETSC_TRUE),-0.95,"lstsq(std::vector<SPIVec>,SPIVec) 2",1e-14);
         SPI::printf("------------ SPIMat(std::vector<SPIVec>) and lstsq(std::vector<SPIVec>,SPIVec) end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ SPIMat save start -----------");
+        SPI::SPIMat A(4,2,"A");
+        A(0,0,0.2+3.1*PETSC_i); A(0,1,1.0+4.0*PETSC_i);
+        A(1,0,1.0+4.2*PETSC_i); A(1,1,2.0+3.0*PETSC_i);
+        A(2,0,2.0+3.3*PETSC_i); A(2,1,3.0+2.0*PETSC_i);
+        A(3,0,3.0+4.4*PETSC_i); A(3,1,4.0+1.0*PETSC_i);
+        A();
+        A.print();
+        SPI::save(A,"A.dat");
+        //SPI::load(A,"A.dat");
+        //A.print();
+        SPI::printf("------------ SPIMat save end   -----------");
     }
 
 
