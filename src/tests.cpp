@@ -23,7 +23,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_FALSE;
+    PetscBool alltests=PETSC_TRUE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
@@ -373,7 +373,7 @@ int tests(){
         SPI::SPIMat U(SPI::diag(1.0-((grid.y)^2)),"U");
         SPI::SPIMat Uy(SPI::diag(-2.*grid.y),"Uy");
         SPI::SPIVec o(U.diag()*0.0,"o"); // zero vector
-        SPI::SPIbaseflow channel(U.diag(),o,o,Uy.diag(),o,o,o,o,o,o,o);
+        SPI::SPIbaseflow channel(U.diag(),o,o,o,Uy.diag(),o,o,o,o,o,o,o,o,o);
 
         // parameters for Orr-Sommerfield eq.
         PetscScalar Re=2000.0;
@@ -421,7 +421,7 @@ int tests(){
         eigenfunction.name = "eigenfunction";
 
         SPI::SPIVec o(U.diag()*0.0,"o");
-        SPI::SPIbaseflow channel(U.diag(),o,o,Uy.diag(),o,o,o,o,o,o,o);
+        SPI::SPIbaseflow channel(U.diag(),o,o,o,Uy.diag(),o,o,o,o,o,o,o,o,o);
 
         std::tie(eigenvalue,eigenfunction) = SPI::LST_spatial(params,grid,channel);
         test_if_close(eigenvalue,0.97875+0.044394*PETSC_i,"LST_spatial 1",1e-5);
@@ -462,7 +462,7 @@ int tests(){
         eigenfunction.name = "eigenfunction";
 
         SPI::SPIVec o(U*0.0,"o");
-        SPI::SPIbaseflow channel(U,o,o,Uy,o,o,o,o,o,o,o);
+        SPI::SPIbaseflow channel(U,o,o,o,Uy,o,o,o,o,o,o,o,o,o);
 
         PetscScalar cg;
         std::tie(eigenvalue,cg,leigenfunction,eigenfunction) = SPI::LSTNP_spatial(params,grid,channel);
@@ -1114,7 +1114,7 @@ int tests(){
         SPI::SPIVec U((1.0-((grid.y)^2)),"U");
         SPI::SPIVec Uy((-2.*grid.y),"Uy");
         SPI::SPIVec o(U*0.0,"o"); // zero vector
-        SPI::SPIbaseflow channel(U,o,o,Uy,o,o,o,o,o,o,o);
+        SPI::SPIbaseflow channel(U,o,o,o,Uy,o,o,o,o,o,o,o,o,o);
         if(0){ // set to parallel baseflow
             //SPI::SPIVec o(SPI::zeros(n),"zero");
             //bl_flow.Ux = o;

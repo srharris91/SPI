@@ -71,7 +71,7 @@ int main(int argc, char **args){
         //SPI::printfc("eigenvalue is: %.10f+%.10fi",1./eigenvalue);
 
         SPI::SPIVec o(U.diag()*0.0,"o");
-        SPI::SPIbaseflow channel(U.diag(),o,o,Uy.diag(),o,o,o,o,o,o,o);
+        SPI::SPIbaseflow channel(U.diag(),o,o,o,Uy.diag(),o,o,o,o,o,o,o,o,o);
         //channel.print();
 
         //params.print();

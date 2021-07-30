@@ -20,8 +20,11 @@ namespace SPI{
                 SPIVec U,
                 SPIVec V,
                 SPIVec Ux,
+                SPIVec Uxx, // added for streamwise viscous marching BL
                 SPIVec Uy,
                 SPIVec Uxy,
+                SPIVec Vx, // added for full terms
+                SPIVec Vxx, // added for streamwise viscous marching BL
                 SPIVec Vy,
                 SPIVec W,
                 SPIVec Wx,
@@ -36,8 +39,11 @@ namespace SPI{
         SPIVec U,       // streamwise baseflow
                V,       // wall-normal baseflow
                Ux,      // streamwise baseflow derivative with respect to streamwise
+               Uxx,     // streamwise baseflow second derivative with respect to streamwise
                Uy,      // streamwise baseflow derivative with respect to wall-normal
                Uxy,     // streamwise baseflow mixed derivative
+               Vx,      // wall-normal baseflow derivative with respect to streamwise
+               Vxx,     // wall-normal baseflow second derivative with respect to streamwise
                Vy,      // wall-normal baseflow derivative with respect to wall-normal
                W,       // spanwise baseflow
                Wx,      // spanwise baseflow derivative with respect to streamwise

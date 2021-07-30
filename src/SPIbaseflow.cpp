@@ -11,8 +11,11 @@ namespace SPI{
             SPIVec U,       ///< [in] streamwise baseflow
             SPIVec V,       ///< [in] wall-normal baseflow
             SPIVec Ux,      ///< [in] streamwise baseflow derivative with respect to streamwise
+            SPIVec Uxx,     ///< [in] streamwise baseflow second derivative with respect to streamwise
             SPIVec Uy,      ///< [in] streamwise baseflow derivative with respect to wall-normal
             SPIVec Uxy,     ///< [in] streamwise baseflow mixed derivative
+            SPIVec Vx,      ///< [in] wall-normal baseflow derivative with respect to streamwise
+            SPIVec Vxx,     ///< [in] wall-normal baseflow second derivative with respect to streamwise
             SPIVec Vy,      ///< [in] wall-normal baseflow derivative with respect to wall-normal
             SPIVec W,       ///< [in] spanwise baseflow
             SPIVec Wx,      ///< [in] spanwise baseflow derivative with respect to streamwise
@@ -25,8 +28,11 @@ namespace SPI{
         this->U = U; this->U.name = "U";
         this->V = V; this->V.name = "V";
         this->Ux = Ux; this->Ux.name = "Ux";
+        this->Uxx = Uxx; this->Ux.name = "Uxx";
         this->Uy = Uy; this->Uy.name = "Uy";
         this->Uxy = Uxy; this->Uxy.name = "Uxy";
+        this->Vx = Vx; this->Vx.name = "Vx";
+        this->Vxx = Vxx; this->Vx.name = "Vxx";
         this->Vy = Vy; this->Vy.name = "Vy";
         this->W = W; this->W.name = "W";
         this->Wx = Wx; this->Wx.name = "Wx";
@@ -43,8 +49,11 @@ namespace SPI{
             this->U.print();
             this->V.print();
             this->Ux.print();
+            this->Uxx.print();
             this->Uy.print();
             this->Uxy.print();
+            this->Vx.print();
+            this->Vxx.print();
             this->Vy.print();
             this->W.print();
             this->Wx.print();
@@ -64,8 +73,11 @@ namespace SPI{
             this->U.~SPIVec();
             this->V.~SPIVec();
             this->Ux.~SPIVec();
+            this->Uxx.~SPIVec();
             this->Uy.~SPIVec();
             this->Uxy.~SPIVec();
+            this->Vx.~SPIVec();
+            this->Vxx.~SPIVec();
             this->Vy.~SPIVec();
             this->W.~SPIVec();
             this->Wx.~SPIVec();
@@ -204,7 +216,7 @@ namespace SPI{
                 Vy();
 
                 //SPIbaseflow baseflow(U, V, Ux, Uy, grid.Dy*Ux, Vy, O, O, O, O, O); // doesn't project correctly
-                SPIbaseflow baseflow(U, V, Ux, grid.Dy*U, grid.Dy*Ux, grid.Dy*V, O, O, O, O, O); // bad for UltraS grid
+                SPIbaseflow baseflow(U, V, Ux, O,grid.Dy*U, grid.Dy*Ux, Vx, O, grid.Dy*V, O, O, O, O, O); // bad for UltraS grid
                 if(grid.ytype==SPI::UltraS){ // fix for UltraS grid
                     SPIgrid1D gridCheby(grid.y,"gridCheby",SPI::Chebyshev);
                     SPIMat Dyp(grid.T*grid.S0invS1inv*grid.Dy*grid.That);
@@ -245,7 +257,7 @@ namespace SPI{
         SPI::SPIVec U((1.0-((grid.y)^2)),"U");
         SPI::SPIVec Uy((-2.*grid.y),"Uy");
         SPI::SPIVec o(U*0.0,"o"); // zero vector
-        SPI::SPIbaseflow channel_flow(U,o,o,Uy,o,o,o,o,o,o,o);
+        SPI::SPIbaseflow channel_flow(U,o,o,o,Uy,o,o,o,o,o,o,o,o,o);
         return channel_flow;
     }
 
