@@ -23,7 +23,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_TRUE;
+    PetscBool alltests=PETSC_FALSE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
@@ -2412,7 +2412,7 @@ int tests(){
         test_if_close(xi(1,PETSC_TRUE),-0.95,"lstsq(std::vector<SPIVec>,SPIVec) 2",1e-14);
         SPI::printf("------------ SPIMat(std::vector<SPIVec>) and lstsq(std::vector<SPIVec>,SPIVec) end   -----------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ SPIMat save start -----------");
         SPI::SPIMat A(4,2,"A");
         A(0,0,0.2+3.1*PETSC_i); A(0,1,1.0+4.0*PETSC_i);
@@ -2425,6 +2425,18 @@ int tests(){
         //SPI::load(A,"A.dat");
         //A.print();
         SPI::printf("------------ SPIMat save end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ SPIgrid2D.avgt start -----------");
+        PetscInt ny=400;
+        PetscInt nt=4;
+        SPI::SPIVec y(SPI::set_FD_stretched_y(61.,ny,1.01) ,"yFD");
+        SPI::SPIVec t(SPI::set_Fourier_t((2.0*M_PI)/0.0344,nt) ,"t");
+        SPI::SPIgrid2D grid(y,t,"grid",SPI::FD,SPI::FT);
+        //(grid.avgt*SPI::ones(400*4)).print();
+        test_if_close(grid.avgt(1,1,PETSC_TRUE),0.25,"SPIgrid2D.avgt 1",1e-14);
+        //t.print();
+        SPI::printf("------------ SPIgrid2D.avgt end   -----------");
     }
 
 

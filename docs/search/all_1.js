@@ -11,5 +11,6 @@ var searchData=
   ['asinh_10',['asinh',['../namespaceSPI.html#a6bb0eda0add46d3dc1e8f468fe4ea022',1,'SPI']]],
   ['atan_11',['atan',['../namespaceSPI.html#af545599719a66e9f794f7ffb4c3f23a5',1,'SPI']]],
   ['atanh_12',['atanh',['../namespaceSPI.html#ac7948017c5b11e55fffcf80496877557',1,'SPI']]],
-  ['axpy_13',['axpy',['../structSPI_1_1SPIMat.html#aaa63fdd3a707c2c50828562b3d660bbe',1,'SPI::SPIMat::axpy()'],['../structSPI_1_1SPIVec.html#a781edfe84e1fae1acb6488cb146e14ab',1,'SPI::SPIVec::axpy()']]]
+  ['avgt_13',['avgt',['../structSPI_1_1SPIgrid2D.html#a4f6770291d7ebb5537ef79364bd7ae78',1,'SPI::SPIgrid2D']]],
+  ['axpy_14',['axpy',['../structSPI_1_1SPIMat.html#aaa63fdd3a707c2c50828562b3d660bbe',1,'SPI::SPIMat::axpy()'],['../structSPI_1_1SPIVec.html#a781edfe84e1fae1acb6488cb146e14ab',1,'SPI::SPIVec::axpy()']]]
 ];

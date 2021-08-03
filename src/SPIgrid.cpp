@@ -612,6 +612,7 @@ namespace SPI{
         if(this->flag_set_operators){
             this->O.print();
             this->I.print();
+            this->avgt.print();
         }
     SPI::printf("---------------- "+this->name+" done ---------------------------");
     }
@@ -721,6 +722,19 @@ namespace SPI{
         this->O.name="zero";
         this->I=eye(n);   
         this->I.name="eye";     // identity matrix of size ny*nt x ny*nt
+        // set average in time operator
+        this->avgt=this->O;    // initialize w/ zero matrix of size ny*nt x ny*nt
+        PetscScalar val = 1.0/(PetscScalar)(this->nt);
+        //this->avgt /= (double)(this->nt);
+        for(PetscInt ti=0; ti<nt; ++ti){
+            for(PetscInt yi=0; yi<ny; ++yi){
+                PetscInt ii = ti*ny + yi;
+                for(PetscInt jj=yi; jj<n; jj+=this->ny){
+                    this->avgt(ii,jj,val);
+                }
+            }
+        }
+        this->avgt();
         this->grid1Dy.set_operators(); // in case they are needed
         this->grid1Dt.set_operators(); // in case they are needed
         this->flag_set_operators=PETSC_TRUE;
@@ -752,6 +766,7 @@ namespace SPI{
         if (this->flag_set_operators){
             this->O.~SPIMat();
             this->I.~SPIMat();
+            this->avgt.~SPIMat();
             this->flag_set_operators=PETSC_FALSE;
         }
         grid1Dy.~SPIgrid1D();

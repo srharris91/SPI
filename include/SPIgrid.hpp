@@ -93,8 +93,10 @@ namespace SPI{
         SPIMat Dy,      ///< 1st derivative operator with respect to y of size ny*nt x ny*nt
                Dyy,     ///< 2nd derivative operator with respect to y of size ny*nt x ny*nt
                Dt;      ///< 1st derivative operator with respect to t of size ny*nt x ny*nt
+        // other helper operators
         SPIMat O,       ///< zero matrix same size as derivative operators of size ny*nt x ny*nt
-               I;       ///< identity matrix same size as derivative operators of size ny*nt x ny*nt
+               I,       ///< identity matrix same size as derivative operators of size ny*nt x ny*nt
+               avgt;    ///< average in time operator
         // flags
         PetscBool flag_set_grid=PETSC_FALSE,        ///< flag if set_grid has been executed
                   flag_set_derivatives=PETSC_FALSE, ///< flag if set_derivatives has been executed
