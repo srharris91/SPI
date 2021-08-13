@@ -1866,7 +1866,7 @@ Optional: Get some information from the solver and display it
         m[0]=n[0]=0;
         for (PetscInt i=1; i<rows; ++i) m[i] = m[i-1]+Blocks[i-1][0].rows;
         for (PetscInt i=1; i<rows; ++i) msum += Blocks[i][0].rows;
-        for (PetscInt j=1; j<cols; ++j) nsum += Blocks[0][j].rows;
+        for (PetscInt j=1; j<cols; ++j) nsum += Blocks[0][j].cols;
         for (PetscInt j=1; j<cols; ++j) n[j] = n[j-1]+Blocks[0][j-1].cols;
 
         // TODO check if all rows and columns match for block matrix.... user error catch

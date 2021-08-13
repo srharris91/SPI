@@ -23,7 +23,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_FALSE;
+    PetscBool alltests=PETSC_TRUE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
