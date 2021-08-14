@@ -356,7 +356,7 @@ namespace SPI{
             ){
         SPIMat C;
         C.rows=rows;
-        C.cols=cols;
+        C.cols=A.cols;
         ierr = MatMatMult(mat,A.mat,MAT_INITIAL_MATRIX,PETSC_DEFAULT,&C.mat); CHKERRXX(ierr);
         C.flag_init=PETSC_TRUE;
         //ierr = MatSetType(C.mat,MATMPIAIJ);CHKERRXX(ierr);
