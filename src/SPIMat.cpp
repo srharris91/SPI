@@ -868,12 +868,13 @@ namespace SPI{
         SVDSetOperator(svd, A.mat);
         //SVDSetProblemType(svd, SVD_STANDARD);
         SVDSetFromOptions(svd);
+        SVDSetDimensions(svd,n,PETSC_DEFAULT,PETSC_DEFAULT); // force it to solve all of the SVD values
         SVDSolve(svd);
         //MatCreateVecs(A.mat,&vi.vec,&ui.vec);
         //ui.flag_init=PETSC_TRUE;
         //vi.flag_init=PETSC_TRUE;
         SVDGetConverged(svd, &nconv);
-        //std::cout<<"n="<<n<<" nconv = "<<nconv<<std::endl;
+        std::cout<<"n="<<n<<" nconv = "<<nconv<<std::endl;
         for(PetscInt j=0; j<nconv; j++){
             //std::cout<<"j = "<<j<<std::endl;
             MatCreateVecs(A.mat,&v[j].vec,&u[j].vec);
