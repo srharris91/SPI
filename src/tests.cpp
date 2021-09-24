@@ -23,7 +23,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_TRUE;
+    PetscBool alltests=PETSC_FALSE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
@@ -2426,7 +2426,7 @@ int tests(){
         //A.print();
         SPI::printf("------------ SPIMat save end   -----------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ SPIgrid2D.avgt start -----------");
         PetscInt ny=400;
         PetscInt nt=4;
@@ -2437,6 +2437,18 @@ int tests(){
         test_if_close(grid.avgt(1,1,PETSC_TRUE),0.25,"SPIgrid2D.avgt 1",1e-14);
         //t.print();
         SPI::printf("------------ SPIgrid2D.avgt end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ SPIgrid interp1D_Mat start -----------");
+        PetscInt n1=8,n2=11;
+        SPI::SPIVec y1(SPI::linspace(0,4,n1),"y1");
+        SPI::SPIVec y2(SPI::linspace(0,2,n2),"y2");
+        SPI::SPIgrid1D grid1(y1,"grid1",SPI::FD);
+        SPI::SPIgrid1D grid2(y2,"grid2",SPI::FD);
+        grid1.print();
+        (grid1.Dyy*(y1*y1)).print();
+        SPI::interp1D_Mat(grid1,grid2);
+        SPI::printf("------------ SPIgrid interp1D_Mat end   -----------");
     }
 
 

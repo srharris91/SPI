@@ -179,6 +179,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2b3b0f34780e505871deacfb1b52db25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad79638728f02222a2140d36d4cfb3ced"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ad79638728f02222a2140d36d4cfb3ced">orthogonalize</a> (std::vector&lt; <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &gt; &amp;x, <a class="el" href="structSPI_1_1SPIgrid2D.html">SPIgrid2D</a> &amp;grid)</td></tr>
 <tr class="separator:ad79638728f02222a2140d36d4cfb3ced"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ea38050b71cf6383bde9fd511420bfc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a3ea38050b71cf6383bde9fd511420bfc">interp1D_Mat</a> (const <a class="el" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid1, const <a class="el" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid2)</td></tr>
+<tr class="separator:a3ea38050b71cf6383bde9fd511420bfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90c17b555387105771324b32b9fe1080"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a90c17b555387105771324b32b9fe1080">LST_temporal</a> (<a class="el" href="structSPI_1_1SPIparams.html">SPIparams</a> &amp;params, <a class="el" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid, <a class="el" href="structSPI_1_1SPIbaseflow.html">SPIbaseflow</a> &amp;baseflow, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> q)</td></tr>
 <tr class="memdesc:a90c17b555387105771324b32b9fe1080"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with alpha being pure real, and omega the eigenvalue  <a href="namespaceSPI.html#a90c17b555387105771324b32b9fe1080">More...</a><br /></td></tr>
 <tr class="separator:a90c17b555387105771324b32b9fe1080"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1954,6 +1956,43 @@ template&lt;class T &gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="SPIVec_8cpp_source.html#l00846">846</a> of file <a class="el" href="SPIVec_8cpp_source.html">SPIVec.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a3ea38050b71cf6383bde9fd511420bfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ea38050b71cf6383bde9fd511420bfc">&#9670;&nbsp;</a></span>interp1D_Mat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::interp1D_Mat </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;&#160;</td>
+          <td class="paramname"><em>grid1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;&#160;</td>
+          <td class="paramname"><em>grid2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">grid1</td><td>[in] grid to interpolate values from </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">grid2</td><td>[in] grid to interpolate values to </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l01393">1393</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>

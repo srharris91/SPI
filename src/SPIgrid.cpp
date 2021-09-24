@@ -42,7 +42,7 @@ namespace SPI{
         //b.print();
         SPIVec x(N,"x");
         x = (b/A);
-        x();
+        //x();
         //x.print();
 
         return x;
@@ -68,7 +68,7 @@ namespace SPI{
             SPIMat D1(set_D(y,1,order,PETSC_TRUE),"D1");
             SPIVec dxidy(1./(D1*y),"dxidy");
             SPIVec d2xidy2(-1.*(D*y)*(dxidy^3),"d2xidy2");
-            SPIMat Dy(diag(dxidy^2)*D + (diag(d2xidy2)*D1),"Dy");
+            SPIMat Dy(diag(dxidy*dxidy)*D + (diag(d2xidy2)*D1),"Dy");
             //(Dy*(y)).print();
             return Dy;
         }
@@ -100,7 +100,7 @@ namespace SPI{
             CHKERRXX(ierr);
         }
         PetscInt Nm1 = N-1;
-        if (d%2 != 0) Nm1 += 1; // increase for odd derivative
+        if ((d%2) != 0) Nm1 += 1; // increase for odd derivative
         SPIVec s(arange(Nm1)-(Nm1-1)/2,"s"); // set stencil
         PetscInt smax = s(s.rows-1,PETSC_TRUE).real();
 
@@ -122,7 +122,7 @@ namespace SPI{
         for(PetscInt i=0; i<smax; i++){
             // for ith row
             s.~SPIVec(); // deallocate
-            if(d%2!=0){// odd derivative
+            if((d%2)!=0){// odd derivative
                 s = (arange(Nm1-1)-i); // stencil for shifted diff of order-1
             }
             else{
@@ -139,11 +139,11 @@ namespace SPI{
             D();
             // for -ith-1 row
             s.~SPIVec(); // deallocate
-            if(d%2!=0){// odd derivative
-                s = -1*(arange(Nm1-1)-i); // stencil for shifted diff of order-1
+            if((d%2)!=0){// odd derivative
+                s = -(arange(Nm1-1)-i); // stencil for shifted diff of order-1
             }
             else{
-                s = -1*arange(Nm1)-i;// stencil for shifted diff of order-1
+                s = -(arange(Nm1)-i);// stencil for shifted diff of order-1
             }
             Coeffs.~SPIVec();
             Coeffs = get_D_Coeffs(s,d);
@@ -1388,6 +1388,12 @@ namespace SPI{
         //std::cout<<"in orthogonalize 8"<<std::endl;
         //qi[0].print();
         return qi;
+    }
+    /* \brief create matrix to interpolate from grid1 to grid2 \returns out matrix such that u2(grid2.y) = out*u1(grid1.y) */
+    SPIMat interp1D_Mat(
+            const SPIgrid1D &grid1, ///< [in] grid to interpolate values from
+            const SPIgrid1D &grid2  ///< [in] grid to interpolate values to
+            ){
     }
 
 
