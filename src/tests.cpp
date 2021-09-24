@@ -2445,9 +2445,15 @@ int tests(){
         SPI::SPIVec y2(SPI::linspace(0,2,n2),"y2");
         SPI::SPIgrid1D grid1(y1,"grid1",SPI::FD);
         SPI::SPIgrid1D grid2(y2,"grid2",SPI::FD);
-        grid1.print();
-        (grid1.Dyy*(y1*y1)).print();
-        SPI::interp1D_Mat(grid1,grid2);
+        //grid1.print();
+        //(grid1.Dyy*(y1*y1)).print();
+        SPI::SPIMat interp(SPI::interp1D_Mat(grid1,grid2));
+        std::cout<<"L2(y2-interp*y1) = "<<SPI::L2(grid2.y,interp*grid1.y)<<std::endl;
+        std::cout<<"L2(sin(y2)-interp*sin(y1)) = "<<SPI::L2(SPI::sin(grid2.y),interp*SPI::sin(grid1.y))<<std::endl;
+        interp.print();
+
+        interp = SPI::interp1D_Mat(grid1.y,grid2.y);
+        interp.print();
         SPI::printf("------------ SPIgrid interp1D_Mat end   -----------");
     }
 

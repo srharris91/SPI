@@ -110,7 +110,8 @@ namespace SPI{
     SPIVec proj(SPIVec &u, SPIVec &v, SPIgrid2D &grid);   // project using inner product for Gram-Schmidt process
     std::vector<SPIVec> orthogonalize(std::vector<SPIVec> &x,SPIgrid1D &grid); // create orthonormal basis from array of vectors 
     std::vector<SPIVec> orthogonalize(std::vector<SPIVec> &x,SPIgrid2D &grid); // create orthonormal basis from array of vectors 
-    SPIMat interp1D_Mat(const SPIgrid1D &grid1, const SPIgrid1D &grid2); // create an interpolation routine to interpolate grid1.y -> grid2.y (i.e. create out matrix such that u(grid2.y) = out*u(grid1.y)
+    SPIMat interp1D_Mat(SPIgrid1D &grid1, SPIgrid1D &grid2); // create an interpolation routine to interpolate grid1.y -> grid2.y (i.e. create out matrix such that u(grid2.y) = out*u(grid1.y)
+    SPIMat interp1D_Mat(SPIVec &y1, SPIVec &y2); // create an interpolation routine to interpolate y1 -> y2 (i.e. create out matrix such that u(y2) = out*u(y1)
 
 }
 #endif // SPIGRID_H

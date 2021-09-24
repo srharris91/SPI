@@ -1391,9 +1391,70 @@ namespace SPI{
     }
     /* \brief create matrix to interpolate from grid1 to grid2 \returns out matrix such that u2(grid2.y) = out*u1(grid1.y) */
     SPIMat interp1D_Mat(
-            const SPIgrid1D &grid1, ///< [in] grid to interpolate values from
-            const SPIgrid1D &grid2  ///< [in] grid to interpolate values to
+            SPIgrid1D &grid1, ///< [in] grid to interpolate values from
+            SPIgrid1D &grid2  ///< [in] grid to interpolate values to
             ){
+        PetscInt n1=grid1.ny;
+        PetscInt n2=grid2.ny;
+        SPIMat I_n2Xn1(n2,n1,"I");
+        for(PetscInt i=0; i<n2; i++){
+            PetscScalar y2i = grid2.y(i,PETSC_TRUE);
+            PetscBool flag=PETSC_TRUE;
+            for(PetscInt j=0; j<n1; j++){
+                PetscScalar y1j = grid1.y(j,PETSC_TRUE);
+                if(y1j.real()>y2i.real()){
+                    if(flag){
+                        I_n2Xn1(i,j-1,1.0);
+                        flag = PETSC_FALSE;
+                    }
+                }
+                else if(y1j==y2i){
+                    if(flag){
+                        I_n2Xn1(i,j,1.0);
+                        flag = PETSC_FALSE;
+                    }
+                }
+            }
+        }
+        I_n2Xn1();
+        SPIMat Deltay(diag(grid2.y - (I_n2Xn1*grid1.y)),"Deltay");
+        SPIMat interp_n1_to_n2(I_n2Xn1 + (Deltay*(I_n2Xn1*grid1.Dy)) + 0.5*(Deltay*Deltay*(I_n2Xn1*grid1.Dyy)),"interp");
+        return interp_n1_to_n2;
+    }
+    /* \brief create matrix to interpolate from grid1 to grid2 \returns out matrix such that u2(grid2.y) = out*u1(grid1.y) */
+    SPIMat interp1D_Mat(
+            SPIVec &y1, ///< [in] grid to interpolate values from
+            SPIVec &y2  ///< [in] grid to interpolate values to
+            ){
+        PetscInt n1=y1.rows;
+        PetscInt n2=y2.rows;
+        SPIMat Dy1(set_D(y1,1),"Dy");
+        SPIMat Dyy1(set_D(y1,2),"Dy");
+        SPIMat I_n2Xn1(n2,n1,"I"); // get nearest neighbor below the value (always positive dy)
+        // nearest neighbor below the value (TODO improve by finding nearest neighbor)
+        for(PetscInt i=0; i<n2; i++){
+            PetscScalar y2i = y2(i,PETSC_TRUE);
+            PetscBool flag=PETSC_TRUE;
+            for(PetscInt j=0; j<n1; j++){
+                PetscScalar y1j = y1(j,PETSC_TRUE);
+                if(y1j.real()>y2i.real()){
+                    if(flag){
+                        I_n2Xn1(i,j-1,1.0);
+                        flag = PETSC_FALSE;
+                    }
+                }
+                else if(y1j==y2i){
+                    if(flag){
+                        I_n2Xn1(i,j,1.0);
+                        flag = PETSC_FALSE;
+                    }
+                }
+            }
+        }
+        I_n2Xn1();
+        SPIMat Deltay(diag(y2 - (I_n2Xn1*y1)),"Deltay");
+        SPIMat interp_n1_to_n2(I_n2Xn1 + (Deltay*(I_n2Xn1*Dy1)) + 0.5*(Deltay*Deltay*(I_n2Xn1*Dyy1)),"interp");
+        return interp_n1_to_n2;
     }
 
 

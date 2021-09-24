@@ -1440,14 +1440,75 @@ $(function() {
 <div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;        <span class="keywordflow">return</span> qi;</div>
 <div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;    }</div>
 <div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;    <span class="comment">/* \brief create matrix to interpolate from grid1 to grid2 \returns out matrix such that u2(grid2.y) = out*u1(grid1.y) */</span></div>
-<div class="line"><a name="l01393"></a><span class="lineno"><a class="line" href="namespaceSPI.html#a3ea38050b71cf6383bde9fd511420bfc"> 1393</a></span>&#160;    <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> <a class="code" href="namespaceSPI.html#a3ea38050b71cf6383bde9fd511420bfc">interp1D_Mat</a>(</div>
-<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;            <span class="keyword">const</span> <a class="code" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid1, </div>
-<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;            <span class="keyword">const</span> <a class="code" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid2  </div>
+<div class="line"><a name="l01393"></a><span class="lineno"><a class="line" href="namespaceSPI.html#ac978afa1e3b12df8851da8b81230fb12"> 1393</a></span>&#160;    <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> <a class="code" href="namespaceSPI.html#ac978afa1e3b12df8851da8b81230fb12">interp1D_Mat</a>(</div>
+<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;            <a class="code" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid1, </div>
+<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;            <a class="code" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid2  </div>
 <div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160;            ){</div>
-<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;    }</div>
-<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160; </div>
-<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160; </div>
-<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;}</div>
+<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;        PetscInt n1=grid1.<a class="code" href="structSPI_1_1SPIgrid1D.html#a4f7522869ab2e04c94e6c8dfacde986b">ny</a>;</div>
+<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;        PetscInt n2=grid2.<a class="code" href="structSPI_1_1SPIgrid1D.html#a4f7522869ab2e04c94e6c8dfacde986b">ny</a>;</div>
+<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> I_n2Xn1(n2,n1,<span class="stringliteral">&quot;I&quot;</span>);</div>
+<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;        <span class="keywordflow">for</span>(PetscInt i=0; i&lt;n2; i++){</div>
+<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;            PetscScalar y2i = grid2.<a class="code" href="structSPI_1_1SPIgrid1D.html#a24d6366217c021dd3a2b1b1ff27cbe5e">y</a>(i,PETSC_TRUE);</div>
+<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;            PetscBool flag=PETSC_TRUE;</div>
+<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;            <span class="keywordflow">for</span>(PetscInt j=0; j&lt;n1; j++){</div>
+<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;                PetscScalar y1j = grid1.<a class="code" href="structSPI_1_1SPIgrid1D.html#a24d6366217c021dd3a2b1b1ff27cbe5e">y</a>(j,PETSC_TRUE);</div>
+<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160;                <span class="keywordflow">if</span>(y1j.real()&gt;y2i.real()){</div>
+<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;                    <span class="keywordflow">if</span>(flag){</div>
+<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;                        I_n2Xn1(i,j-1,1.0);</div>
+<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;                        flag = PETSC_FALSE;</div>
+<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;                    }</div>
+<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;                }</div>
+<div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span>(y1j==y2i){</div>
+<div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160;                    <span class="keywordflow">if</span>(flag){</div>
+<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;                        I_n2Xn1(i,j,1.0);</div>
+<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;                        flag = PETSC_FALSE;</div>
+<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;                    }</div>
+<div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;                }</div>
+<div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;            }</div>
+<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;        }</div>
+<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;        I_n2Xn1();</div>
+<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> Deltay(<a class="code" href="namespaceSPI.html#ad6c3e75cecb603e3b0876b649d23a1c3">diag</a>(grid2.<a class="code" href="structSPI_1_1SPIgrid1D.html#a24d6366217c021dd3a2b1b1ff27cbe5e">y</a> - (I_n2Xn1*grid1.<a class="code" href="structSPI_1_1SPIgrid1D.html#a24d6366217c021dd3a2b1b1ff27cbe5e">y</a>)),<span class="stringliteral">&quot;Deltay&quot;</span>);</div>
+<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> interp_n1_to_n2(I_n2Xn1 + (Deltay*(I_n2Xn1*grid1.<a class="code" href="structSPI_1_1SPIgrid1D.html#a51c7d6328e8727d34dc54e62f040d866">Dy</a>)) + 0.5*(Deltay*Deltay*(I_n2Xn1*grid1.<a class="code" href="structSPI_1_1SPIgrid1D.html#a4ab0ce6a88594c4ce500be6180363dc4">Dyy</a>)),<span class="stringliteral">&quot;interp&quot;</span>);</div>
+<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;        <span class="keywordflow">return</span> interp_n1_to_n2;</div>
+<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;    }</div>
+<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;    <span class="comment">/* \brief create matrix to interpolate from grid1 to grid2 \returns out matrix such that u2(grid2.y) = out*u1(grid1.y) */</span></div>
+<div class="line"><a name="l01425"></a><span class="lineno"><a class="line" href="namespaceSPI.html#a183a7b9aa858cc7a5c7378d79a47c5eb"> 1425</a></span>&#160;    <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> <a class="code" href="namespaceSPI.html#ac978afa1e3b12df8851da8b81230fb12">interp1D_Mat</a>(</div>
+<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;            <a class="code" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;y1, </div>
+<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160;            <a class="code" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;y2  </div>
+<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;            ){</div>
+<div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160;        PetscInt n1=y1.<a class="code" href="structSPI_1_1SPIVec.html#ad170878751ae7ad7ea2f0c16fa348be3">rows</a>;</div>
+<div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160;        PetscInt n2=y2.<a class="code" href="structSPI_1_1SPIVec.html#ad170878751ae7ad7ea2f0c16fa348be3">rows</a>;</div>
+<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> Dy1(<a class="code" href="namespaceSPI.html#a135f1993e3b5d464e611e8bfe192cd40">set_D</a>(y1,1),<span class="stringliteral">&quot;Dy&quot;</span>);</div>
+<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> Dyy1(<a class="code" href="namespaceSPI.html#a135f1993e3b5d464e611e8bfe192cd40">set_D</a>(y1,2),<span class="stringliteral">&quot;Dy&quot;</span>);</div>
+<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> I_n2Xn1(n2,n1,<span class="stringliteral">&quot;I&quot;</span>); <span class="comment">// get nearest neighbor below the value (always positive dy)</span></div>
+<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;        <span class="comment">// nearest neighbor below the value (TODO improve by finding nearest neighbor)</span></div>
+<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;        <span class="keywordflow">for</span>(PetscInt i=0; i&lt;n2; i++){</div>
+<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;            PetscScalar y2i = y2(i,PETSC_TRUE);</div>
+<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;            PetscBool flag=PETSC_TRUE;</div>
+<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;            <span class="keywordflow">for</span>(PetscInt j=0; j&lt;n1; j++){</div>
+<div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160;                PetscScalar y1j = y1(j,PETSC_TRUE);</div>
+<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;                <span class="keywordflow">if</span>(y1j.real()&gt;y2i.real()){</div>
+<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160;                    <span class="keywordflow">if</span>(flag){</div>
+<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;                        I_n2Xn1(i,j-1,1.0);</div>
+<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;                        flag = PETSC_FALSE;</div>
+<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;                    }</div>
+<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;                }</div>
+<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;                <span class="keywordflow">else</span> <span class="keywordflow">if</span>(y1j==y2i){</div>
+<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;                    <span class="keywordflow">if</span>(flag){</div>
+<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;                        I_n2Xn1(i,j,1.0);</div>
+<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;                        flag = PETSC_FALSE;</div>
+<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;                    }</div>
+<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;                }</div>
+<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;            }</div>
+<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;        }</div>
+<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;        I_n2Xn1();</div>
+<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> Deltay(<a class="code" href="namespaceSPI.html#ad6c3e75cecb603e3b0876b649d23a1c3">diag</a>(y2 - (I_n2Xn1*y1)),<span class="stringliteral">&quot;Deltay&quot;</span>);</div>
+<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;        <a class="code" href="structSPI_1_1SPIMat.html">SPIMat</a> interp_n1_to_n2(I_n2Xn1 + (Deltay*(I_n2Xn1*Dy1)) + 0.5*(Deltay*Deltay*(I_n2Xn1*Dyy1)),<span class="stringliteral">&quot;interp&quot;</span>);</div>
+<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;        <span class="keywordflow">return</span> interp_n1_to_n2;</div>
+<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;    }</div>
+<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160; </div>
+<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160; </div>
+<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="astructSPI_1_1SPIgrid2D_html_a3d55ee24d3474361da5e75eea8ab3829"><div class="ttname"><a href="structSPI_1_1SPIgrid2D.html#a3d55ee24d3474361da5e75eea8ab3829">SPI::SPIgrid2D::S0invS1inv</a></div><div class="ttdeci">SPIMat S0invS1inv</div><div class="ttdoc">inverse of S0^-1 * S1^-1</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8hpp_source.html#l00082">SPIgrid.hpp:82</a></div></div>
 <div class="ttc" id="anamespaceSPI_html_a6f7654478e82942ca5dfb3898caf6405"><div class="ttname"><a href="namespaceSPI.html#a6f7654478e82942ca5dfb3898caf6405">SPI::get_D_Coeffs</a></div><div class="ttdeci">SPIVec get_D_Coeffs(SPIVec &amp;s, PetscInt d)</div><div class="ttdoc">get the coefficients of the given stencil.</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8cpp_source.html#l00015">SPIgrid.cpp:15</a></div></div>
@@ -1469,7 +1530,6 @@ $(function() {
 <div class="ttc" id="anamespaceSPI_html_ac68db62f7b4d44d88688acda8ecdb6a9"><div class="ttname"><a href="namespaceSPI.html#ac68db62f7b4d44d88688acda8ecdb6a9">SPI::arange</a></div><div class="ttdeci">SPIVec arange(const PetscScalar begin, const PetscScalar end, const PetscScalar stepsize=1)</div><div class="ttdoc">return a range of number of equally spaced points between begin and end by step size step</div><div class="ttdef"><b>Definition:</b> <a href="SPIVec_8cpp_source.html#l00667">SPIVec.cpp:667</a></div></div>
 <div class="ttc" id="astructSPI_1_1SPIMat_html_aa0e7ddffbdabffe6e536ff96bc5caf48"><div class="ttname"><a href="structSPI_1_1SPIMat.html#aa0e7ddffbdabffe6e536ff96bc5caf48">SPI::SPIMat::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">Matrix name.</div><div class="ttdef"><b>Definition:</b> <a href="SPIMat_8hpp_source.html#l00033">SPIMat.hpp:33</a></div></div>
 <div class="ttc" id="anamespaceSPI_html_a244b3ed6e0ff8b709a951c4f15c88f67adca873fcb664fbb265f2b18222fc1119"><div class="ttname"><a href="namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67adca873fcb664fbb265f2b18222fc1119">SPI::FD</a></div><div class="ttdeci">@ FD</div><div class="ttdoc">finite difference grid</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8hpp_source.html#l00025">SPIgrid.hpp:25</a></div></div>
-<div class="ttc" id="anamespaceSPI_html_a3ea38050b71cf6383bde9fd511420bfc"><div class="ttname"><a href="namespaceSPI.html#a3ea38050b71cf6383bde9fd511420bfc">SPI::interp1D_Mat</a></div><div class="ttdeci">SPIMat interp1D_Mat(const SPIgrid1D &amp;grid1, const SPIgrid1D &amp;grid2)</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8cpp_source.html#l01393">SPIgrid.cpp:1393</a></div></div>
 <div class="ttc" id="astructSPI_1_1SPIVec_html"><div class="ttname"><a href="structSPI_1_1SPIVec.html">SPI::SPIVec</a></div><div class="ttdef"><b>Definition:</b> <a href="SPIVec_8hpp_source.html#l00013">SPIVec.hpp:13</a></div></div>
 <div class="ttc" id="astructSPI_1_1SPIgrid2D_html_ae95a8634d196df48ad1c46be5b531c9e"><div class="ttname"><a href="structSPI_1_1SPIgrid2D.html#ae95a8634d196df48ad1c46be5b531c9e">SPI::SPIgrid2D::flag_set_derivatives</a></div><div class="ttdeci">PetscBool flag_set_derivatives</div><div class="ttdoc">flag if set_derivatives has been executed</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8hpp_source.html#l00102">SPIgrid.hpp:102</a></div></div>
 <div class="ttc" id="anamespaceSPI_html_a5de3301bb631185b58f689053d52deb8"><div class="ttname"><a href="namespaceSPI.html#a5de3301bb631185b58f689053d52deb8">SPI::printf</a></div><div class="ttdeci">PetscInt printf(std::string msg,...)</div><div class="ttdef"><b>Definition:</b> <a href="SPIprint_8cpp_source.html#l00005">SPIprint.cpp:5</a></div></div>
@@ -1565,6 +1625,7 @@ $(function() {
 <div class="ttc" id="astructSPI_1_1SPIMat_html_abed5eb74c5e20ef25e884fdd8b1e9953"><div class="ttname"><a href="structSPI_1_1SPIMat.html#abed5eb74c5e20ef25e884fdd8b1e9953">SPI::SPIMat::T</a></div><div class="ttdeci">PetscInt T(SPIMat &amp;A)</div><div class="ttdoc">A = Transpose(*this.mat) operation with initialization of A.</div><div class="ttdef"><b>Definition:</b> <a href="SPIMat_8cpp_source.html#l00392">SPIMat.cpp:392</a></div></div>
 <div class="ttc" id="aSPIgrid_8hpp_html"><div class="ttname"><a href="SPIgrid_8hpp.html">SPIgrid.hpp</a></div></div>
 <div class="ttc" id="anamespaceSPI_html_a616eee4109721614603a992beb99e006"><div class="ttname"><a href="namespaceSPI.html#a616eee4109721614603a992beb99e006">SPI::zeros</a></div><div class="ttdeci">SPIMat zeros(const PetscInt m, const PetscInt n)</div><div class="ttdoc">create, form, and return zeros matrix of size mxn</div><div class="ttdef"><b>Definition:</b> <a href="SPIMat_8cpp_source.html#l00708">SPIMat.cpp:708</a></div></div>
+<div class="ttc" id="anamespaceSPI_html_ac978afa1e3b12df8851da8b81230fb12"><div class="ttname"><a href="namespaceSPI.html#ac978afa1e3b12df8851da8b81230fb12">SPI::interp1D_Mat</a></div><div class="ttdeci">SPIMat interp1D_Mat(SPIgrid1D &amp;grid1, SPIgrid1D &amp;grid2)</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8cpp_source.html#l01393">SPIgrid.cpp:1393</a></div></div>
 <div class="ttc" id="astructSPI_1_1SPIMat_html_aa738c1f222a190aadea196974dca7ff4"><div class="ttname"><a href="structSPI_1_1SPIMat.html#aa738c1f222a190aadea196974dca7ff4">SPI::SPIMat::cols</a></div><div class="ttdeci">PetscInt cols</div><div class="ttdoc">number of columns in mat</div><div class="ttdef"><b>Definition:</b> <a href="SPIMat_8hpp_source.html#l00019">SPIMat.hpp:19</a></div></div>
 <div class="ttc" id="anamespaceSPI_html_a6fb7358e3a671da5e06f516a5389eb79"><div class="ttname"><a href="namespaceSPI.html#a6fb7358e3a671da5e06f516a5389eb79">SPI::set_D_Chebyshev</a></div><div class="ttdeci">SPIMat set_D_Chebyshev(SPIVec &amp;x, PetscInt d=1, PetscBool need_map=PETSC_FALSE)</div><div class="ttdoc">set a Chebyshev collocated operator acting with respect to the collocated grid</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8cpp_source.html#l00183">SPIgrid.cpp:183</a></div></div>
 <div class="ttc" id="anamespaceSPI_html_a589507595fdb80791ff5250c6e9180a5"><div class="ttname"><a href="namespaceSPI.html#a589507595fdb80791ff5250c6e9180a5">SPI::set_T_That</a></div><div class="ttdeci">std::tuple&lt; SPIMat, SPIMat &gt; set_T_That(PetscInt n)</div><div class="ttdoc">set a T and That operators acting with respect to the Chebyshev collocated grid, That: physical -&gt; Ch...</div><div class="ttdef"><b>Definition:</b> <a href="SPIgrid_8cpp_source.html#l00325">SPIgrid.cpp:325</a></div></div>
