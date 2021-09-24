@@ -28,11 +28,11 @@ namespace SPI{
         this->U = U; this->U.name = "U";
         this->V = V; this->V.name = "V";
         this->Ux = Ux; this->Ux.name = "Ux";
-        this->Uxx = Uxx; this->Ux.name = "Uxx";
+        this->Uxx = Uxx; this->Uxx.name = "Uxx";
         this->Uy = Uy; this->Uy.name = "Uy";
         this->Uxy = Uxy; this->Uxy.name = "Uxy";
         this->Vx = Vx; this->Vx.name = "Vx";
-        this->Vxx = Vxx; this->Vx.name = "Vxx";
+        this->Vxx = Vxx; this->Vxx.name = "Vxx";
         this->Vy = Vy; this->Vy.name = "Vy";
         this->W = W; this->W.name = "W";
         this->Wx = Wx; this->Wx.name = "Wx";
