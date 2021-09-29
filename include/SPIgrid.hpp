@@ -10,6 +10,7 @@ namespace SPI{
     SPIVec get_D_Coeffs( SPIVec &s, PetscInt d );   // get the coefficients of the given stencil s
     SPIMat map_D(SPIMat D, SPIVec y, PetscInt d, PetscInt order=4); // map the derivative operator to the proper y grid
     SPIMat set_D(SPIVec &y, PetscInt d, PetscInt order=4, PetscBool uniform=PETSC_FALSE); // get derivative operator using finite difference stencils
+    SPIMat set_D_periodic(SPIVec &y, PetscInt d, PetscInt order=4); // get derivative operator using finite difference stencils for uniform periodic grid
     SPIVec set_FD_stretched_y(PetscScalar y_max,PetscInt ny,PetscScalar delta=2.0001); // set stretched grid from [0,y_max] using tanh stretching
     SPIMat set_D_Chebyshev(SPIVec &x, PetscInt d=1, PetscBool need_map=PETSC_FALSE); // set a chebyshev operator acting on the collocated grid
     SPIMat map_D_Chebyshev(SPIVec &x, PetscInt d=1); // map the chebyshev operator to the proper x grid
@@ -23,6 +24,7 @@ namespace SPI{
     /** \brief enumeration of grid types */
     enum gridtype {
         FD,         ///< finite difference grid
+        FDperiodic, ///< finite difference grid on periodic grid
         FT,         ///< Fourier transform collocated grid
         Chebyshev,  ///< Chebyshev collocated grid
         UltraS      ///< UltraSpherical grid and derivatives

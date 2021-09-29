@@ -168,6 +168,48 @@ namespace SPI{
         }
     }
 
+    /** \brief set the derivative operator for the proper periodic grid assuming uniform discretization.  \return derivative operator for uniform periodic grid */
+    SPIMat set_D_periodic(
+            SPIVec &y,          ///< [in] grid points
+            PetscInt d,         ///< [in] order of derivative
+            PetscInt order      ///< [in] order of accuracy of derivative (default 4)
+            ){
+        PetscInt n=y.size();
+        PetscScalar h = y(1,PETSC_TRUE)-y(0,PETSC_TRUE);
+        SPIVec one(ones(n),"ones");
+        SPIMat I(eye(n),"I");
+        PetscInt N = order+d;
+        if(N>n) {
+            PetscErrorCode ierr=1;
+            CHKERRXX(ierr);
+        }
+        PetscInt Nm1 = N-1;
+        if ((d%2) != 0) Nm1 += 1; // increase for odd derivative
+        SPIVec s(arange(Nm1)-(Nm1-1)/2,"s"); // set stencil
+        PetscInt smax = s(s.rows-1,PETSC_TRUE).real();
+
+        SPIVec Coeffs(get_D_Coeffs(s,d),"Coeffs");
+
+        SPIMat D(n,"D");
+        D();
+        for(PetscInt i=0; i<s.rows; i++){
+            //diag_to_add.~SPIMat(); // destroy to free memory
+            PetscInt k=(PetscInt)s(i,PETSC_TRUE).real();
+            PetscInt nmk=n-std::abs(k);
+            D += diag(Coeffs(i,PETSC_TRUE)*ones(nmk),k);
+            if(k>0){
+                D += diag(Coeffs(i,PETSC_TRUE)*ones(k),-nmk);
+            }
+            else if(k<0){
+                D += diag(Coeffs(i,PETSC_TRUE)*ones(-k),k+n);
+            }
+
+        }
+        D();
+        D*=(1./std::pow(h,d));
+        D();
+        return D;
+    }
     /** \brief set stretched grid from [0,y_max] using tanh stretching for use with finite difference operators \return y stretched grid */
     SPIVec set_FD_stretched_y(
             PetscScalar y_max,      ///< [in] upper bound of y in [0,y_max] 
@@ -470,6 +512,15 @@ namespace SPI{
             this->Dyy.real(); // just take only real part
             this->flag_set_derivatives=PETSC_TRUE;
         }
+        else if(this->ytype==FDperiodic){
+            this->Dy=set_D_periodic(this->y,1);   // default of fourth order nonuniform grid
+            this->Dy.name=std::string("Dy");
+            this->Dyy=set_D_periodic(this->y,2); // default of fourth order nonuniform grid
+            this->Dyy.name=std::string("Dyy");
+            this->Dy.real(); // just take only real part
+            this->Dyy.real(); // just take only real part
+            this->flag_set_derivatives=PETSC_TRUE;
+        }
         else if(this->ytype==Chebyshev){
             std::tie(T,That) = set_T_That(y.rows);      // get Chebyshev operators to take back and forth from physical space
             this->Dy=set_D_Chebyshev(this->y,1,PETSC_TRUE);   // default Chebyshev operator on non-uniform grid
@@ -723,7 +774,7 @@ namespace SPI{
         this->I=eye(n);   
         this->I.name="eye";     // identity matrix of size ny*nt x ny*nt
         // set average in time operator
-        this->avgt=this->O;    // initialize w/ zero matrix of size ny*nt x ny*nt
+        this->avgt=zeros(n,n);
         PetscScalar val = 1.0/(PetscScalar)(this->nt);
         //this->avgt /= (double)(this->nt);
         for(PetscInt ti=0; ti<nt; ++ti){
@@ -1053,6 +1104,46 @@ namespace SPI{
                 atmpt();
                 //atmpt2 = ((grid.grid1Dt.That)*atmpt);
                 val2 = trapz(atmpt,grid.t);
+                val += val2;
+            }
+                //val2 = integrate_coeffs(atmp2,grid.y);
+            return val;
+        }
+        else if((grid.ytype==FD) && (grid.ttype==FDperiodic)){ // otherwise they are physical values, let's integrate using trapezoidal rule assuming periodic endpoint
+            //std::cout<<" integrating FD and FDperiodic"<<std::endl;
+            PetscInt ny=grid.ny;
+            PetscInt nt=grid.nt;
+            PetscInt nytx=a.rows;
+            PetscInt ni=nytx/(ny*nt);
+            PetscScalar val=0.0;
+            PetscScalar val2=0.0;
+            SPIVec atmp(ny,"atmp");
+            //SPIVec atmp2(ny,"atmp2");
+            SPIVec atmpt(nt+1,"atmpt");
+            SPIVec t(nt+1,"t");
+            for(PetscInt i=0; i<nt; ++i){
+                t(i,grid.t(i,PETSC_TRUE));
+            }
+            PetscScalar dt = grid.t(1,PETSC_TRUE) - grid.t(0,PETSC_TRUE);
+            t(nt,grid.t(nt-1,PETSC_TRUE)+dt);
+            t();
+            //SPIVec atmpt2(nt,"atmpt2");
+            for(PetscInt i=0; i<ni; ++i){
+                for(PetscInt j=0; j<nt; ++j){
+                    for(PetscInt k=0; k<ny; ++k){
+                        atmp(k,a(ny*nt*i + ny*j + k,PETSC_TRUE));
+                    }
+                    atmp();
+                    //((grid.That)*atmp).print();
+                    //atmp2 = ((grid.grid1Dy.That)*atmp);
+                    val2 = trapz(atmp,grid.y);
+                    //val += val2;
+                    atmpt(j,val2);
+                    if(j==0){ atmpt(nt,val2); }
+                }
+                atmpt();
+                //atmpt2 = ((grid.grid1Dt.That)*atmpt);
+                val2 = trapz(atmpt,t);
                 val += val2;
             }
                 //val2 = integrate_coeffs(atmp2,grid.y);

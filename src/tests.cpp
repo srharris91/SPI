@@ -2438,7 +2438,7 @@ int tests(){
         //t.print();
         SPI::printf("------------ SPIgrid2D.avgt end   -----------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ SPIgrid interp1D_Mat start -----------");
         PetscInt n1=8,n2=11;
         SPI::SPIVec y1(SPI::linspace(0,4,n1),"y1");
@@ -2455,6 +2455,15 @@ int tests(){
         interp = SPI::interp1D_Mat(grid1.y,grid2.y);
         interp.print();
         SPI::printf("------------ SPIgrid interp1D_Mat end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ SPIgrid set_D_periodic start -----------");
+        PetscInt nt=64;
+        SPI::SPIVec t(SPI::set_Fourier_t(4,nt),"t");
+        SPI::SPIMat Dt(SPI::set_D_periodic(t,1),"Dt");
+        (0.5*PETSC_PI*SPI::cos(0.5*PETSC_PI*t)).print();
+        (Dt*(SPI::sin(0.5*PETSC_PI*t))).print();
+        SPI::printf("------------ SPIgrid set_D_periodic end   -----------");
     }
 
 
