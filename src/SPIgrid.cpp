@@ -622,6 +622,10 @@ namespace SPI{
             this->O.~SPIMat();
             this->I.~SPIMat();
             this->P.~SPIMat();
+            this->FTinv.~SPIMat();
+            this->FT.~SPIMat();
+            this->Ihalf.~SPIMat();
+            this->Ihalfn.~SPIMat();
             this->flag_set_operators=PETSC_FALSE;
         }
     }
@@ -824,6 +828,10 @@ namespace SPI{
             this->O.~SPIMat();
             this->I.~SPIMat();
             this->avgt.~SPIMat();
+            this->FTinv.~SPIMat();
+            this->FT.~SPIMat();
+            this->Ihalf.~SPIMat();
+            this->Ihalfn.~SPIMat();
             this->flag_set_operators=PETSC_FALSE;
         }
         grid1Dy.~SPIgrid1D();
