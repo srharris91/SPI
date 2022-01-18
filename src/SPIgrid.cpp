@@ -531,7 +531,7 @@ namespace SPI{
             this->Dyy.real(); // just take only real part
             this->flag_set_derivatives=PETSC_TRUE;
         }
-        else if(this->ytype==FT){
+        else if(this->ytype==Fourier){
             this->Dy=set_D_Fourier(this->y,1);   // default Fourier operator on uniform grid
             this->Dy.name=std::string("Dy");
             this->Dyy=set_D_Fourier(this->y,2);   // default Chebyshev operator on uniform grid
@@ -788,6 +788,12 @@ namespace SPI{
         this->avgt();
         this->grid1Dy.set_operators(); // in case they are needed
         this->grid1Dt.set_operators(); // in case they are needed
+        // set operators for Fourier transform
+        std::tie(this->grid1Dt.FT,this->grid1Dt.FTinv,this->grid1Dt.Ihalf,this->grid1Dt.Ihalfn) = dft_dftinv_Ihalf_Ihalfn(this->nt);
+        this->FT = kron(this->grid1Dt.FT,eye(ny));
+        this->FTinv = kron(this->grid1Dt.FTinv,eye(ny));
+        this->Ihalf = kron(this->grid1Dt.Ihalf,eye(ny));
+        this->Ihalfn = kron(this->grid1Dt.Ihalfn,eye(ny));
         this->flag_set_operators=PETSC_TRUE;
     }
 
@@ -996,7 +1002,7 @@ namespace SPI{
                 //val2 = integrate_coeffs(atmp2,grid.y);
             return val;
         }
-        else if((grid.ytype==UltraS) && (grid.ttype==FT)){
+        else if((grid.ytype==UltraS) && (grid.ttype==Fourier)){
             PetscInt ny=grid.ny;
             PetscInt nt=grid.nt;
             PetscInt nytx=a.rows;
@@ -1037,7 +1043,7 @@ namespace SPI{
             std::cout<<"integrate val = "<<val<<std::endl;
             return val;
         }
-        else if((grid.ytype==Chebyshev) && (grid.ttype==FT)){
+        else if((grid.ytype==Chebyshev) && (grid.ttype==Fourier)){
             PetscInt ny=grid.ny;
             PetscInt nt=grid.nt;
             PetscInt nytx=a.rows;
@@ -1149,7 +1155,7 @@ namespace SPI{
                 //val2 = integrate_coeffs(atmp2,grid.y);
             return val;
         }
-        else if((grid.ytype==FD) && (grid.ttype==FT)){ // otherwise they are physical values, let's integrate using trapezoidal rule assuming periodic endpoint
+        else if((grid.ytype==FD) && (grid.ttype==Fourier)){ // otherwise they are physical values, let's integrate using trapezoidal rule assuming periodic endpoint
             PetscInt ny=grid.ny;
             PetscInt nt=grid.nt;
             PetscInt nytx=a.rows;

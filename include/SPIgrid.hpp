@@ -25,7 +25,7 @@ namespace SPI{
     enum gridtype {
         FD,         ///< finite difference grid
         FDperiodic, ///< finite difference grid on periodic grid
-        FT,         ///< Fourier transform collocated grid
+        Fourier,    ///< Fourier transform collocated grid
         Chebyshev,  ///< Chebyshev collocated grid
         UltraS      ///< UltraSpherical grid and derivatives
     };
@@ -56,7 +56,11 @@ namespace SPI{
         SPIMat S0invS1inv;  ///< [in] inverse of S0^-1 * S1^-1
         SPIMat P;       ///< row permutation matrix for UltraSpherical operators to shift rows from bottom to top to reduce LU factorization pivoting
         SPIMat T,       ///< Chebyshev operator taking it from Chebyshev coefficients to physical space
-               That;    ///< Chebyshev operator taking it from physical space to Chebyshev coefficients
+               That,    ///< Chebyshev operator taking it from physical space to Chebyshev coefficients
+               FT,      ///< Fourier Transform operator
+               FTinv,   ///< inverse Fourier Transform
+               Ihalf,   ///< positive wavenumbers from FT
+               Ihalfn;  ///< negative wavenumbers from FT
         SPIMat O,       ///< zero matrix same size as derivative operators
                I;       ///< identity matrix same size as derivative operators
         // flags
@@ -66,7 +70,7 @@ namespace SPI{
 
     };
     struct SPIgrid2D{
-        SPIgrid2D(SPIVec &y, SPIVec &t, std::string name="SPIgrid2D", gridtype y_gridtype=FD, gridtype t_gridtype=FT);            // constructor with set_grid arguments (set default values and derivatives)
+        SPIgrid2D(SPIVec &y, SPIVec &t, std::string name="SPIgrid2D", gridtype y_gridtype=FD, gridtype t_gridtype=Fourier);            // constructor with set_grid arguments (set default values and derivatives)
         ~SPIgrid2D();                    // destructor
         PetscInt ny,nt;                // number of points in wall-normal coordinate
         void print();               // print all members of the class
@@ -81,7 +85,11 @@ namespace SPI{
         SPIMat T,       ///< transform from chebyshev to physical
                That,    ///< transform from physical to chebyshev
                S1S0That,///< UltraSpherical helper matrix S1*S0*That for baseflow
-               S0invS1inv;  ///< inverse of S0^-1 * S1^-1
+               S0invS1inv,  ///< inverse of S0^-1 * S1^-1
+               FT,      ///< Fourier Transform operator from physical space to wavenumber space for time
+               FTinv,   ///< inverse Fourier Transform from wavenumber space to physical space for time
+               Ihalf,   ///< positive wavenumbers from FT
+               Ihalfn;  ///< negative wavenumbers from FT
         gridtype ytype,     ///< type of grid for wall-normal dimension
                  ttype;  ///< type of grid for time dimension
 

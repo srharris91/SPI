@@ -1,16 +1,16 @@
 var searchData=
 [
-  ['l2_68',['L2',['../namespaceSPI.html#abab575bc03c426cbf87e40f0bf75d997',1,'SPI::L2(SPIVec x1, const SPIVec x2, NormType type)'],['../namespaceSPI.html#ac4983c542880674cbb552b46c4605db2',1,'SPI::L2(const SPIVec x1, NormType type)']]],
-  ['linspace_69',['linspace',['../namespaceSPI.html#a741ae21fe36f9a42d29267e55a04741a',1,'SPI']]],
-  ['load_70',['load',['../namespaceSPI.html#a2d13f1ebbb64cb8b98505d76a4a12946',1,'SPI::load(SPIMat &amp;A, const std::string filename)'],['../namespaceSPI.html#aa828f013918bc62a4854a06bda665e57',1,'SPI::load(std::vector&lt; SPIMat &gt; &amp;As, const std::string filename)'],['../namespaceSPI.html#ae28ff518a25f23700e41fa40b4a13d84',1,'SPI::load(SPIVec &amp;A, const std::string filename)']]],
-  ['log_71',['log',['../namespaceSPI.html#a9e2fa14478c040339d3d650371607f3e',1,'SPI']]],
-  ['log10_72',['log10',['../namespaceSPI.html#afdfba2d87bb1304ee951dd8d6fb7051c',1,'SPI']]],
-  ['lst_5fspatial_73',['LST_spatial',['../namespaceSPI.html#add086abc0f27e9bd99708acb5ed620e5',1,'SPI']]],
-  ['lst_5fspatial_5fcg_74',['LST_spatial_cg',['../namespaceSPI.html#a2a47692472f967dc798a3b4426f07b48',1,'SPI']]],
-  ['lst_5ftemporal_75',['LST_temporal',['../namespaceSPI.html#a90c17b555387105771324b32b9fe1080',1,'SPI']]],
-  ['lstnp_5fspatial_76',['LSTNP_spatial',['../namespaceSPI.html#adeec1148bd5751ef723c33a34dc78463',1,'SPI']]],
-  ['lstnp_5fspatial_5fright_77',['LSTNP_spatial_right',['../namespaceSPI.html#a376b39ff66bd2bdb1b7cdd3a5a5f4127',1,'SPI']]],
-  ['lstnp_5fspatial_5fright2_78',['LSTNP_spatial_right2',['../namespaceSPI.html#a8659fd3374646379a8b7a124d482974b',1,'SPI']]],
-  ['lstnp_5fspatials_5fright_79',['LSTNP_spatials_right',['../namespaceSPI.html#ae67d149a487e76b375a7fe035720632d',1,'SPI']]],
-  ['lstsq_80',['lstsq',['../namespaceSPI.html#ae39201eb25429f50611ceeb9b2d186d5',1,'SPI::lstsq(const SPIMat &amp;A, SPIVec &amp;y)'],['../namespaceSPI.html#a7d68c60309091daaece0417399d35b3b',1,'SPI::lstsq(const std::vector&lt; SPIVec &gt; &amp;A, SPIVec &amp;y)']]]
+  ['l2_72',['L2',['../namespaceSPI.html#abab575bc03c426cbf87e40f0bf75d997',1,'SPI::L2(SPIVec x1, const SPIVec x2, NormType type)'],['../namespaceSPI.html#ac4983c542880674cbb552b46c4605db2',1,'SPI::L2(const SPIVec x1, NormType type)']]],
+  ['linspace_73',['linspace',['../namespaceSPI.html#a741ae21fe36f9a42d29267e55a04741a',1,'SPI']]],
+  ['load_74',['load',['../namespaceSPI.html#a2d13f1ebbb64cb8b98505d76a4a12946',1,'SPI::load(SPIMat &amp;A, const std::string filename)'],['../namespaceSPI.html#aa828f013918bc62a4854a06bda665e57',1,'SPI::load(std::vector&lt; SPIMat &gt; &amp;As, const std::string filename)'],['../namespaceSPI.html#ae28ff518a25f23700e41fa40b4a13d84',1,'SPI::load(SPIVec &amp;A, const std::string filename)']]],
+  ['log_75',['log',['../namespaceSPI.html#a9e2fa14478c040339d3d650371607f3e',1,'SPI']]],
+  ['log10_76',['log10',['../namespaceSPI.html#afdfba2d87bb1304ee951dd8d6fb7051c',1,'SPI']]],
+  ['lst_5fspatial_77',['LST_spatial',['../namespaceSPI.html#add086abc0f27e9bd99708acb5ed620e5',1,'SPI']]],
+  ['lst_5fspatial_5fcg_78',['LST_spatial_cg',['../namespaceSPI.html#a2a47692472f967dc798a3b4426f07b48',1,'SPI']]],
+  ['lst_5ftemporal_79',['LST_temporal',['../namespaceSPI.html#a90c17b555387105771324b32b9fe1080',1,'SPI']]],
+  ['lstnp_5fspatial_80',['LSTNP_spatial',['../namespaceSPI.html#adeec1148bd5751ef723c33a34dc78463',1,'SPI']]],
+  ['lstnp_5fspatial_5fright_81',['LSTNP_spatial_right',['../namespaceSPI.html#a376b39ff66bd2bdb1b7cdd3a5a5f4127',1,'SPI']]],
+  ['lstnp_5fspatial_5fright2_82',['LSTNP_spatial_right2',['../namespaceSPI.html#a8659fd3374646379a8b7a124d482974b',1,'SPI']]],
+  ['lstnp_5fspatials_5fright_83',['LSTNP_spatials_right',['../namespaceSPI.html#ae67d149a487e76b375a7fe035720632d',1,'SPI']]],
+  ['lstsq_84',['lstsq',['../namespaceSPI.html#ae39201eb25429f50611ceeb9b2d186d5',1,'SPI::lstsq(const SPIMat &amp;A, SPIVec &amp;y)'],['../namespaceSPI.html#a7d68c60309091daaece0417399d35b3b',1,'SPI::lstsq(const std::vector&lt; SPIVec &gt; &amp;A, SPIVec &amp;y)']]]
 ];

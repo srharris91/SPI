@@ -23,7 +23,7 @@ void test_if_close(PetscScalar value,PetscScalar golden, std::string name, Petsc
 
 int tests(){
     PetscInt m=4, n=4;
-    PetscBool alltests=PETSC_FALSE;
+    PetscBool alltests=PETSC_TRUE;
     // Vec tests
     if(alltests){
         SPI::printf("------------ Vec tests start-------------");
@@ -2432,7 +2432,7 @@ int tests(){
         PetscInt nt=4;
         SPI::SPIVec y(SPI::set_FD_stretched_y(61.,ny,1.01) ,"yFD");
         SPI::SPIVec t(SPI::set_Fourier_t((2.0*M_PI)/0.0344,nt) ,"t");
-        SPI::SPIgrid2D grid(y,t,"grid",SPI::FD,SPI::FT);
+        SPI::SPIgrid2D grid(y,t,"grid",SPI::FD,SPI::Fourier);
         //(grid.avgt*SPI::ones(400*4)).print();
         test_if_close(grid.avgt(1,1,PETSC_TRUE),0.25,"SPIgrid2D.avgt 1",1e-14);
         //t.print();

@@ -7,5 +7,7 @@ var searchData=
   ['flag_5fset_5fderivatives_50',['flag_set_derivatives',['../structSPI_1_1SPIgrid1D.html#a57bfe13aec5b2db9a065ffec69858367',1,'SPI::SPIgrid1D::flag_set_derivatives()'],['../structSPI_1_1SPIgrid2D.html#ae95a8634d196df48ad1c46be5b531c9e',1,'SPI::SPIgrid2D::flag_set_derivatives()']]],
   ['flag_5fset_5fgrid_51',['flag_set_grid',['../structSPI_1_1SPIgrid1D.html#a7d42bd65e429cdd4261d2352a7cdf5ad',1,'SPI::SPIgrid1D::flag_set_grid()'],['../structSPI_1_1SPIgrid2D.html#a8dc572ea920b09347c2ce81920abf6f8',1,'SPI::SPIgrid2D::flag_set_grid()']]],
   ['flag_5fset_5foperators_52',['flag_set_operators',['../structSPI_1_1SPIgrid1D.html#ad043a11eabbd2d6520a27497bafd428c',1,'SPI::SPIgrid1D::flag_set_operators()'],['../structSPI_1_1SPIgrid2D.html#a7cc8c17ce14eb434800340cf189e5f05',1,'SPI::SPIgrid2D::flag_set_operators()']]],
-  ['ft_53',['FT',['../namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a7eac3f9b01d3c03555a540437bcb45b0',1,'SPI']]]
+  ['fourier_53',['Fourier',['../namespaceSPI.html#a244b3ed6e0ff8b709a951c4f15c88f67a1a59206b40c3bff42f2c2c827473aee8',1,'SPI']]],
+  ['ft_54',['FT',['../structSPI_1_1SPIgrid1D.html#ace650dc79c22d4fc1e3ed5c23ddbfa41',1,'SPI::SPIgrid1D::FT()'],['../structSPI_1_1SPIgrid2D.html#aa645e56e68d19402ef16557010330552',1,'SPI::SPIgrid2D::FT()']]],
+  ['ftinv_55',['FTinv',['../structSPI_1_1SPIgrid1D.html#a9e261220fa201612e6822260b2de7c5e',1,'SPI::SPIgrid1D::FTinv()'],['../structSPI_1_1SPIgrid2D.html#a8658a6dfc24ae4bacd5a77961fd28b12',1,'SPI::SPIgrid2D::FTinv()']]]
 ];
