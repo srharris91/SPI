@@ -1547,6 +1547,55 @@ namespace SPI{
         SPIMat interp_n1_to_n2(I_n2Xn1 + (Deltay*(I_n2Xn1*Dy1)) + 0.5*(Deltay*Deltay*(I_n2Xn1*Dyy1)),"interp");
         return interp_n1_to_n2;
     }
+    /* \brief create a discrete fourier transform transformation operator \returns DFT matrix*/
+    SPIMat dft(
+            PetscInt nt         ///< [in] size of matrix to create
+            ){
+        PetscScalar Nt = (PetscScalar)nt;
+        PetscScalar e = (PetscExpScalar(-2.0*PETSC_PI*PETSC_i/Nt));
+        SPIMat W(nt,nt,"W");
+        for(PetscInt i=0; i<nt; ++i){
+            for(PetscInt j=0; j<nt; ++j){
+                W(i,j,PetscPowScalar(e,i*j));
+            }
+        }
+        W(); // assemble
+        W /= Nt;
+        return W;
+    }
+    /* \brief create a discrete fourier transform transformation operator and it's associated inverse along with positive and negative identity like operators\returns DFT matrix, inv(DFT), and I_half, and I_halfn (Ihalf + Ihalfn = eye(nt))*/
+    std::tuple<SPIMat,SPIMat,SPIMat,SPIMat> dft_dftinv_Ihalf_Ihalfn(
+            PetscInt nt         ///< [in] size of matrix to create
+            ){
+        PetscScalar Nt = (PetscScalar)nt;
+        SPIMat FT(dft(nt),"FT");
+        SPIMat FTinv(nt,nt,"inv(FT)");
+        FT.H(FTinv);
+        FTinv *= Nt;
+        SPIMat Ihalf(nt,nt,"Ihalf");
+        SPIMat Ihalfn(nt,nt,"Ihalf");
+        PetscInt Nthalf = nt/2;
+        if(nt%2 == 0) // nt is even
+            Nthalf = nt/2;
+        else // odd
+            Nthalf = nt/2 + 1;
+        for(PetscInt i=0; i<nt; ++i){
+            if(i==0){
+                Ihalf(i,i,0.5);
+                Ihalfn(i,i,0.5);
+            }
+            else if(i < Nthalf){
+                Ihalf(i,i,1.0);
+            }
+            else if(i >= Nthalf){
+                Ihalfn(i,i,1.0);
+            }
+        }
+        // assemble identity operators for splitting positive and negative wavenumbers
+        Ihalf();
+        Ihalfn();
 
+        return std::make_tuple(FT,FTinv,Ihalf,Ihalfn);
+    }
 
 }

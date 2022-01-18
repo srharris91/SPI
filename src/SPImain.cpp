@@ -10,7 +10,7 @@ int main(int argc, char **args){
     std::cout<<"-----------------Petsc Slepc Init Starting---------------"<<std::endl;
     ierr = PetscInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
     ierr = SlepcInitialize(&argc,&args,(char*)0,help);if (ierr) return ierr;
-    SPI::printf("\n\n\n");
+    //SPI::printf("\n\n\n");
     SPI::printf("-----------------Petsc Slepc Init Complete---------------");
 
     if(1){// set to 1 if wanting to test SPI Mat and Vec and other operations found in tests.cpp

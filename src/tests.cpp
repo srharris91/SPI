@@ -2456,7 +2456,7 @@ int tests(){
         interp.print();
         SPI::printf("------------ SPIgrid interp1D_Mat end   -----------");
     }
-    if(1){
+    if(alltests){
         SPI::printf("------------ SPIgrid set_D_periodic start -----------");
         PetscInt nt=64;
         SPI::SPIVec t(SPI::set_Fourier_t(4,nt),"t");
@@ -2464,6 +2464,26 @@ int tests(){
         (0.5*PETSC_PI*SPI::cos(0.5*PETSC_PI*t)).print();
         (Dt*(SPI::sin(0.5*PETSC_PI*t))).print();
         SPI::printf("------------ SPIgrid set_D_periodic end   -----------");
+    }
+    if(1){
+        SPI::printf("------------ SPIgrid dft and dft_dftinv_Ihalf_Ihalfn start -----------");
+        PetscInt nt=8;
+        SPI::SPIMat FT(SPI::dft(nt),"FT");
+        SPI::SPIMat FTinv(nt,nt,"FTinv");
+        SPI::SPIMat Ihalf(nt,nt,"Ihalf");
+        SPI::SPIMat Ihalfn(nt,nt,"Ihalfn");
+        test_if_close(FT(5,7,PETSC_TRUE),-0.0883883-0.0883883*PETSC_i,"dft 1",1e-7);
+        test_if_close(FT(6,7,PETSC_TRUE),0.-0.125*PETSC_i,"dft 2",1e-7);
+        std::tie(FT,FTinv,Ihalf,Ihalfn) = SPI::dft_dftinv_Ihalf_Ihalfn(nt);
+        test_if_close(FT(5,7,PETSC_TRUE),-0.0883883-0.0883883*PETSC_i,"dft_dftinv_Ihalf_Ihalfn 1",1e-7);
+        test_if_close(FT(6,7,PETSC_TRUE),0.-0.125*PETSC_i,"dft_dftinv_Ihalf_Ihalfn 2",1e-7);
+        test_if_close(FTinv(5,7,PETSC_TRUE),-0.707106781+0.0707106781*PETSC_i,"dft_dftinv_Ihalf_Ihalfn 3",1e-7);
+        test_if_close(FTinv(6,7,PETSC_TRUE),0.+1.*PETSC_i,"dft_dftinv_Ihalf_Ihalfn 4",1e-7);
+        test_if_close(Ihalf(6,6,PETSC_TRUE),0.,"dft_dftinv_Ihalf_Ihalfn 5",1e-7);
+        test_if_close(Ihalf(1,1,PETSC_TRUE),1.,"dft_dftinv_Ihalf_Ihalfn 6",1e-7);
+        test_if_close(Ihalfn(6,6,PETSC_TRUE),1.,"dft_dftinv_Ihalf_Ihalfn 7",1e-7);
+        test_if_close(Ihalfn(1,1,PETSC_TRUE),0.,"dft_dftinv_Ihalf_Ihalfn 8",1e-7);
+        SPI::printf("------------ SPIgrid dft and dft_dftinv_Ihalf_Ihalfn end   -----------");
     }
 
 

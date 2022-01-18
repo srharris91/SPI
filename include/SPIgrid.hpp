@@ -114,6 +114,8 @@ namespace SPI{
     std::vector<SPIVec> orthogonalize(std::vector<SPIVec> &x,SPIgrid2D &grid); // create orthonormal basis from array of vectors 
     SPIMat interp1D_Mat(SPIgrid1D &grid1, SPIgrid1D &grid2); // create an interpolation routine to interpolate grid1.y -> grid2.y (i.e. create out matrix such that u(grid2.y) = out*u(grid1.y)
     SPIMat interp1D_Mat(SPIVec &y1, SPIVec &y2); // create an interpolation routine to interpolate y1 -> y2 (i.e. create out matrix such that u(y2) = out*u(y1)
+    SPIMat dft(PetscInt nt); // create a discrete Fourier transform operator matrix (scale is default to 1/nt)
+    std::tuple<SPIMat,SPIMat,SPIMat,SPIMat> dft_dftinv_Ihalf_Ihalfn(PetscInt nt); // create a discrete Fourier transform operator matrix (scale with 1./nt) and output the associated inverse operator and associated identity operators to take the positive and negative wavenumbers.  i.e. Ihalf+Ihalfn = eye(nt)
 
 }
 #endif // SPIGRID_H

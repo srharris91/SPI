@@ -190,6 +190,10 @@ Functions</h2></td></tr>
 <tr class="separator:ac978afa1e3b12df8851da8b81230fb12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a183a7b9aa858cc7a5c7378d79a47c5eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a183a7b9aa858cc7a5c7378d79a47c5eb">interp1D_Mat</a> (<a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;y1, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &amp;y2)</td></tr>
 <tr class="separator:a183a7b9aa858cc7a5c7378d79a47c5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee2376bb5235a708e42a35881f5a6d51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#aee2376bb5235a708e42a35881f5a6d51">dft</a> (PetscInt nt)</td></tr>
+<tr class="separator:aee2376bb5235a708e42a35881f5a6d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae20f4e35e93390dc0f42136954f75569"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#ae20f4e35e93390dc0f42136954f75569">dft_dftinv_Ihalf_Ihalfn</a> (PetscInt nt)</td></tr>
+<tr class="separator:ae20f4e35e93390dc0f42136954f75569"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90c17b555387105771324b32b9fe1080"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; PetscScalar, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceSPI.html#a90c17b555387105771324b32b9fe1080">LST_temporal</a> (<a class="el" href="structSPI_1_1SPIparams.html">SPIparams</a> &amp;params, <a class="el" href="structSPI_1_1SPIgrid1D.html">SPIgrid1D</a> &amp;grid, <a class="el" href="structSPI_1_1SPIbaseflow.html">SPIbaseflow</a> &amp;baseflow, <a class="el" href="structSPI_1_1SPIVec.html">SPIVec</a> q)</td></tr>
 <tr class="memdesc:a90c17b555387105771324b32b9fe1080"><td class="mdescLeft">&#160;</td><td class="mdescRight">solve the local stability theory problem for the linearized Navier-Stokes equations using parallel baseflow with alpha being pure real, and omega the eigenvalue  <a href="namespaceSPI.html#a90c17b555387105771324b32b9fe1080">More...</a><br /></td></tr>
 <tr class="separator:a90c17b555387105771324b32b9fe1080"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1132,6 +1136,58 @@ template&lt;class T &gt; </div>
 <p>take the cosh of each element in a vector </p>
 
 <p class="definition">Definition at line <a class="el" href="SPIVec_8cpp_source.html#l00725">725</a> of file <a class="el" href="SPIVec_8cpp_source.html">SPIVec.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aee2376bb5235a708e42a35881f5a6d51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee2376bb5235a708e42a35881f5a6d51">&#9670;&nbsp;</a></span>dft()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> SPI::dft </td>
+          <td>(</td>
+          <td class="paramtype">PetscInt&#160;</td>
+          <td class="paramname"><em>nt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">nt</td><td>[in] size of matrix to create </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l01551">1551</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ae20f4e35e93390dc0f42136954f75569"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae20f4e35e93390dc0f42136954f75569">&#9670;&nbsp;</a></span>dft_dftinv_Ihalf_Ihalfn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::tuple&lt; <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a>, <a class="el" href="structSPI_1_1SPIMat.html">SPIMat</a> &gt; SPI::dft_dftinv_Ihalf_Ihalfn </td>
+          <td>(</td>
+          <td class="paramtype">PetscInt&#160;</td>
+          <td class="paramname"><em>nt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">nt</td><td>[in] size of matrix to create </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="SPIgrid_8cpp_source.html#l01567">1567</a> of file <a class="el" href="SPIgrid_8cpp_source.html">SPIgrid.cpp</a>.</p>
 
 </div>
 </div>
