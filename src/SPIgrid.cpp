@@ -798,6 +798,10 @@ namespace SPI{
         this->FTinv = kron(this->grid1Dt.FTinv,eye(ny));
         this->Ihalf = kron(this->grid1Dt.Ihalf,eye(ny));
         this->Ihalfn = kron(this->grid1Dt.Ihalfn,eye(ny));
+        this->FT4 = kron(eye(4),this->FT);
+        this->FTinv4 = kron(eye(4),this->FTinv);
+        this->Ihalf4 = kron(eye(4),this->Ihalf);
+        this->Ihalfn4 = kron(eye(4),this->Ihalfn);
         this->flag_set_operators=PETSC_TRUE;
     }
 
@@ -828,10 +832,14 @@ namespace SPI{
             this->O.~SPIMat();
             this->I.~SPIMat();
             this->avgt.~SPIMat();
-            this->FTinv.~SPIMat();
             this->FT.~SPIMat();
+            this->FTinv.~SPIMat();
             this->Ihalf.~SPIMat();
             this->Ihalfn.~SPIMat();
+            this->FT4.~SPIMat();
+            this->FTinv4.~SPIMat();
+            this->Ihalf4.~SPIMat();
+            this->Ihalfn4.~SPIMat();
             this->flag_set_operators=PETSC_FALSE;
         }
         grid1Dy.~SPIgrid1D();

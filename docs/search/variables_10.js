@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['w_427',['W',['../structSPI_1_1SPIbaseflow.html#a3229e1eddad70bef7846f67ce402657b',1,'SPI::SPIbaseflow']]],
-  ['wx_428',['Wx',['../structSPI_1_1SPIbaseflow.html#ad340f4ac429cf9f85b2667cc85a855d1',1,'SPI::SPIbaseflow']]],
-  ['wxy_429',['Wxy',['../structSPI_1_1SPIbaseflow.html#ad44d3dc985fca9bc5ebfbf55ff42249c',1,'SPI::SPIbaseflow']]],
-  ['wy_430',['Wy',['../structSPI_1_1SPIbaseflow.html#abf7dcf2410b48b5c55a0e6dd9a7470f5',1,'SPI::SPIbaseflow']]]
+  ['w_435',['W',['../structSPI_1_1SPIbaseflow.html#a3229e1eddad70bef7846f67ce402657b',1,'SPI::SPIbaseflow']]],
+  ['wx_436',['Wx',['../structSPI_1_1SPIbaseflow.html#ad340f4ac429cf9f85b2667cc85a855d1',1,'SPI::SPIbaseflow']]],
+  ['wxy_437',['Wxy',['../structSPI_1_1SPIbaseflow.html#ad44d3dc985fca9bc5ebfbf55ff42249c',1,'SPI::SPIbaseflow']]],
+  ['wy_438',['Wy',['../structSPI_1_1SPIbaseflow.html#abf7dcf2410b48b5c55a0e6dd9a7470f5',1,'SPI::SPIbaseflow']]]
 ];

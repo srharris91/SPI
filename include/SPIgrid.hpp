@@ -89,7 +89,11 @@ namespace SPI{
                FT,      ///< Fourier Transform operator from physical space to wavenumber space for time
                FTinv,   ///< inverse Fourier Transform from wavenumber space to physical space for time
                Ihalf,   ///< positive wavenumbers from FT
-               Ihalfn;  ///< negative wavenumbers from FT
+               Ihalfn,  ///< negative wavenumbers from FT
+               FT4,      ///< Fourier Transform operator from physical space to wavenumber space for time.  For 4 variable state vector
+               FTinv4,   ///< inverse Fourier Transform from wavenumber space to physical space for time.  For 4 variable state vector
+               Ihalf4,   ///< positive wavenumbers from FT.  For 4 variable state vector
+               Ihalfn4;  ///< negative wavenumbers from FT.  For 4 variable state vector
         gridtype ytype,     ///< type of grid for wall-normal dimension
                  ttype;  ///< type of grid for time dimension
 
