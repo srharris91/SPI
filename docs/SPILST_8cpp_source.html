@@ -1334,9 +1334,9 @@ $(function() {
 <div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160; </div>
 <div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;            <a class="code" href="structSPI_1_1SPIVec.html">SPI::SPIVec</a> eig_vec(grid.<a class="code" href="structSPI_1_1SPIgrid1D.html#a24d6366217c021dd3a2b1b1ff27cbe5e">y</a>.<a class="code" href="structSPI_1_1SPIVec.html#ad170878751ae7ad7ea2f0c16fa348be3">rows</a>*16,<span class="stringliteral">&quot;q&quot;</span>);</div>
 <div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;            <span class="keywordflow">if</span>(qr.<a class="code" href="structSPI_1_1SPIVec.html#a668d78f7eb886e74418b499b32be3513">flag_init</a>){</div>
-<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;                std::tie(alpha,eig_vec) = <a class="code" href="namespaceSPI.html#ada6dbe202e0b068534ec64539d99170e">SPI::eig_init_right</a>(L,M,alpha,qr);</div>
+<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;                std::tie(alpha,eig_vec) = <a class="code" href="namespaceSPI.html#ada6dbe202e0b068534ec64539d99170e">SPI::eig_init_right</a>(L,M,alpha,qr,1e-30);</div>
 <div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;            }<span class="keywordflow">else</span>{</div>
-<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;                std::tie(alpha,eig_vec) = <a class="code" href="namespaceSPI.html#a1dda88c6e82dbf927d0cb16b383f72bf">SPI::eig_right</a>(L,M,alpha);</div>
+<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;                std::tie(alpha,eig_vec) = <a class="code" href="namespaceSPI.html#a1dda88c6e82dbf927d0cb16b383f72bf">SPI::eig_right</a>(L,M,alpha,1e-30);</div>
 <div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;            }</div>
 <div class="line"><a name="l01267"></a><span class="lineno"> 1267</span>&#160;            eig_vec.<a class="code" href="structSPI_1_1SPIVec.html#ad170878751ae7ad7ea2f0c16fa348be3">rows</a>=4*ny;</div>
 <div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;            <span class="comment">//SPIMat L(block(</span></div>

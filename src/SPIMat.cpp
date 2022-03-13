@@ -2057,10 +2057,12 @@ Optional: Get some information from the solver and display it
     SPIMat orthogonalize(
             const std::vector<SPIVec> &x  ///< [in] array of vectors to orthogonalize 
             ){
+        SPI::printf("starting orthogonalize");
         PetscInt m=x[0].rows;   // number of rows
         PetscInt n=x.size();    // number of columns
         Vec xvec[n];
         for(PetscInt i=0; i<n; ++i) xvec[i]=x[i].vec;
+        SPI::printf("         orthogonalize set vectors");
         SPIMat E("E");
         // create and initialize BV
         BV bv;
@@ -2068,17 +2070,22 @@ Optional: Get some information from the solver and display it
         E.ierr = BVSetSizesFromVec(bv,x[0].vec,n); CHKERRXX(E.ierr);
         E.ierr = BVSetFromOptions(bv);CHKERRXX(E.ierr);
         E.ierr = BVInsertVecs(bv,0,&n,xvec,PETSC_TRUE);
+        SPI::printf("         orthogonalize inserted vecs");
         //SPI::SPIMat AorthH("AorthH");
         E.ierr = BVOrthogonalize(bv,PETSC_NULL); CHKERRXX(E.ierr);
+        SPI::printf("         orthogonalize BVOrthogonalize");
         E.ierr = BVCreateMat(bv,&E.mat); CHKERRXX(E.ierr);
+        SPI::printf("         orthogonalize BVCreateMat");
 #if USE_GPU == 1
         E.ierr = MatConvert(E.mat,MATMPIAIJCUSPARSE,MAT_INPLACE_MATRIX,&E.mat); CHKERRXX(E.ierr);
 #else
         E.ierr = MatConvert(E.mat,MATMPIAIJ,MAT_INPLACE_MATRIX,&E.mat); CHKERRXX(E.ierr);
 #endif
+        SPI::printf("         orthogonalize MatConvert");
         E.rows=m;
         E.cols=n;
         E();
+        SPI::printf("done     orthogonalize");
         return E;
     }
 

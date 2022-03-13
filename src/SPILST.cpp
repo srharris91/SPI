@@ -1260,9 +1260,9 @@ namespace SPI{
 
             SPI::SPIVec eig_vec(grid.y.rows*16,"q");
             if(qr.flag_init){
-                std::tie(alpha,eig_vec) = SPI::eig_init_right(L,M,alpha,qr);
+                std::tie(alpha,eig_vec) = SPI::eig_init_right(L,M,alpha,qr,1e-30);
             }else{
-                std::tie(alpha,eig_vec) = SPI::eig_right(L,M,alpha);
+                std::tie(alpha,eig_vec) = SPI::eig_right(L,M,alpha,1e-30);
             }
             eig_vec.rows=4*ny;
             //SPIMat L(block(
